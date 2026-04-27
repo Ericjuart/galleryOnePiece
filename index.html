@@ -160,16 +160,16 @@
                     </div>
 
                     <div>
-                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Rareza</label>
+                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">rarity</label>
                         <select v-model="filters.rarity" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
-                            <option value="">Todas las rarezas</option>
+                            <option value="">Todas las raritys</option>
                             <option v-for="r in availableRarities" :key="r" :value="r">{{r}} - {{translateRarity(r)}}</option>
                         </select>
                     </div>
 
                     <div class="space-y-2">
                         <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter flex justify-between">
-                            Precio <span>{{filters.priceValue}}€</span>
+                            market_price <span>{{filters.priceValue}}€</span>
                         </label>
                         <div class="flex gap-2">
                             <select v-model="filters.priceType" class="w-1/2 bg-slate-950 p-2 rounded-lg border border-slate-800 text-[10px] uppercase font-bold outline-none text-yellow-500">
@@ -220,22 +220,22 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-10">
-                <div v-for="card in filteredCards" :key="card.id" class="flip-card aspect-[11/16] cursor-pointer" @click="selectedCard = card">
+                <div v-for="card in filteredCards" :key="card.card_set_id" class="flip-card aspect-[11/16] cursor-pointer" @click="selectedCard = card">
                     <div class="flip-card-inner">
                         <div class="flip-card-front shadow-2xl transition-all duration-500" :class="{ 'card-poseida border-[3px]': card.tengo, 'border border-white/10': !card.tengo }">
-                             <img :src="card.imagen" class="w-full h-full object-cover">
+                             <img :src="card.card_image" class="w-full h-full object-cover">
                             <div v-if="card.tengo" class="absolute inset-0 bg-green-500/10 border-4 border-green-500/50 rounded-xl"></div>
                         </div>
                         <div class="flip-card-back transition-all duration-500" :class="{ 'card-poseida border-[3px]': card.tengo, 'border border-white/10': !card.tengo }">
                             <img src="https://m.media-amazon.com/images/I/51xnq29+enL.jpg" class="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none">
                             <div class="relative z-10">
-                                <p class="text-yellow-500 font-bold text-lg leading-tight">{{card.nombre}}</p>
-                                <p class="text-[10px] text-slate-400 mb-4">{{card.id}}</p>
+                                <p class="text-yellow-500 font-bold text-lg leading-tight">{{card.card_name}}</p>
+                                <p class="text-[10px] text-slate-400 mb-4">{{card.card_set_id}}</p>
                                 
                                 <div class="space-y-2 text-left bg-slate-950/80 p-3 rounded-lg border border-slate-700">
-                                    <div class="flex justify-between text-xs"><span>Rareza:</span> <span class="text-yellow-500">{{card.rareza}}</span></div>
-                                    <div class="flex justify-between text-xs"><span>Precio:</span> <span class="text-yellow-500">{{card.precio_en}}€</span></div>
-                                    <div class="flex justify-between text-xs"><span>Colección:</span> <span>{{card.coleccion}}</span></div>
+                                    <div class="flex justify-between text-xs"><span>Rareza:</span> <span class="text-yellow-500">{{card.rarity}}</span></div>
+                                    <div class="flex justify-between text-xs"><span>Precio:</span> <span class="text-yellow-500">{{card.market_price_en}}€</span></div>
+                                    <div class="flex justify-between text-xs"><span>Colección:</span> <span>{{card.set_id}}-{{card.set_name}}</span></div>
                                 </div>
 
                                 <div class="mt-4 flex justify-center gap-1">
@@ -254,21 +254,21 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
             </button>
             <div class="w-full md:w-1/2 p-6 bg-black flex justify-center items-center">
-                <img :src="selectedCard.imagen" class="max-h-[45vh] md:max-h-[80vh] w-auto object-contain rounded-xl">
+                <img :src="selectedCard.card_image" class="max-h-[45vh] md:max-h-[80vh] w-auto object-contain rounded-xl">
             </div>
             <div class="w-full md:w-1/2 p-6 md:p-12">
-                <h2 class="text-3xl font-bold mb-4">{{selectedCard.nombre}}</h2>
-                <p class="text-yellow-500 text-4xl font-black mb-6">{{selectedCard.rareza}} - {{translateRarity(selectedCard.rareza)}}</p>
+                <h2 class="text-3xl font-bold mb-4">{{selectedCard.card_name}}</h2>
+                <p class="text-yellow-500 text-4xl font-black mb-6">{{selectedCard.rarity}} - {{translateRarity(selectedCard.rarity)}}</p>
                 <div class="bg-slate-800 p-4 rounded-xl mb-6">
                     <p class="text-xs text-slate-400 uppercase tracking-widest mb-2">ID Carta</p>
-                    <p class="font-mono">{{selectedCard.id}}</p>
+                    <p class="font-mono">{{selectedCard.card_set_id}}</p>
                     <p class="text-xs text-slate-400 uppercase tracking-widest mb-2">Collección</p>
-                    <p class="font-mono">{{selectedCard.coleccion}}</p>
+                    <p class="font-mono">{{selectedCard.set_id}}-{{selectedCard.set_name}}</p>
                 </div>
                 <div class="grid grid-cols-2 gap-6 mb-6 border-y border-slate-800 py-6">
                     <div>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Precio</p>
-                        <p class="text-2xl md:text-3xl font-bold text-yellow-500">{{selectedCard.precio_en}} €</p>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">market_price</p>
+                        <p class="text-2xl md:text-3xl font-bold text-yellow-500">{{selectedCard.market_price_en}} €</p>
                     </div>
                     <div>
                         <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Deseo</p>
@@ -303,12 +303,12 @@
             const masterData = ref([]);
 
             const userCollection = ref([
-                { id: "EB01-011", deseo: 4, tengo: true, tags: ["Villano"] },
-                { id: "EB01-061", deseo: 5, tengo: false, tags: ["Villano"] },
-                { id: "OP05-119", deseo: 5, tengo: false, tags: ["Villano"] },
-                { id: "OP01-016", deseo: 3, tengo: false, tags: ["Villano"] },
-                { id: "OP05-121", deseo: 5, tengo: true, tags: ["Villano"]},
-                { id: "EB01-011", deseo: 4, tengo: true, tags: ["Villano"]}
+                { card_set_id: "EB01-011", deseo: 4, tengo: true, tags: ["Villano"] },
+                { card_set_id: "EB01-061", deseo: 5, tengo: false, tags: ["Villano"] },
+                { card_set_id: "OP05-119", deseo: 5, tengo: false, tags: ["Villano"] },
+                { card_set_id: "OP01-016", deseo: 3, tengo: false, tags: ["Villano"] },
+                { card_set_id: "OP05-121", deseo: 5, tengo: true, tags: ["Villano"]},
+                { card_set_id: "EB01-011", deseo: 4, tengo: true, tags: ["Villano"]}
 
             // Añade aquí solo los IDs de las cartas que quieras gestionar
             ]);
@@ -329,7 +329,7 @@
                     const response = await fetch('bbdd_maestra_cartas.json');
                     masterData.value = await response.json();
                     
-                    // Ajustar el slider de precio al máximo una vez cargados los datos
+                    // Ajustar el slider de market_price al máximo una vez cargados los datos
                     filters.value.priceValue = absoluteMaxPrice.value;
                 } catch (error) {
                     console.error("Error cargando la base de datos maestra:", error);
@@ -340,45 +340,45 @@
             const allCards = computed(() => {
                 return userCollection.value.map(userCard => {
                     // Buscamos la info fija en el maestro
-                    const info = masterData.value.find(m => m.id === userCard.id);
+                    const info = masterData.value.find(m => m.card_set_id === userCard.card_set_id);
                     
                     // Si no existe en el maestro, devolvemos un objeto básico para no romper la web
-                    if (!info) return { ...userCard, nombre: 'No encontrada', imagen: '' };
+                    if (!info) return { ...userCard, card_name: 'No encontrada', card_image: '' };
 
                     // Devolvemos la mezcla
                     return {
-                        ...info,        // Trae: nombre, coleccion, rareza, precio_en, tags, imagen
+                        ...info,        // Trae: card_name, coleccion, rarity, market_price_en, tags, imagen
                         ...userCard     // Trae: deseo, tengo
                     };
                 });
             });
-            const availableSets = computed(() => [...new Set(cards.value.map(c => c.coleccion))].sort());
-            const availableRarities = computed(() => [...new Set(cards.value.map(c => c.rareza))].sort());
+            const availableSets = computed(() => [...new Set(cards.value.map(c => c.set_id))].sort());
+            const availableRarities = computed(() => [...new Set(cards.value.map(c => c.rarity))].sort());
             
             const absoluteMaxPrice = computed(() => {
-                const max = Math.max(...cards.value.map(c => c.precio_en), 0);
+                const max = Math.max(...cards.value.map(c => c.market_price_en), 0);
                 return Math.ceil(max);
             });
 
-            // Inicializamos el valor del precio al máximo al arrancar
+            // Inicializamos el valor del market_price al máximo al arrancar
             filters.value.priceValue = absoluteMaxPrice.value;
 
             const filteredCards = computed(() => {
                 const searchTxt = filters.value.search.toLowerCase();
                 
                 return cards.value.filter(c => {
-                    // ... (mantenemos los otros filtros de búsqueda, set, rarity, deseo, precio)
-                    const matchesSearch = (c.nombre || "").toLowerCase().includes(searchTxt) || 
+                    // ... (mantenemos los otros filtros de búsqueda, set, rarity, deseo, market_price)
+                    const matchesSearch = (c.card_name || "").toLowerCase().includes(searchTxt) || 
                                         (c.tags || []).some(t => t.toLowerCase().includes(searchTxt));
-                    const matchesSet = !filters.value.set || c.coleccion === filters.value.set;
-                    const matchesRarity = !filters.value.rarity || c.rareza === filters.value.rarity;
+                    const matchesSet = !filters.value.set || c.set_id === filters.value.set;
+                    const matchesRarity = !filters.value.rarity || c.rarity === filters.value.rarity;
                     const matchesDeseo = c.deseo >= filters.value.minDeseo;
                     
-                    let matchesPrecio = true;
+                    let matchesmarket_price = true;
                     if (filters.value.priceType === 'menor') {
-                        matchesPrecio = c.precio_en <= filters.value.priceValue;
+                        matchesmarket_price = c.market_price_en <= filters.value.priceValue;
                     } else {
-                        matchesPrecio = c.precio_en >= filters.value.priceValue;
+                        matchesmarket_price = c.market_price_en >= filters.value.priceValue;
                     }
 
                     // NUEVA LÓGICA DE POSESIÓN
@@ -389,7 +389,7 @@
                         matchesPossession = c.tengo === false;
                     }
 
-                    return matchesSearch && matchesSet && matchesRarity && matchesDeseo && matchesPrecio && matchesPossession;
+                    return matchesSearch && matchesSet && matchesRarity && matchesDeseo && matchesmarket_price && matchesPossession;
                 });
             });
 
