@@ -361,6 +361,9 @@
                 });
             });
 
+            const availableSets = computed(() => [...new Set(cards.value.map(c => c.coleccion))].sort());
+            const availableRarities = computed(() => [...new Set(cards.value.map(c => c.rareza))].sort());
+            
             const absoluteMaxPrice = computed(() => {
                 if (allCards.value.length === 0) return 100;
                 const max = Math.max(...allCards.value.map(c => c.market_price_en || 0), 0);
