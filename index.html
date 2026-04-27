@@ -108,24 +108,42 @@
 </head>
 <body class="bg-[#020617] fondo text-slate-200 min-h-screen overflow-hidden">
 
-<div id="app" v-cloak class="flex h-screen">
+<div id="app" v-cloak class="flex h-screen relative">
 
-    <aside :class="sidebarOpen ? 'w-80' : 'w-16'" class="h-full bg-slate-900 border-r border-slate-800 transition-all duration-300 flex flex-col relative z-20 shadow-2xl">
-    
-        <div class="p-6 pb-2 logo" v-show="sidebarOpen">
-            <img src="https://logos-world.net/wp-content/uploads/2021/09/One-Piece-Logo-700x394.png" width="80%">
-        </div>
+    <button v-if="!sidebarOpen" @click="sidebarOpen = true" 
+            class="fixed top-4 left-4 z-[70] bg-yellow-500 text-black p-2 rounded-lg shadow-lg hover:scale-110 transition-all active:scale-95 border-2 border-yellow-600">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
+        </svg>
+    </button>
 
-        <div class="p-6 pt-2 overflow-y-auto flex-1 custom-scrollbar" v-show="sidebarOpen">
+    <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" 
+           class="fixed md:relative z-[60] h-full bg-slate-900 border-r border-slate-800 transition-transform duration-300 flex flex-col w-[85%] md:w-80 shadow-2xl">
+        
+        <button @click="sidebarOpen = false" class="absolute top-4 right-4 text-slate-400 hover:text-yellow-500 transition-colors md:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="6" y1="18" y2="6"/>
+            </svg>
+        </button>
+
+        <button @click="sidebarOpen = false" class="hidden md:block absolute top-4 right-4 text-slate-600 hover:text-yellow-500">
+             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="6" y1="18" y2="6"/></svg>
+        </button>
+
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
+            <div class="mb-6 flex justify-center md:justify-start">
+                <img src="https://logos-world.net/wp-content/uploads/2021/09/One-Piece-Logo-700x394.png" class="w-32">
+            </div>
+
             <div class="space-y-6">
                 <div>
                     <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Búsqueda</label>
-                    <input v-model="filters.search" type="text" placeholder="Ej: Gear 5, Zoro..." class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm transition-all">
+                    <input v-model="filters.search" type="text" placeholder="Ej: Gear 5, Zoro..." class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
                 </div>
 
                 <div>
                     <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Colección</label>
-                    <select v-model="filters.set" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm">
+                    <select v-model="filters.set" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
                         <option value="">Todas las ediciones</option>
                         <option v-for="set in availableSets" :key="set" :value="set">{{set}}</option>
                     </select>
@@ -133,7 +151,7 @@
 
                 <div>
                     <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Rareza</label>
-                    <select v-model="filters.rarity" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm">
+                    <select v-model="filters.rarity" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
                         <option value="">Todas las rarezas</option>
                         <option v-for="r in availableRarities" :key="r" :value="r">{{r}} - {{translateRarity(r)}}</option>
                     </select>
@@ -141,14 +159,14 @@
 
                 <div class="space-y-2">
                     <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter flex justify-between">
-                        Filtrar Precio <span>{{filters.priceValue}}€</span>
+                        Precio <span>{{filters.priceValue}}€</span>
                     </label>
                     <div class="flex gap-2">
                         <select v-model="filters.priceType" class="w-1/2 bg-slate-950 p-2 rounded-lg border border-slate-800 text-[10px] uppercase font-bold outline-none text-yellow-500">
                             <option value="menor">Menos de</option>
                             <option value="mayor">Más de</option>
                         </select>
-                        <input v-model.number="filters.priceValue" type="number" class="w-1/2 bg-slate-950 p-2 rounded-lg border border-slate-800 text-sm outline-none text-white font-mono">
+                        <input v-model.number="filters.priceValue" type="number" class="w-1/2 bg-slate-950 p-2 rounded-lg border border-slate-800 text-sm outline-none text-white">
                     </div>
                     <input v-model.number="filters.priceValue" type="range" min="0" :max="absoluteMaxPrice" class="w-full accent-yellow-500">
                 </div>
@@ -158,42 +176,32 @@
                     <input v-model.number="filters.minDeseo" type="range" min="1" max="5" class="w-full accent-yellow-500 mt-2">
                 </div>
 
-                <div class="pt-2">
-                    <label class="flex items-center gap-3 cursor-pointer group">
-                        <div>
-                            <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Estado de la Colección</label>
-                            <select v-model="filters.possession" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
-                                <option value="todas">Ver todas las piezas</option>
-                                <option value="poseidas">Solo en posesión (✓)</option>
-                                <option value="faltantes">Solo faltantes (✕)</option>
-                            </select>
-                        </div>
-                    </label>
+                <div>
+                    <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Estado Colección</label>
+                    <select v-model="filters.possession" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
+                        <option value="todas">Ver todas</option>
+                        <option value="poseidas">En posesión (✓)</option>
+                        <option value="faltantes">Faltantes (✕)</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-        <div class="p-4 bg-slate-900 border-t border-slate-800" v-show="sidebarOpen">
+        <div class="p-4 bg-slate-900 border-t border-slate-800">
             <button @click="resetFilters" 
-                    class="w-full py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-black uppercase text-xs rounded-xl shadow-[0_4px_20px_rgba(234,179,8,0.3)] transition-all active:scale-95 flex items-center justify-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    class="w-full py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-black uppercase text-xs rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                 Limpiar Filtros
             </button>
         </div>
-
-        <button @click="sidebarOpen = !sidebarOpen" class="absolute -right-3 top-10 bg-yellow-500 text-black p-1 rounded-full hover:scale-110 transition-transform shadow-xl z-30">
-            <svg v-if="sidebarOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        </button>
     </aside>
 
     <main class="flex-1 h-full overflow-y-auto p-4 md:p-8 relative">
-        
-        <div class="flex justify-between items-center mb-10 conteo">
-            <span class="text-yellow-500/20 conteo font-sans not-italic text-2xl">{{filteredCards.length}} Cartas</span>
+        <div class="flex justify-between items-center mb-10 mt-12 md:mt-0">
+            <span class="text-yellow-500 font-bold text-2xl">{{filteredCards.length}} Cartas</span>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-10 pb-20">
             <div v-for="card in filteredCards" :key="card.id" class="flip-card aspect-[11/16] cursor-pointer" @click="selectedCard = card">
                 <div class="flip-card-inner">
                     <div class="flip-card-front shadow-2xl">
@@ -202,18 +210,12 @@
                     </div>
                     <div class="flip-card-back">
                         <img src="https://m.media-amazon.com/images/I/51xnq29+enL.jpg" class="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none">
-                        <div class="relative z-10">
+                        <div class="relative z-10 text-center">
                             <p class="text-yellow-500 font-bold text-lg leading-tight">{{card.nombre}}</p>
                             <p class="text-[10px] text-slate-400 mb-4">{{card.id}}</p>
-                            
                             <div class="space-y-2 text-left bg-slate-950/80 p-3 rounded-lg border border-slate-700">
-                                <div class="flex justify-between text-xs"><span>Rareza:</span> <span class="text-yellow-500">{{card.rareza}}</span></div>
                                 <div class="flex justify-between text-xs"><span>Precio:</span> <span class="text-yellow-500">{{card.precio_en}}€</span></div>
-                                <div class="flex justify-between text-xs"><span>Bloque:</span> <span>{{card.bloque}}</span></div>
-                            </div>
-
-                            <div class="mt-4 flex justify-center gap-1">
-                                <span v-for="n in 5" :key="n" :class="n <= card.deseo ? 'text-yellow-500' : 'text-slate-700'">✦</span>
+                                <div class="flex justify-between text-xs"><span>Rareza:</span> <span class="text-yellow-500">{{card.rareza}}</span></div>
                             </div>
                         </div>
                     </div>
@@ -222,46 +224,22 @@
         </div>
     </main>
 
-    <div v-if="selectedCard" class="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-4 bg-black/95 backdrop-blur-sm" @click.self="selectedCard = null">
+    <div v-if="selectedCard" class="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-4 bg-black/95 backdrop-blur-sm" @click.self="selectedCard = null">
         <div class="w-full h-full md:h-auto md:max-w-5xl bg-slate-900 md:rounded-3xl overflow-y-auto flex flex-col md:flex-row shadow-2xl border border-slate-800 relative">
-            
-            <button @click="selectedCard = null" class="absolute top-4 right-4 z-50 text-white bg-black/50 p-2 rounded-full md:bg-transparent md:text-slate-500">
+            <button @click="selectedCard = null" class="absolute top-4 right-4 z-50 text-white bg-black/50 p-2 rounded-full md:bg-transparent">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
             </button>
-
             <div class="w-full md:w-1/2 p-6 bg-black flex justify-center items-center">
-                <img :src="selectedCard.imagen" class="max-h-[45vh] md:max-h-[80vh] w-auto object-contain rounded-xl shadow-2xl">
+                <img :src="selectedCard.imagen" class="max-h-[45vh] md:max-h-[80vh] w-auto object-contain rounded-xl">
             </div>
-
-            <div class="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center">
-                <h2 class="text-2xl md:text-5xl font-bold text-white mb-2 leading-tight">{{selectedCard.nombre}}</h2>
-                
-                <div class="flex gap-4 mb-6">
-                    <span class="bg-yellow-500 text-black px-3 py-1 rounded-full font-black text-xs uppercase">{{selectedCard.rareza}}</span>
-                    <span class="bg-slate-800 px-3 py-1 rounded-full text-slate-400 text-xs">{{selectedCard.id}}</span>
+            <div class="w-full md:w-1/2 p-6 md:p-12">
+                <h2 class="text-3xl font-bold mb-4">{{selectedCard.nombre}}</h2>
+                <p class="text-yellow-500 text-4xl font-black mb-6">{{selectedCard.precio_en}}€</p>
+                <div class="bg-slate-800 p-4 rounded-xl mb-6">
+                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-2">ID Carta</p>
+                    <p class="font-mono">{{selectedCard.id}}</p>
                 </div>
-
-                <div class="grid grid-cols-2 gap-6 mb-6 border-y border-slate-800 py-6">
-                    <div>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Precio</p>
-                        <p class="text-2xl md:text-3xl font-bold text-yellow-500">{{selectedCard.precio_en}} €</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Deseo</p>
-                        <div class="text-xl md:text-2xl">
-                            <span v-for="n in 5" :key="n" :class="n <= selectedCard.deseo ? 'text-yellow-500' : 'text-slate-800'">✦</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-6">
-                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-3">Etiquetas</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span v-for="tag in selectedCard.tags" :key="tag" class="bg-slate-800 border border-slate-700 px-3 py-1 rounded-lg text-xs">#{{tag}}</span>
-                    </div>
-                </div>
-
-                <div :class="selectedCard.tengo ? 'bg-green-500 text-black' : 'bg-slate-800 text-slate-500'" class="p-4 rounded-xl text-center font-bold text-sm">
+                <div :class="selectedCard.tengo ? 'bg-green-500 text-black' : 'bg-slate-700 text-slate-400'" class="p-4 rounded-xl text-center font-bold">
                     {{selectedCard.tengo ? '✓ EN COLECCIÓN' : 'PENDIENTE'}}
                 </div>
             </div>
@@ -269,14 +247,12 @@
     </div>
 </div>
 
-</div>
-
 <script>
     const { createApp, ref, computed } = Vue;
 
     createApp({
         setup() {
-            const sidebarOpen = ref(true);
+            const sidebarOpen = ref(window.innerWidth > 768);
             const selectedCard = ref(null);
             
             const filters = ref({
