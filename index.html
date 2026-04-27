@@ -227,8 +227,7 @@
     <div v-if="selectedCard" class="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-4 bg-black/95 backdrop-blur-sm" @click.self="selectedCard = null">
         <div class="w-full h-full md:h-auto md:max-w-5xl bg-slate-900 md:rounded-3xl overflow-y-auto flex flex-col md:flex-row shadow-2xl border border-slate-800 relative">
             <button @click="selectedCard = null" class="absolute top-4 right-4 z-50 text-white bg-black/50 p-2 rounded-full md:bg-transparent">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-            </button>
+                <img width="32" height="32" src="https://img.icons8.com/external-dreamstale-lineal-dreamstale/32/external-bones-holidays-dreamstale-lineal-dreamstale.png" alt="external-bones-holidays-dreamstale-lineal-dreamstale">            </button>
             <div class="w-full md:w-1/2 p-6 bg-black flex justify-center items-center">
                 <img :src="selectedCard.imagen" class="max-h-[45vh] md:max-h-[80vh] w-auto object-contain rounded-xl">
             </div>
