@@ -207,7 +207,7 @@
                 <span class="text-yellow-500 font-bold text-2xl">{{filteredCards.length}} Cartas</span>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-10 pb-20">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-10">
                 <div v-for="card in filteredCards" :key="card.id" class="flip-card aspect-[11/16] cursor-pointer" @click="selectedCard = card">
                     <div class="flip-card-inner">
                         <div class="flip-card-front shadow-2xl">
@@ -216,12 +216,18 @@
                         </div>
                         <div class="flip-card-back">
                             <img src="https://m.media-amazon.com/images/I/51xnq29+enL.jpg" class="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none">
-                            <div class="relative z-10 text-center">
+                            <div class="relative z-10">
                                 <p class="text-yellow-500 font-bold text-lg leading-tight">{{card.nombre}}</p>
                                 <p class="text-[10px] text-slate-400 mb-4">{{card.id}}</p>
+                                
                                 <div class="space-y-2 text-left bg-slate-950/80 p-3 rounded-lg border border-slate-700">
-                                    <div class="flex justify-between text-xs"><span>Precio:</span> <span class="text-yellow-500">{{card.precio_en}}€</span></div>
                                     <div class="flex justify-between text-xs"><span>Rareza:</span> <span class="text-yellow-500">{{card.rareza}}</span></div>
+                                    <div class="flex justify-between text-xs"><span>Precio:</span> <span class="text-yellow-500">{{card.precio_en}}€</span></div>
+                                    <div class="flex justify-between text-xs"><span>Bloque:</span> <span>{{card.bloque}}</span></div>
+                                </div>
+
+                                <div class="mt-4 flex justify-center gap-1">
+                                    <span v-for="n in 5" :key="n" :class="n <= card.deseo ? 'text-yellow-500' : 'text-slate-700'">✦</span>
                                 </div>
                             </div>
                         </div>
@@ -240,7 +246,7 @@
             </div>
             <div class="w-full md:w-1/2 p-6 md:p-12">
                 <h2 class="text-3xl font-bold mb-4">{{selectedCard.nombre}}</h2>
-                <p class="text-yellow-500 text-4xl font-black mb-6">{{selectedCard.precio_en}}€</p>
+                <p class="text-yellow-500 text-4xl font-black mb-6">{{selectedCard.rareza}}€</p>
                 <div class="bg-slate-800 p-4 rounded-xl mb-6">
                     <p class="text-xs text-slate-400 uppercase tracking-widest mb-2">ID Carta</p>
                     <p class="font-mono">{{selectedCard.id}}</p>
