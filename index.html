@@ -352,11 +352,11 @@
                     };
                 });
             });
-            const availableSets = computed(() => [...new Set(cards.value.map(c => c.set_id))].sort());
-            const availableRarities = computed(() => [...new Set(cards.value.map(c => c.rarity))].sort());
+            const availableSets = computed(() => [...new Set(allCards.value.map(c => c.set_id))].sort());
+            const availableRarities = computed(() => [...new Set(allCards.value.map(c => c.rarity))].sort());
             
             const absoluteMaxPrice = computed(() => {
-                const max = Math.max(...cards.value.map(c => c.market_price_en), 0);
+                const max = Math.max(...allCards.value.map(c => c.market_price_en), 0);
                 return Math.ceil(max);
             });
 
@@ -366,7 +366,7 @@
             const filteredCards = computed(() => {
                 const searchTxt = filters.value.search.toLowerCase();
                 
-                return cards.value.filter(c => {
+                return allCards.value.filter(c => {
                     // ... (mantenemos los otros filtros de búsqueda, set, rarity, deseo, market_price)
                     const matchesSearch = (c.card_name || "").toLowerCase().includes(searchTxt) || 
                                         (c.tags || []).some(t => t.toLowerCase().includes(searchTxt));
