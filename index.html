@@ -154,7 +154,7 @@
                     <div>
                         <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Colección</label>
                         <select v-model="filters.set" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
-                            <option value="">Todas las ediciones</option>
+                            <option value="">Colección</option>
                             <option v-for="set in availableSets" :key="set" :value="set">{{set}}</option>
                         </select>
                     </div>
@@ -162,7 +162,7 @@
                     <div>
                         <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">rarity</label>
                         <select v-model="filters.rarity" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
-                            <option value="">Todas las raritys</option>
+                            <option value="">Rareza</option>
                             <option v-for="r in availableRarities" :key="r" :value="r">{{r}} - {{translateRarity(r)}}</option>
                         </select>
                     </div>
@@ -235,7 +235,7 @@
                                 <div class="space-y-2 text-left bg-slate-950/80 p-3 rounded-lg border border-slate-700">
                                     <div class="flex justify-between text-xs"><span>Rareza:</span> <span class="text-yellow-500">{{card.rarity}}</span></div>
                                     <div class="flex justify-between text-xs"><span>Precio:</span> <span class="text-yellow-500">{{card.market_price}}€</span></div>
-                                    <div class="flex justify-between text-xs"><span>Colección:</span> <span>{{card.set_id}}-{{card.set_name}}</span></div>
+                                    <div class="flex justify-between text-xs"><span>Colección:</span> <span>{{card.set_id}}</span></div>
                                 </div>
 
                                 <div class="mt-4 flex justify-center gap-1">
@@ -340,24 +340,29 @@
             // ... dentro de setup() ...
 
             const allCards = computed(() => {
-                // Si el maestro está vacío, devolvemos array vacío
-                if (!masterData.value.length) return [];
+                // Si el maestro aún no ha cargado, devolvemos el array del usuario tal cual
+                if (!masterData.value.length) return userCollection.value;
 
-                // Recorremos TODAS las cartas de la base de datos maestra
-                return masterData.value.map(masterCard => {
-                    // Buscamos si tú tienes esta carta en tu colección personal
-                    const userStatus = userCollection.value.find(u => u.card_set_id === masterCard.card_set_id);
-                    
-                    return {
-                        ...masterCard,
-                        // NORMALIZACIÓN: Usamos market_price del JSON pero lo asignamos a market_price_en para el resto del código
-                        market_price_en: masterCard.market_price || 0, 
-                        
-                        // Si está en tu colección, usamos tus datos. Si no, valores por defecto.
-                        tengo: userStatus ? userStatus.tengo : false,
-                        deseo: userStatus ? userStatus.deseo : 1,
-                        tags: userStatus ? userStatus.tags : []
-                    };
+                return userCollection.value.map(userCard => {
+                    // Buscamos la información técnica en el JSON maestro
+                    const infoTecnica = masterData.value.find(m => m.card_set_id === userCard.card_set_id);
+
+                    if (infoTecnica) {
+                        return {
+                            ...infoTecnica,       // Trae nombre, set, imagen, rarity...
+                            ...userCard,         // Sobrescribe con tus estados (tengo, deseo, tags)
+                            // IMPORTANTE: Tu HTML usa 'market_price_en', el JSON usa 'market_price'
+                            market_price_en: infoTecnica.market_price || 0 
+                        };
+                    } else {
+                        // Si por algún motivo el ID no existe en el JSON, devolvemos esto para que no explote
+                        return { 
+                            ...userCard, 
+                            card_name: "ID no encontrado en JSON", 
+                            card_image: "", 
+                            market_price_en: 0 
+                        };
+                    }
                 });
             });
 
@@ -366,8 +371,9 @@
 
             const absoluteMaxPrice = computed(() => {
                 if (allCards.value.length === 0) return 100;
-                const max = Math.max(...allCards.value.map(c => c.market_price_en || 0), 0);
-                return Math.ceil(max);
+                // Buscamos el precio máximo solo entre TUS cartas
+                const prices = allCards.value.map(c => parseFloat(c.market_price_en) || 0);
+                return Math.ceil(Math.max(...prices, 10));
             });
 
             // Ajuste en el filtro para evitar errores con valores nulos
