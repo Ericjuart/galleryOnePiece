@@ -234,7 +234,7 @@
                                 
                                 <div class="space-y-2 text-left bg-slate-950/80 p-3 rounded-lg border border-slate-700">
                                     <div class="flex justify-between text-xs"><span>Rareza:</span> <span class="text-yellow-500">{{card.rarity}}</span></div>
-                                    <div class="flex justify-between text-xs"><span>Precio:</span> <span class="text-yellow-500">{{card.market_price_en}}€</span></div>
+                                    <div class="flex justify-between text-xs"><span>Precio:</span> <span class="text-yellow-500">{{card.market_price}}€</span></div>
                                     <div class="flex justify-between text-xs"><span>Colección:</span> <span>{{card.set_id}}-{{card.set_name}}</span></div>
                                 </div>
 
@@ -268,7 +268,7 @@
                 <div class="grid grid-cols-2 gap-6 mb-6 border-y border-slate-800 py-6">
                     <div>
                         <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">market_price</p>
-                        <p class="text-2xl md:text-3xl font-bold text-yellow-500">{{selectedCard.market_price_en}} €</p>
+                        <p class="text-2xl md:text-3xl font-bold text-yellow-500">{{selectedCard.market_price}} €</p>
                     </div>
                     <div>
                         <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Deseo</p>
@@ -337,51 +337,57 @@
             });
 
             // 4. EL MATCH: Mezclamos la info de la BBDD con tus estados de 'tengo' y 'deseo'
-            const allCards = computed(() => {
-                return userCollection.value.map(userCard => {
-                    // Buscamos la info fija en el maestro
-                    const info = masterData.value.find(m => m.card_set_id === userCard.card_set_id);
-                    
-                    // Si no existe en el maestro, devolvemos un objeto básico para no romper la web
-                    if (!info) return { ...userCard, card_name: 'No encontrada', card_image: '' };
+            // ... dentro de setup() ...
 
-                    // Devolvemos la mezcla
+            const allCards = computed(() => {
+                // Si el maestro está vacío, devolvemos array vacío
+                if (!masterData.value.length) return [];
+
+                // Recorremos TODAS las cartas de la base de datos maestra
+                return masterData.value.map(masterCard => {
+                    // Buscamos si tú tienes esta carta en tu colección personal
+                    const userStatus = userCollection.value.find(u => u.card_set_id === masterCard.card_set_id);
+                    
                     return {
-                        ...info,        // Trae: card_name, coleccion, rarity, market_price_en, tags, imagen
-                        ...userCard     // Trae: deseo, tengo
+                        ...masterCard,
+                        // NORMALIZACIÓN: Usamos market_price del JSON pero lo asignamos a market_price_en para el resto del código
+                        market_price_en: masterCard.market_price || 0, 
+                        
+                        // Si está en tu colección, usamos tus datos. Si no, valores por defecto.
+                        tengo: userStatus ? userStatus.tengo : false,
+                        deseo: userStatus ? userStatus.deseo : 1,
+                        tags: userStatus ? userStatus.tags : []
                     };
                 });
             });
-            const availableSets = computed(() => [...new Set(allCards.value.map(c => c.set_id))].sort());
-            const availableRarities = computed(() => [...new Set(allCards.value.map(c => c.rarity))].sort());
-            
+
             const absoluteMaxPrice = computed(() => {
-                const max = Math.max(...allCards.value.map(c => c.market_price_en), 0);
+                if (allCards.value.length === 0) return 100;
+                const max = Math.max(...allCards.value.map(c => c.market_price_en || 0), 0);
                 return Math.ceil(max);
             });
 
-            // Inicializamos el valor del market_price al máximo al arrancar
-            filters.value.priceValue = absoluteMaxPrice.value;
-
+            // Ajuste en el filtro para evitar errores con valores nulos
             const filteredCards = computed(() => {
                 const searchTxt = filters.value.search.toLowerCase();
                 
                 return allCards.value.filter(c => {
-                    // ... (mantenemos los otros filtros de búsqueda, set, rarity, deseo, market_price)
                     const matchesSearch = (c.card_name || "").toLowerCase().includes(searchTxt) || 
-                                        (c.tags || []).some(t => t.toLowerCase().includes(searchTxt));
+                                        (c.tags || []).some(t => t.toLowerCase().includes(searchTxt)) ||
+                                        (c.card_set_id || "").toLowerCase().includes(searchTxt);
+                    
                     const matchesSet = !filters.value.set || c.set_id === filters.value.set;
                     const matchesRarity = !filters.value.rarity || c.rarity === filters.value.rarity;
-                    const matchesDeseo = c.deseo >= filters.value.minDeseo;
+                    const matchesDeseo = (c.deseo || 1) >= filters.value.minDeseo;
                     
-                    let matchesmarket_price = true;
+                    let matchesPrice = true;
+                    const price = parseFloat(c.market_price_en) || 0;
                     if (filters.value.priceType === 'menor') {
-                        matchesmarket_price = c.market_price_en <= filters.value.priceValue;
+                        matchesPrice = price <= filters.value.priceValue;
                     } else {
-                        matchesmarket_price = c.market_price_en >= filters.value.priceValue;
+                        matchesPrice = price >= filters.value.priceValue;
                     }
 
-                    // NUEVA LÓGICA DE POSESIÓN
                     let matchesPossession = true;
                     if (filters.value.possession === 'poseidas') {
                         matchesPossession = c.tengo === true;
@@ -389,7 +395,7 @@
                         matchesPossession = c.tengo === false;
                     }
 
-                    return matchesSearch && matchesSet && matchesRarity && matchesDeseo && matchesmarket_price && matchesPossession;
+                    return matchesSearch && matchesSet && matchesRarity && matchesDeseo && matchesPrice && matchesPossession;
                 });
             });
 
