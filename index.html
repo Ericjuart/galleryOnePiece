@@ -293,13 +293,26 @@
 </div>
 
 <script>
-    const { createApp, ref, computed } = Vue;
+    const { createApp, ref, computed, onMounted } = Vue;
 
     createApp({
         setup() {
             const sidebarOpen = ref(window.innerWidth > 768);
             const selectedCard = ref(null);
             
+            const masterData = ref([]);
+
+            const userCollection = ref([
+                { id: "EB01-011", deseo: 4, tengo: true, tags: ["Villano"] },
+                { id: "EB01-061", deseo: 5, tengo: false, tags: ["Villano"] },
+                { id: "OP05-119", deseo: 5, tengo: false, tags: ["Villano"] },
+                { id: "OP01-016", deseo: 3, tengo: false, tags: ["Villano"] },
+                { id: "OP05-121", deseo: 5, tengo: true, tags: ["Villano"]},
+                { id: "EB01-011", deseo: 4, tengo: true, tags: ["Villano"]}
+
+            // Añade aquí solo los IDs de las cartas que quieras gestionar
+            ]);
+
             const filters = ref({
                 search: '',
                 set: '',
@@ -310,24 +323,35 @@
                 possession: 'todas' // Cambiamos soloPendientes por possession
             });
 
-            // DATA (Tus cartas)
-            const cards = ref([
-                { id: "EB01-011", nombre: "Arlong", coleccion: "EB-01", rareza: "R", precio_en: 1.20, deseo: 4, tengo: true, bloque: 1, tags: ["Villano"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/EB01/EB01-011.png" },
-                { id: "EB01-061", nombre: "Tony Tony.Chopper", coleccion: "EB-01", rareza: "SEC", precio_en: 15.50, deseo: 5, tengo: false, bloque: 1, tags: ["Mugiwara"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/EB01/EB01-061.png" },
-                { id: "OP05-119", nombre: "Monkey.D.Luffy", coleccion: "OP-05", rareza: "SEC", precio_en: 2500.00, deseo: 5, tengo: false, bloque: 2, tags: ["Capitán"], imagen: "https://www.cardtrader.com/uploads/blueprints/image/268469/monkey-d-luffy-manga-panel-alternate-art-secret-rare-op-05-awakening-of-the-new-era.jpg" },
-                { id: "OP01-016", nombre: "Nami", coleccion: "OP-01", rareza: "R", precio_en: 8.00, deseo: 3, tengo: false, bloque: 1, tags: ["Navegante"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/OP01/OP01-016.png" },
-                { id: "EB01-017", nombre: "Arlong", coleccion: "EB-01", rareza: "R", precio_en: 1.20, deseo: 4, tengo: true, bloque: 1, tags: ["Villano"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/EB01/EB01-011.png" },
-                { id: "EB01-062", nombre: "Tony Tony.Chopper", coleccion: "EB-01", rareza: "SEC", precio_en: 15.50, deseo: 5, tengo: false, bloque: 1, tags: ["Mugiwara"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/EB01/EB01-061.png" },
-                { id: "OP05-110", nombre: "Monkey.D.Luffy", coleccion: "OP-05", rareza: "SEC", precio_en: 2500.00, deseo: 5, tengo: false, bloque: 2, tags: ["Capitán"], imagen: "https://www.cardtrader.com/uploads/blueprints/image/268469/monkey-d-luffy-manga-panel-alternate-art-secret-rare-op-05-awakening-of-the-new-era.jpg" },
-                { id: "OP01-01", nombre: "Nami", coleccion: "OP-01", rareza: "R", precio_en: 8.00, deseo: 3, tengo: false, bloque: 1, tags: ["Navegante"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/OP01/OP01-016.png" },
-                { id: "EB01-01O", nombre: "Arlong", coleccion: "EB-01", rareza: "R", precio_en: 1.20, deseo: 4, tengo: true, bloque: 1, tags: ["Villano"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/EB01/EB01-011.png" },
-                { id: "EB01-063", nombre: "Tony Tony.Chopper", coleccion: "EB-01", rareza: "SEC", precio_en: 15.50, deseo: 5, tengo: false, bloque: 1, tags: ["Mugiwara"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/EB01/EB01-061.png" },
-                { id: "OP05-121", nombre: "Monkey.D.Luffy", coleccion: "OP-05", rareza: "SEC", precio_en: 2500.00, deseo: 5, tengo: true, bloque: 2, tags: ["Capitán","Mugiwara","Yonkou","Joy Boy","Nika"], imagen: "https://www.cardtrader.com/uploads/blueprints/image/268469/monkey-d-luffy-manga-panel-alternate-art-secret-rare-op-05-awakening-of-the-new-era.jpg" },
-                { id: "OP01-018", nombre: "Nami", coleccion: "OP-01", rareza: "R", precio_en: 8.00, deseo: 3, tengo: false, bloque: 1, tags: ["Navegante"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/OP01/OP01-016.png" }
-            
-            
-            ]);
+            // 3. CARGAR JSON MAESTRO
+            onMounted(async () => {
+                try {
+                    const response = await fetch('bbdd_maestra_cartas.json');
+                    masterData.value = await response.json();
+                    
+                    // Ajustar el slider de precio al máximo una vez cargados los datos
+                    filters.value.priceValue = absoluteMaxPrice.value;
+                } catch (error) {
+                    console.error("Error cargando la base de datos maestra:", error);
+                }
+            });
 
+            // 4. EL MATCH: Mezclamos la info de la BBDD con tus estados de 'tengo' y 'deseo'
+            const allCards = computed(() => {
+                return userCollection.value.map(userCard => {
+                    // Buscamos la info fija en el maestro
+                    const info = masterData.value.find(m => m.id === userCard.id);
+                    
+                    // Si no existe en el maestro, devolvemos un objeto básico para no romper la web
+                    if (!info) return { ...userCard, nombre: 'No encontrada', imagen: '' };
+
+                    // Devolvemos la mezcla
+                    return {
+                        ...info,        // Trae: nombre, coleccion, rareza, precio_en, tags, imagen
+                        ...userCard     // Trae: deseo, tengo
+                    };
+                });
+            });
             const availableSets = computed(() => [...new Set(cards.value.map(c => c.coleccion))].sort());
             const availableRarities = computed(() => [...new Set(cards.value.map(c => c.rareza))].sort());
             
@@ -394,7 +418,7 @@
                 };
             };
 
-            return { sidebarOpen, selectedCard, filters, cards, filteredCards, availableSets, availableRarities, absoluteMaxPrice, translateRarity, resetFilters };
+            return { sidebarOpen, selectedCard, filters, userCollection, allCards, filteredCards, availableSets, availableRarities, absoluteMaxPrice, translateRarity, resetFilters };
         }
     }).mount('#app');
 </script>
