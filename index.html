@@ -187,7 +187,7 @@
         </button>
     </aside>
 
-    <main class="flex-1 h-full overflow-y-auto p-8 relative">
+    <main class="flex-1 h-full overflow-y-auto p-4 md:p-8 relative">
         
         <div class="flex justify-between items-center mb-10 conteo">
             <span class="text-yellow-500/20 conteo font-sans not-italic text-2xl">{{filteredCards.length}} Cartas</span>
@@ -222,50 +222,52 @@
         </div>
     </main>
 
-    <div v-if="selectedCard" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-sm" @click.self="selectedCard = null">
-        <div class="max-w-5xl w-full bg-slate-900 rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-[0_0_50px_rgba(234,179,8,0.2)] border border-slate-800">
-            <div class="md:w-1/2 p-8 bg-black flex justify-center items-center">
-                <img :src="selectedCard.imagen" class="max-h-[80vh] rounded-xl shadow-2xl">
+    <div v-if="selectedCard" class="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-4 bg-black/95 backdrop-blur-sm" @click.self="selectedCard = null">
+        <div class="w-full h-full md:h-auto md:max-w-5xl bg-slate-900 md:rounded-3xl overflow-y-auto flex flex-col md:flex-row shadow-2xl border border-slate-800 relative">
+            
+            <button @click="selectedCard = null" class="absolute top-4 right-4 z-50 text-white bg-black/50 p-2 rounded-full md:bg-transparent md:text-slate-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+
+            <div class="w-full md:w-1/2 p-6 bg-black flex justify-center items-center">
+                <img :src="selectedCard.imagen" class="max-h-[45vh] md:max-h-[80vh] w-auto object-contain rounded-xl shadow-2xl">
             </div>
-            <div class="md:w-1/2 p-12 flex flex-col justify-center">
-                <button @click="selectedCard = null" class="absolute top-6 right-6 text-slate-500 hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                </button>
+
+            <div class="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center">
+                <h2 class="text-2xl md:text-5xl font-bold text-white mb-2 leading-tight">{{selectedCard.nombre}}</h2>
                 
-                <h2 class="text-5xl font-bold text-white mb-2">{{selectedCard.nombre}}</h2>
-                <div class="flex gap-4 mb-8">
-                    <span class="bg-yellow-500 text-black px-3 py-1 rounded-full font-black text-sm uppercase">{{selectedCard.rareza}}</span>
-                    <span class="bg-slate-800 px-3 py-1 rounded-full text-slate-400 text-sm">{{selectedCard.id}}</span>
+                <div class="flex gap-4 mb-6">
+                    <span class="bg-yellow-500 text-black px-3 py-1 rounded-full font-black text-xs uppercase">{{selectedCard.rareza}}</span>
+                    <span class="bg-slate-800 px-3 py-1 rounded-full text-slate-400 text-xs">{{selectedCard.id}}</span>
                 </div>
 
-                <div class="grid grid-cols-2 gap-8 mb-8 border-y border-slate-800 py-8">
+                <div class="grid grid-cols-2 gap-6 mb-6 border-y border-slate-800 py-6">
                     <div>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Precio Mercado</p>
-                        <p class="text-3xl font-bold text-yellow-500">{{selectedCard.precio_en}} €</p>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Precio</p>
+                        <p class="text-2xl md:text-3xl font-bold text-yellow-500">{{selectedCard.precio_en}} €</p>
                     </div>
                     <div>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Nivel de Deseo</p>
-                        <p class="text-3xl">
+                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Deseo</p>
+                        <div class="text-xl md:text-2xl">
                             <span v-for="n in 5" :key="n" :class="n <= selectedCard.deseo ? 'text-yellow-500' : 'text-slate-800'">✦</span>
-                        </p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mb-8">
-                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-3">Etiquetas del Museo</p>
+                <div class="mb-6">
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-3">Etiquetas</p>
                     <div class="flex flex-wrap gap-2">
-                        <span v-for="tag in selectedCard.tags" :key="tag" class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg text-xs hover:border-yellow-500 transition-colors"># {{tag}}</span>
+                        <span v-for="tag in selectedCard.tags" :key="tag" class="bg-slate-800 border border-slate-700 px-3 py-1 rounded-lg text-xs">#{{tag}}</span>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <div :class="selectedCard.tengo ? 'bg-green-500 text-black' : 'bg-slate-800 text-slate-500'" class="flex-1 p-4 rounded-xl text-center font-bold transition-all">
-                        {{selectedCard.tengo ? '✓ EN TU COLECCIÓN' : 'PENDIENTE DE ADQUIRIR'}}
-                    </div>
+                <div :class="selectedCard.tengo ? 'bg-green-500 text-black' : 'bg-slate-800 text-slate-500'" class="p-4 rounded-xl text-center font-bold text-sm">
+                    {{selectedCard.tengo ? '✓ EN COLECCIÓN' : 'PENDIENTE'}}
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 </div>
 
