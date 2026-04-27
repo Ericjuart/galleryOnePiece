@@ -118,7 +118,7 @@
     </button>
 
 <aside :class="[
-        md:hidden sidebarOpen ? 'translate-x-0 w-[85%] md:w-80' : '-translate-x-full w-0',
+        hidden sidebarOpen ? 'translate-x-0 w-[85%] md:w-80' : '-translate-x-full w-0',
         'fixed top-0 left-0 z-[60] h-full bg-slate-900 border-r border-slate-800 transition-all duration-300 flex flex-col shadow-2xl'
     ]">
         <button @click="sidebarOpen = false" class="absolute top-4 right-4 text-slate-400 hover:text-yellow-500 transition-colors md:hidden">
