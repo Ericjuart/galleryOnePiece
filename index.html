@@ -352,7 +352,10 @@
                 return userCollection.value.map(userCard => {
                     // Buscamos la información técnica en el JSON maestro
                     const infoTecnica = masterData.value.find(m => m.card_set_id === userCard.card_set_id);
-
+                    console.log("m: "+m.card_image_id);
+                    console.log("userCard: "+ userCard.card_image_id);
+                    
+                    
                     if (infoTecnica) {
                         return {
                             ...infoTecnica,       // Trae nombre, set, imagen, rarity...
