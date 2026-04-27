@@ -9,136 +9,213 @@
     <style>
         [v-cloak] { display: none; }
         
-        .flip-card { background-color: transparent; perspective: 1000px; }
-        .flip-card-inner {
-            position: relative; width: 100%; height: 100%;
-            transition: transform 0.6s; transform-style: preserve-3d;
+        /* Efecto 3D para el Volteo */
+        .flip-card {
+            background-color: transparent;
+            perspective: 1000px;
         }
-        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
         .flip-card-front, .flip-card-back {
-            position: absolute; width: 100%; height: 100%;
-            -webkit-backface-visibility: hidden; backface-visibility: hidden;
-            border-radius: 0.75rem; overflow: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 0.75rem;
+            overflow: hidden;
         }
         .flip-card-back {
-            background-color: #1e293b; transform: rotateY(180deg);
-            display: flex; flex-direction: column; justify-content: center;
-            padding: 1rem; border: 2px solid #eab308;
+            background-color: #1e293b;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 1rem;
+            border: 2px solid #eab308;
         }
-
-        .fondo {
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+        span.conteo{ 
+            font-weight: bold;
+            color: rgb(234 179 8 / 1);
+        }
+        div.conteo{
+            margin-bottom: 1rem;
+        }
+        #app aside .logo {
+            padding-top: 0rem;
+            padding-bottom: 0rem;
+            padding-left: 4rem;
+        }
+        .fondo{
+            background-attachment: fixed;
             background-image: url("d9aa8f8173976dbdd3e2148c305faa5c.jpg");
-            background-size: cover; background-position: center;
-            background-attachment: fixed; position: relative; color: #f1f5f9;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Esto hace que no se mueva al hacer scroll */
+            position: relative;
+            color: #f1f5f9;
         }
         .fondo::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* pueden modificarse los porcentajes a gusto*/
+            /*background: radial-gradient(circle, rgba(189, 107, 89, 0.7) 50%, rgba(2, 6, 23, 0.95) 130%);*/
             background: radial-gradient(circle, rgba(146, 147, 149, 0.7) 0%, rgba(2, 6, 23, 0.95) 100%);
-            z-index: -1;
+            z-index: -1; /* Se queda detrás de todo */
         }
 
-        aside { background-color: rgba(15, 23, 42, 0.9) !important; backdrop-filter: blur(10px); }
-        
-        /* Scrollbar */
+        aside {
+            background-color: rgba(15, 23, 42, 0.9) !important; /* Un azul muy oscuro con un toque de transparencia */
+            backdrop-filter: blur(10px); /* Un pelín de desenfoque solo en el menú para leer mejor */
+        }
+
+        main {
+            background: transparent; /* El área de las cartas deja ver el fondo a través del velo */
+        }
+
+        /* 4. Resalte de las cartas */
+        .flip-card-front {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Scrollbar elegante */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #eab308; }
     </style>
 </head>
-<body class="fondo min-h-screen">
+<body class="bg-[#020617] fondo text-slate-200 min-h-screen overflow-hidden">
 
-<div id="app" v-cloak class="flex h-screen overflow-hidden">
+<div id="app" v-cloak class="flex h-screen">
 
     <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" 
-       class="fixed md:relative shadow-2xl z-40 h-full flex flex-col w-[85%] md:w-80 transition-transform duration-300 transform border-r border-slate-800 bg-slate-900">
-        <div class="p-6 flex justify-center">
-            <img src="https://logos-world.net/wp-content/uploads/2021/09/One-Piece-Logo-700x394.png" class="w-48">
+       class="fixed md:relative shadow-2xl z-40 h-full bg-slate-900 border-r border-slate-800 transition-transform duration-300 flex flex-col w-72 md:w-80">
+    
+        <div class="p-6 pb-2 logo" v-show="sidebarOpen">
+            <img src="https://logos-world.net/wp-content/uploads/2021/09/One-Piece-Logo-700x394.png" width="80%">
         </div>
 
-        <div class="p-6 pt-2 overflow-y-auto flex-1 space-y-6 custom-scrollbar">
-            <div>
-                <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Búsqueda</label>
-                <input v-model="filters.search" type="text" placeholder="Ej: Gear 5..." class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm">
-            </div>
+        <div class="p-6 pt-2 overflow-y-auto flex-1 custom-scrollbar" v-show="sidebarOpen">
+            <div class="space-y-6">
+                <div>
+                    <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Búsqueda</label>
+                    <input v-model="filters.search" type="text" placeholder="Ej: Gear 5, Zoro..." class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm transition-all">
+                </div>
 
-            <div class="space-y-4">
                 <div>
                     <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Colección</label>
-                    <select v-model="filters.set" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
-                        <option value="">Todas</option>
-                        <option v-for="set in availableSets" :value="set">{{set}}</option>
+                    <select v-model="filters.set" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm">
+                        <option value="">Todas las ediciones</option>
+                        <option v-for="set in availableSets" :key="set" :value="set">{{set}}</option>
                     </select>
                 </div>
+
                 <div>
                     <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Rareza</label>
-                    <select v-model="filters.rarity" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
-                        <option value="">Todas</option>
-                        <option v-for="r in availableRarities" :value="r">{{r}} - {{translateRarity(r)}}</option>
+                    <select v-model="filters.rarity" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm">
+                        <option value="">Todas las rarezas</option>
+                        <option v-for="r in availableRarities" :key="r" :value="r">{{r}} - {{translateRarity(r)}}</option>
                     </select>
                 </div>
-            </div>
 
-            <div class="space-y-2">
-                <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter flex justify-between">
-                    Precio <span>{{filters.priceValue}}€</span>
-                </label>
-                <div class="flex gap-2">
-                    <select v-model="filters.priceType" class="w-1/2 bg-slate-950 p-2 rounded-lg border border-slate-800 text-[10px] text-yellow-500 font-bold">
-                        <option value="menor">Menos de</option>
-                        <option value="mayor">Más de</option>
-                    </select>
-                    <input v-model.number="filters.priceValue" type="number" class="w-1/2 bg-slate-950 p-2 rounded-lg border border-slate-800 text-sm">
+                <div class="space-y-2">
+                    <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter flex justify-between">
+                        Filtrar Precio <span>{{filters.priceValue}}€</span>
+                    </label>
+                    <div class="flex gap-2">
+                        <select v-model="filters.priceType" class="w-1/2 bg-slate-950 p-2 rounded-lg border border-slate-800 text-[10px] uppercase font-bold outline-none text-yellow-500">
+                            <option value="menor">Menos de</option>
+                            <option value="mayor">Más de</option>
+                        </select>
+                        <input v-model.number="filters.priceValue" type="number" class="w-1/2 bg-slate-950 p-2 rounded-lg border border-slate-800 text-sm outline-none text-white font-mono">
+                    </div>
+                    <input v-model.number="filters.priceValue" type="range" min="0" :max="absoluteMaxPrice" class="w-full accent-yellow-500">
                 </div>
-                <input v-model.number="filters.priceValue" type="range" min="0" :max="absoluteMaxPrice" class="w-full accent-yellow-500">
-            </div>
 
-            <div>
-                <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Estado</label>
-                <select v-model="filters.possession" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
-                    <option value="todas">Ver todas</option>
-                    <option value="poseidas">En posesión (✓)</option>
-                    <option value="faltantes">Faltantes (✕)</option>
-                </select>
+                <div>
+                    <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Mínimo Deseo ({{filters.minDeseo}}★)</label>
+                    <input v-model.number="filters.minDeseo" type="range" min="1" max="5" class="w-full accent-yellow-500 mt-2">
+                </div>
+
+                <div class="pt-2">
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <div>
+                            <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Estado de la Colección</label>
+                            <select v-model="filters.possession" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
+                                <option value="todas">Ver todas las piezas</option>
+                                <option value="poseidas">Solo en posesión (✓)</option>
+                                <option value="faltantes">Solo faltantes (✕)</option>
+                            </select>
+                        </div>
+                    </label>
+                </div>
             </div>
         </div>
 
-        <div class="p-4 border-t border-slate-800">
-            <button @click="resetFilters" class="w-full py-3 bg-yellow-500 hover:bg-yellow-400 text-black font-black uppercase text-xs rounded-xl shadow-lg transition-all">
+        <div class="p-4 bg-slate-900 border-t border-slate-800" v-show="sidebarOpen">
+            <button @click="resetFilters" 
+                    class="w-full py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-black uppercase text-xs rounded-xl shadow-[0_4px_20px_rgba(234,179,8,0.3)] transition-all active:scale-95 flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
                 Limpiar Filtros
             </button>
         </div>
 
-        <button @click="sidebarOpen = !sidebarOpen" 
-                class="md:hidden fixed bottom-6 right-6 z-50 bg-yellow-500 text-black p-4 rounded-full shadow-[0_4px_20px_rgba(234,179,8,0.5)] active:scale-90 transition-all flex items-center justify-center">
-            <svg v-if="!sidebarOpen" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="12"></line></svg>
-        </button>
-
-        <button @click="sidebarOpen = !sidebarOpen" 
-                class="hidden md:flex absolute -right-3 top-10 bg-yellow-500 text-black p-1 rounded-full shadow-xl z-50 hover:scale-110 transition-transform">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6" v-if="sidebarOpen"/><path d="m9 18 6-6-6-6" v-else/></svg>
+        <button @click="sidebarOpen = !sidebarOpen" class="absolute -right-3 top-10 bg-yellow-500 text-black p-1 rounded-full hover:scale-110 transition-transform shadow-xl z-30">
+            <svg v-if="sidebarOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
     </aside>
 
-    <main class="flex-1 h-full overflow-y-auto p-4 md:p-8 relative">
-        <div class="mb-6">
-            <span class="text-yellow-500/50 font-bold text-xl md:text-2xl">{{filteredCards.length}} Cartas</span>
+    <main class="flex-1 h-full overflow-y-auto p-8 relative">
+        
+        <div class="flex justify-between items-center mb-10 conteo">
+            <span class="text-yellow-500/20 conteo font-sans not-italic text-2xl">{{filteredCards.length}} Cartas</span>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 md:gap-8">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-10">
             <div v-for="card in filteredCards" :key="card.id" class="flip-card aspect-[11/16] cursor-pointer" @click="selectedCard = card">
                 <div class="flip-card-inner">
-                    <div class="flip-card-front shadow-2xl border border-white/10">
+                    <div class="flip-card-front shadow-2xl">
                         <img :src="card.imagen" class="w-full h-full object-cover">
-                        <div v-if="card.tengo" class="absolute inset-0 border-4 border-green-500/50 rounded-xl"></div>
+                        <div v-if="card.tengo" class="absolute inset-0 bg-green-500/10 border-4 border-green-500/50 rounded-xl"></div>
                     </div>
                     <div class="flip-card-back">
-                        <p class="text-yellow-500 font-bold text-sm md:text-base mb-1">{{card.nombre}}</p>
-                        <p class="text-[9px] text-slate-400 mb-2">{{card.id}}</p>
-                        <div class="bg-black/40 p-2 rounded text-[10px] text-left space-y-1">
-                            <div class="flex justify-between"><span>Rareza:</span> <span class="text-yellow-500">{{card.rareza}}</span></div>
-                            <div class="flex justify-between"><span>Precio:</span> <span class="text-yellow-500">{{card.precio_en}}€</span></div>
+                        <img src="https://m.media-amazon.com/images/I/51xnq29+enL.jpg" class="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none">
+                        <div class="relative z-10">
+                            <p class="text-yellow-500 font-bold text-lg leading-tight">{{card.nombre}}</p>
+                            <p class="text-[10px] text-slate-400 mb-4">{{card.id}}</p>
+                            
+                            <div class="space-y-2 text-left bg-slate-950/80 p-3 rounded-lg border border-slate-700">
+                                <div class="flex justify-between text-xs"><span>Rareza:</span> <span class="text-yellow-500">{{card.rareza}}</span></div>
+                                <div class="flex justify-between text-xs"><span>Precio:</span> <span class="text-yellow-500">{{card.precio_en}}€</span></div>
+                                <div class="flex justify-between text-xs"><span>Bloque:</span> <span>{{card.bloque}}</span></div>
+                            </div>
+
+                            <div class="mt-4 flex justify-center gap-1">
+                                <span v-for="n in 5" :key="n" :class="n <= card.deseo ? 'text-yellow-500' : 'text-slate-700'">✦</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -146,86 +223,160 @@
         </div>
     </main>
 
-    <div v-if="selectedCard" class="fixed inset-0 z-[60] flex items-center justify-center p-2 md:p-4 bg-black/95 backdrop-blur-md" @click.self="selectedCard = null">
-        <div class="max-w-5xl w-full bg-slate-900 rounded-2xl md:rounded-3xl overflow-hidden flex flex-col md:flex-row relative shadow-2xl border border-slate-800 max-h-[95vh] overflow-y-auto md:overflow-visible">
-            
-            <button @click="selectedCard = null" class="absolute top-4 right-4 z-10 bg-black/50 p-2 rounded-full text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-            </button>
-
-            <div class="w-full md:w-1/2 bg-black flex justify-center items-center p-6">
-                <img :src="selectedCard.imagen" class="max-h-[40vh] md:max-h-[70vh] object-contain shadow-[0_0_30px_rgba(234,179,8,0.3)]">
+    <div v-if="selectedCard" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-sm" @click.self="selectedCard = null">
+        <div class="max-w-5xl w-full bg-slate-900 rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-[0_0_50px_rgba(234,179,8,0.2)] border border-slate-800">
+            <div class="max-w-5xl w-full bg-slate-900 rounded-3xl overflow-hidden flex flex-col md:flex-row h-[90vh] md:h-auto overflow-y-auto md:overflow-visible ...">
+                <div class="w-full md:w-1/2 p-4 md:p-8 bg-black flex justify-center items-center">
+                    <img :src="selectedCard.imagen" class="max-h-[50vh] md:max-h-[80vh] rounded-xl shadow-2xl">
+                </div>
             </div>
-
-            <div class="w-full md:w-1/2 p-6 md:p-10 flex flex-col">
-                <h2 class="text-2xl md:text-4xl font-bold text-white mb-2">{{selectedCard.nombre}}</h2>
-                <div class="flex gap-2 mb-6">
-                    <span class="bg-yellow-500 text-black px-3 py-1 rounded-full font-bold text-xs uppercase">{{selectedCard.rareza}}</span>
-                    <span class="bg-slate-800 px-3 py-1 rounded-full text-slate-400 text-xs">{{selectedCard.id}}</span>
+            <div class="md:w-1/2 p-12 flex flex-col justify-center">
+                <button @click="selectedCard = null" class="absolute top-6 right-6 text-slate-500 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+                
+                <div class="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center">
+                    <h2 class="text-3xl md:text-5xl font-bold text-white mb-2">{{selectedCard.nombre}}</h2>
+                </div>
+                <div class="flex gap-4 mb-8">
+                    <span class="bg-yellow-500 text-black px-3 py-1 rounded-full font-black text-sm uppercase">{{selectedCard.rareza}}</span>
+                    <span class="bg-slate-800 px-3 py-1 rounded-full text-slate-400 text-sm">{{selectedCard.id}}</span>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 mb-6 border-y border-slate-800 py-6">
+                <div class="grid grid-cols-2 gap-8 mb-8 border-y border-slate-800 py-8">
                     <div>
                         <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Precio Mercado</p>
-                        <p class="text-2xl font-bold text-yellow-500">{{selectedCard.precio_en}} €</p>
+                        <p class="text-3xl font-bold text-yellow-500">{{selectedCard.precio_en}} €</p>
                     </div>
                     <div>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Deseo</p>
-                        <p class="text-xl text-yellow-500"><span v-for="n in selectedCard.deseo">✦</span></p>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Nivel de Deseo</p>
+                        <p class="text-3xl">
+                            <span v-for="n in 5" :key="n" :class="n <= selectedCard.deseo ? 'text-yellow-500' : 'text-slate-800'">✦</span>
+                        </p>
                     </div>
                 </div>
 
-                <div class="mb-6">
-                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-2">Etiquetas</p>
+                <div class="mb-8">
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-3">Etiquetas del Museo</p>
                     <div class="flex flex-wrap gap-2">
-                        <span v-for="tag in selectedCard.tags" :key="tag" class="bg-slate-800 px-3 py-1 rounded text-[10px]"># {{tag}}</span>
+                        <span v-for="tag in selectedCard.tags" :key="tag" class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg text-xs hover:border-yellow-500 transition-colors"># {{tag}}</span>
                     </div>
                 </div>
 
-                <div :class="selectedCard.tengo ? 'bg-green-600 text-white' : 'bg-slate-800 text-slate-500'" class="mt-auto p-4 rounded-xl text-center font-bold text-sm">
-                    {{selectedCard.tengo ? '✓ EN TU COLECCIÓN' : 'PENDIENTE DE ADQUIRIR'}}
+                <div class="flex items-center gap-4">
+                    <div :class="selectedCard.tengo ? 'bg-green-500 text-black' : 'bg-slate-800 text-slate-500'" class="flex-1 p-4 rounded-xl text-center font-bold transition-all">
+                        {{selectedCard.tengo ? '✓ EN TU COLECCIÓN' : 'PENDIENTE DE ADQUIRIR'}}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 
 <script>
     const { createApp, ref, computed } = Vue;
+
     createApp({
         setup() {
-            const sidebarOpen = ref(window.innerWidth > 768);
+            const sidebarOpen = ref(true);
             const selectedCard = ref(null);
-            const filters = ref({ search: '', set: '', rarity: '', minDeseo: 1, priceType: 'menor', priceValue: 0, possession: 'todas' });
+            
+            const filters = ref({
+                search: '',
+                set: '',
+                rarity: '',
+                minDeseo: 1,
+                priceType: 'menor',
+                priceValue: 0,
+                possession: 'todas' // Cambiamos soloPendientes por possession
+            });
 
+            // DATA (Tus cartas)
             const cards = ref([
-                { id: "EB01-011", nombre: "Arlong", coleccion: "EB-01", rareza: "R", precio_en: 1.20, deseo: 4, tengo: true, tags: ["Villano"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/EB01/EB01-011.png" },
-                { id: "EB01-061", nombre: "Tony Tony.Chopper", coleccion: "EB-01", rareza: "SEC", precio_en: 15.50, deseo: 5, tengo: false, tags: ["Mugiwara"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/EB01/EB01-061.png" },
-                { id: "OP05-119", nombre: "Monkey.D.Luffy", coleccion: "OP-05", rareza: "SEC", precio_en: 2500.00, deseo: 5, tengo: false, tags: ["Manga Art"], imagen: "https://www.cardtrader.com/uploads/blueprints/image/268469/monkey-d-luffy-manga-panel-alternate-art-secret-rare-op-05-awakening-of-the-new-era.jpg" },
-                { id: "OP01-016", nombre: "Nami", coleccion: "OP-01", rareza: "R", precio_en: 8.00, deseo: 3, tengo: false, tags: ["Navegante"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/OP01/OP01-016.png" }
+                { id: "EB01-011", nombre: "Arlong", coleccion: "EB-01", rareza: "R", precio_en: 1.20, deseo: 4, tengo: true, bloque: 1, tags: ["Villano"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/EB01/EB01-011.png" },
+                { id: "EB01-061", nombre: "Tony Tony.Chopper", coleccion: "EB-01", rareza: "SEC", precio_en: 15.50, deseo: 5, tengo: false, bloque: 1, tags: ["Mugiwara"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/EB01/EB01-061.png" },
+                { id: "OP05-119", nombre: "Monkey.D.Luffy", coleccion: "OP-05", rareza: "SEC", precio_en: 2500.00, deseo: 5, tengo: false, bloque: 2, tags: ["Capitán"], imagen: "https://www.cardtrader.com/uploads/blueprints/image/268469/monkey-d-luffy-manga-panel-alternate-art-secret-rare-op-05-awakening-of-the-new-era.jpg" },
+                { id: "OP01-016", nombre: "Nami", coleccion: "OP-01", rareza: "R", precio_en: 8.00, deseo: 3, tengo: false, bloque: 1, tags: ["Navegante"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/OP01/OP01-016.png" },
+                { id: "EB01-017", nombre: "Arlong", coleccion: "EB-01", rareza: "R", precio_en: 1.20, deseo: 4, tengo: true, bloque: 1, tags: ["Villano"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/EB01/EB01-011.png" },
+                { id: "EB01-062", nombre: "Tony Tony.Chopper", coleccion: "EB-01", rareza: "SEC", precio_en: 15.50, deseo: 5, tengo: false, bloque: 1, tags: ["Mugiwara"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/EB01/EB01-061.png" },
+                { id: "OP05-110", nombre: "Monkey.D.Luffy", coleccion: "OP-05", rareza: "SEC", precio_en: 2500.00, deseo: 5, tengo: false, bloque: 2, tags: ["Capitán"], imagen: "https://www.cardtrader.com/uploads/blueprints/image/268469/monkey-d-luffy-manga-panel-alternate-art-secret-rare-op-05-awakening-of-the-new-era.jpg" },
+                { id: "OP01-01", nombre: "Nami", coleccion: "OP-01", rareza: "R", precio_en: 8.00, deseo: 3, tengo: false, bloque: 1, tags: ["Navegante"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/OP01/OP01-016.png" },
+                { id: "EB01-01O", nombre: "Arlong", coleccion: "EB-01", rareza: "R", precio_en: 1.20, deseo: 4, tengo: true, bloque: 1, tags: ["Villano"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/EB01/EB01-011.png" },
+                { id: "EB01-063", nombre: "Tony Tony.Chopper", coleccion: "EB-01", rareza: "SEC", precio_en: 15.50, deseo: 5, tengo: false, bloque: 1, tags: ["Mugiwara"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/EB01/EB01-061.png" },
+                { id: "OP05-121", nombre: "Monkey.D.Luffy", coleccion: "OP-05", rareza: "SEC", precio_en: 2500.00, deseo: 5, tengo: false, bloque: 2, tags: ["Capitán"], imagen: "https://www.cardtrader.com/uploads/blueprints/image/268469/monkey-d-luffy-manga-panel-alternate-art-secret-rare-op-05-awakening-of-the-new-era.jpg" },
+                { id: "OP01-018", nombre: "Nami", coleccion: "OP-01", rareza: "R", precio_en: 8.00, deseo: 3, tengo: false, bloque: 1, tags: ["Navegante"], imagen: "https://limitlessatcg.storage.googleapis.com/one-piece/OP01/OP01-016.png" }
+            
+            
             ]);
 
             const availableSets = computed(() => [...new Set(cards.value.map(c => c.coleccion))].sort());
             const availableRarities = computed(() => [...new Set(cards.value.map(c => c.rareza))].sort());
-            const absoluteMaxPrice = computed(() => Math.ceil(Math.max(...cards.value.map(c => c.precio_en), 10)));
             
+            const absoluteMaxPrice = computed(() => {
+                const max = Math.max(...cards.value.map(c => c.precio_en), 0);
+                return Math.ceil(max);
+            });
+
+            // Inicializamos el valor del precio al máximo al arrancar
             filters.value.priceValue = absoluteMaxPrice.value;
 
             const filteredCards = computed(() => {
+                const searchTxt = filters.value.search.toLowerCase();
+                
                 return cards.value.filter(c => {
-                    const matchesSearch = c.nombre.toLowerCase().includes(filters.value.search.toLowerCase());
+                    // ... (mantenemos los otros filtros de búsqueda, set, rarity, deseo, precio)
+                    const matchesSearch = (c.nombre || "").toLowerCase().includes(searchTxt) || 
+                                        (c.tags || []).some(t => t.toLowerCase().includes(searchTxt));
                     const matchesSet = !filters.value.set || c.coleccion === filters.value.set;
                     const matchesRarity = !filters.value.rarity || c.rareza === filters.value.rarity;
-                    const matchesPrecio = filters.value.priceType === 'menor' ? c.precio_en <= filters.value.priceValue : c.precio_en >= filters.value.priceValue;
-                    const matchesPoss = filters.value.possession === 'todas' ? true : (filters.value.possession === 'poseidas' ? c.tengo : !c.tengo);
-                    return matchesSearch && matchesSet && matchesRarity && matchesPrecio && matchesPoss;
+                    const matchesDeseo = c.deseo >= filters.value.minDeseo;
+                    
+                    let matchesPrecio = true;
+                    if (filters.value.priceType === 'menor') {
+                        matchesPrecio = c.precio_en <= filters.value.priceValue;
+                    } else {
+                        matchesPrecio = c.precio_en >= filters.value.priceValue;
+                    }
+
+                    // NUEVA LÓGICA DE POSESIÓN
+                    let matchesPossession = true;
+                    if (filters.value.possession === 'poseidas') {
+                        matchesPossession = c.tengo === true;
+                    } else if (filters.value.possession === 'faltantes') {
+                        matchesPossession = c.tengo === false;
+                    }
+
+                    return matchesSearch && matchesSet && matchesRarity && matchesDeseo && matchesPrecio && matchesPossession;
                 });
             });
 
-            const translateRarity = (r) => ({ 'L': 'Líder', 'C': 'Común', 'UC': 'Poco Común', 'R': 'Rara', 'SR': 'Súper Rara', 'SEC': 'Secreta' }[r] || r);
-            const resetFilters = () => { filters.value = { search: '', set: '', rarity: '', minDeseo: 1, priceType: 'menor', priceValue: absoluteMaxPrice.value, possession: 'todas' }; };
+            const translateRarity = (r) => {
+                const map = { 
+                    'L': 'Líder', 
+                    'C': 'Común',
+                    'UC': 'Poco Común',
+                    'R': 'Rara', 
+                    'SR': 'Súper Rara', 
+                    'SEC': 'Secreta',
+                    'P': 'Promocional' 
+                };
+                return map[r] || 'Especial';
+            };
 
-            return { sidebarOpen, selectedCard, filters, filteredCards, availableSets, availableRarities, absoluteMaxPrice, translateRarity, resetFilters };
+            const resetFilters = () => {
+                filters.value = {
+                    search: '',
+                    set: '',
+                    rarity: '',
+                    minDeseo: 1,
+                    priceType: 'menor',
+                    priceValue: absoluteMaxPrice.value,
+                    possession: 'todas' // Resetear a todas
+                };
+            };
+
+            return { sidebarOpen, selectedCard, filters, cards, filteredCards, availableSets, availableRarities, absoluteMaxPrice, translateRarity, resetFilters };
         }
     }).mount('#app');
 </script>
