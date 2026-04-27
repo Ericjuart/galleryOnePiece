@@ -110,8 +110,8 @@
 
 <div id="app" v-cloak class="flex h-screen">
 
-<aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" 
-       class="fixed md:relative shadow-2xl z-[60] h-full bg-slate-900 border-r border-slate-800 transition-transform duration-300 flex flex-col w-[80%] md:w-80">
+    <aside :class="sidebarOpen ? 'w-80' : 'w-16'" class="h-full bg-slate-900 border-r border-slate-800 transition-all duration-300 flex flex-col relative z-20 shadow-2xl">
+    
         <div class="p-6 pb-2 logo" v-show="sidebarOpen">
             <img src="https://logos-world.net/wp-content/uploads/2021/09/One-Piece-Logo-700x394.png" width="80%">
         </div>
