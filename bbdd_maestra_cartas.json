@@ -80512,5 +80512,48 @@
         "date_scraped": "2026-04-18",
         "card_image_id": "ST14-014",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/ST14-014.jpg"
+    },
+    {
+        "inventory_price": 0.75,
+        "market_price": 2.47,
+        "card_name": "Monkey.D.Luffy (Starter Deck 11: Uta Deck Battle)",
+        "set_name": "One Piece Promotion Cards",
+        "card_text": null,
+        "set_id": "P",
+        "rarity": "PR",
+        "card_set_id": "P-061",
+        "card_color": "Green",
+        "card_type": "Character",
+        "life": null,
+        "card_cost": "8",
+        "card_power": "10000",
+        "sub_types": "FILM Straw Hat Crew",
+        "counter_amount": 1000,
+        "attribute": "Strike",
+        "date_scraped": "2026-05-02",
+        "card_image_id": "P-061",
+        "card_image": "https://tcgplayer-cdn.tcgplayer.com/product/580996_in_1000x1000.jpg"
+    },
+        {
+        "inventory_price": 4.6,
+        "market_price": 4.78,
+        "card_name": "Monkey.D.Luffy (041)",
+        "set_name": "One Piece Promotion Cards",
+        "card_text": null,
+        "set_id": "P",
+        "rarity": "PR",
+        "card_set_id": "P-041",
+        "card_color": "Purple",
+        "card_type": "Character",
+        "life": null,
+        "card_cost": "10",
+        "card_power": "12000",
+        "sub_types": "Straw Hat Crew The Four Emperors",
+        "counter_amount": 1000,
+        "attribute": "Strike",
+        "date_scraped": "2026-05-02",
+        "card_image_id": "P-041",
+        "card_image": " https://product-images.s3.cardmarket.com/1621/P/871470/871470.jpg"
     }
+   
 ]
