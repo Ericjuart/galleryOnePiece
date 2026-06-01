@@ -211,7 +211,7 @@
                 </div>
 
                 <div class="mb-6">
-                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-3">Tags personalizados</p>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-3">Tags:</p>
                     <div class="flex flex-wrap gap-2">
                         <span v-if="selectedCard.tags && selectedCard.tags.length === 0" class="text-xs text-slate-600 italic">Sin tags guardados</span>
                         <span v-for="tag in selectedCard.tags" :key="tag" class="bg-slate-800 border border-slate-700 px-3 py-1 rounded-lg text-xs">#{{tag}}</span>
