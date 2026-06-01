@@ -116,7 +116,7 @@
                 <select v-model="filters.possession" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
                     <option value="todas">Todas</option>
                     <option value="poseidas">En posesión (✓)</option>
-                    <option value="faltantes">Faltantes (✕)</option>
+                    <option value="faltantes">Pendientes (✕)</option>
                 </select>
             </div>
 
@@ -194,7 +194,7 @@
             </div>
             <div class="w-full md:w-1/2 p-8 md:p-12 overflow-y-auto">
                 <h2 class="text-3xl font-bold mb-2">{{selectedCard.card_name}}</h2>
-                <p class="text-yellow-500 font-mono text-xl mb-6">{{selectedCard.card_set_id}} | {{selectedCard.rarity}} - {{translateRarity(selectedCard.rarity)}}</p>
+                <p class="text-yellow-500 font-mono text-4xl mb-6">{{selectedCard.card_set_id}} | {{selectedCard.rarity}} - {{translateRarity(selectedCard.rarity)}}</p>
                 
                 <div class="grid grid-cols-2 gap-4 mb-8">
                     <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
@@ -219,7 +219,7 @@
 
                 <div :class="selectedCard.tengo ? 'bg-green-600/20 text-green-400 border-green-600' : 'bg-slate-800 text-slate-400 border-slate-700'" 
                      class="p-5 rounded-2xl text-center font-bold border-2 text-xl">
-                    {{selectedCard.tengo ? 'EN COLECCIÓN ✓' : 'FALTANTE ✕'}}
+                    {{selectedCard.tengo ? 'EN COLECCIÓN ✓' : 'PENDIENTE ✕'}}
                 </div>
             </div>
         </div>
