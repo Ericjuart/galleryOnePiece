@@ -3,21 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OP TCG - Grand Museum v2</title>
+    <title>OP TCG - Grand Museum</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         [v-cloak] { display: none; }
+        
         .flip-card { background-color: transparent; perspective: 1000px; }
         .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
         .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
         .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 0.75rem; overflow: hidden; }
         .flip-card-back { background-color: #1e293b; transform: rotateY(180deg); display: flex; flex-direction: column; justify-content: center; padding: 1rem; border: 2px solid #eab308; }
-        .fondo { background-attachment: fixed; background-image: url("d9aa8f8173976dbdd3e2148c305faa5c.jpg"); background-size: cover; background-position: center; position: relative; color: #f1f5f9; }
-        .fondo::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(146, 147, 149, 0.7) 0%, rgba(2, 6, 23, 0.95) 100%); z-index: -1; }
-        @keyframes pulse-green { 0% { box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); } 50% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.8); } 100% { box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); } }
+        
+        .fondo {
+            background-attachment: fixed;
+            background-image: url("d9aa8f8173976dbdd3e2148c305faa5c.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            color: #f1f5f9;
+        }
+        .fondo::before {
+            content: "";
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(146, 147, 149, 0.7) 0%, rgba(2, 6, 23, 0.95) 100%);
+            z-index: -1;
+        }
+
+        aside { background-color: rgba(15, 23, 42, 0.9) !important; backdrop-filter: blur(10px); }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
+        }
+
         .card-poseida { animation: pulse-green 3s infinite ease-in-out; border-color: #22c55e !important; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
@@ -25,51 +50,61 @@
 
 <div id="app" v-cloak class="flex h-screen relative">
 
-    <aside :class="[sidebarOpen ? 'translate-x-0 w-[85%] md:w-80' : 'hidden -translate-x-full w-0', 'fixed top-0 left-0 z-[60] h-full bg-slate-900 border-r border-slate-800 transition-all duration-300 flex flex-col shadow-2xl']">
-        <button @click="sidebarOpen = false" class="absolute top-4 right-4 text-slate-400 hover:text-yellow-500">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-        </button>
+    <button v-if="!sidebarOpen" @click="sidebarOpen = true" 
+            class="fixed top-4 left-4 z-[70] bg-yellow-500 text-black p-3 rounded-lg shadow-2xl hover:scale-110 transition-all border-2 border-yellow-600">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+    </button>
 
-        <div class="flex-1 overflow-y-auto custom-scrollbar p-6 mt-10">
-            <div class="space-y-6">
-                <div>
-                    <label class="text-[10px] uppercase font-black text-slate-500">Búsqueda</label>
-                    <input v-model="filters.search" type="text" placeholder="Nombre, ID, Tags..." class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm">
-                </div>
+    <aside :class="[sidebarOpen ? 'translate-x-0 w-[85%] md:w-80' : '-translate-x-full w-0']" 
+           class="fixed top-0 left-0 z-[80] h-full transition-all duration-300 flex flex-col shadow-2xl overflow-hidden border-r border-slate-800">
+        
+        <div class="p-6 flex justify-between items-center border-b border-slate-800">
+            <img src="https://logos-world.net/wp-content/uploads/2021/09/One-Piece-Logo-700x394.png" class="w-24">
+            <button @click="sidebarOpen = false" class="text-slate-400 hover:text-yellow-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
 
-                <div>
-                    <label class="text-[10px] uppercase font-black text-slate-500">Filtrar Interés</label>
-                    <select v-model="filters.interest" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
-                        <option value="todas">Todas las cartas</option>
-                        <option value="interesadas">Solo mis intereses (Deseo > 0)</option>
-                    </select>
-                </div>
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
+            <div>
+                <label class="text-[10px] uppercase font-black text-slate-500">Búsqueda</label>
+                <input v-model="filters.search" type="text" placeholder="Nombre, ID o Tag..." class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm">
+            </div>
 
-                <div>
-                    <label class="text-[10px] uppercase font-black text-slate-500">Estado de Posesión</label>
-                    <select v-model="filters.possession" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
-                        <option value="todas">Ver todas</option>
-                        <option value="poseidas">Poseídas (Tengo)</option>
-                        <option value="faltantes">No las tengo</option>
-                    </select>
-                </div>
+            <div>
+                <label class="text-[10px] uppercase font-black text-slate-500">Filtrar por Interés</label>
+                <select v-model="filters.interest" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
+                    <option value="todas">Ver Catálogo Completo</option>
+                    <option value="interesadas">Solo Deseadas (Deseo > 0)</option>
+                </select>
+            </div>
 
-                <div class="space-y-2 p-3 bg-slate-950/50 rounded-xl border border-slate-800">
-                    <label class="text-[10px] uppercase font-black text-slate-500">Rango de Precio (€)</label>
-                    <div class="flex gap-2">
-                        <input v-model.number="filters.priceMin" type="number" class="w-1/2 bg-slate-900 p-2 rounded text-xs text-center" placeholder="Min">
-                        <input v-model.number="filters.priceMax" type="number" class="w-1/2 bg-slate-900 p-2 rounded text-xs text-center" placeholder="Max">
-                    </div>
-                    <input v-model.number="filters.priceMax" type="range" min="0" :max="absoluteMaxPrice" class="w-full accent-yellow-500">
+            <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-800 space-y-3">
+                <label class="text-[10px] uppercase font-black text-slate-500">Rango Precio (€)</label>
+                <div class="flex gap-2">
+                    <input v-model.number="filters.priceMin" type="number" class="w-1/2 bg-slate-950 p-2 rounded border border-slate-800 text-xs text-center" placeholder="Min">
+                    <input v-model.number="filters.priceMax" type="number" class="w-1/2 bg-slate-950 p-2 rounded border border-slate-800 text-xs text-center" placeholder="Max">
                 </div>
+                <input v-model.number="filters.priceMax" type="range" min="0" :max="absoluteMaxPrice" class="w-full accent-yellow-500">
+            </div>
 
-                <div>
-                    <label class="text-[10px] uppercase font-black text-slate-500">Rareza</label>
-                    <select v-model="filters.rarity" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
-                        <option value="">Todas</option>
-                        <option v-for="r in availableRarities" :key="r" :value="r">{{r}}</option>
-                    </select>
-                </div>
+            <div>
+                <label class="text-[10px] uppercase font-black text-slate-500">Estado</label>
+                <select v-model="filters.possession" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
+                    <option value="todas">Todas</option>
+                    <option value="poseidas">En posesión (✓)</option>
+                    <option value="faltantes">Faltantes (✕)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-[10px] uppercase font-black text-slate-500">Rareza</label>
+                <select v-model="filters.rarity" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
+                    <option value="">Todas</option>
+                    <option v-for="r in availableRarities" :key="r" :value="r">{{r}}</option>
+                </select>
             </div>
         </div>
 
@@ -78,26 +113,24 @@
         </div>
     </aside>
 
-    <main ref="mainContainer" @scroll="handleScroll" :class="sidebarOpen ? 'md:ml-80' : 'md:ml-0'" class="flex-1 h-full overflow-y-auto p-4 md:p-8 transition-all duration-300 relative">
+    <main ref="mainContainer" @scroll="handleScroll" 
+          :class="[sidebarOpen ? 'md:ml-80' : 'ml-0']" 
+          class="flex-1 h-full overflow-y-auto p-4 md:p-8 transition-all duration-300">
         
-        <button v-if="!sidebarOpen" @click="sidebarOpen = true" class="fixed top-4 left-4 z-[50] bg-yellow-500 text-black p-3 rounded-lg shadow-xl border-2 border-yellow-600">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
-
-        <div class="mb-10 mt-16 md:mt-0 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-yellow-500">{{filteredCards.length}} Cartas</h1>
+        <div class="flex justify-between items-center mb-10 mt-14 md:mt-0">
+            <span class="text-yellow-500 font-bold text-2xl">{{filteredCards.length}} Cartas</span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
             <div v-for="card in paginatedCards" :key="card.card_set_id" class="flip-card aspect-[11/16] cursor-pointer" @click="selectedCard = card">
                 <div class="flip-card-inner">
-                    <div class="flip-card-front shadow-2xl transition-all" :class="{'card-poseida border-4': card.tengo, 'border border-white/10': !card.tengo}">
+                    <div class="flip-card-front shadow-lg" :class="{'card-poseida border-4': card.tengo, 'border border-white/10': !card.tengo}">
                         <img :src="card.card_image" class="w-full h-full object-cover" loading="lazy">
                     </div>
                     <div class="flip-card-back">
                         <p class="text-yellow-500 font-bold leading-tight">{{card.card_name}}</p>
                         <p class="text-[10px] text-slate-400 mb-4">{{card.card_set_id}}</p>
-                        <div class="bg-slate-950/80 p-2 rounded text-xs text-left space-y-1">
+                        <div class="bg-slate-950/80 p-2 rounded text-xs text-left space-y-1 border border-slate-700">
                             <p>Precio: <span class="text-yellow-500">{{card.market_price}}€</span></p>
                             <p>Rareza: {{card.rarity}}</p>
                         </div>
@@ -107,41 +140,57 @@
         </div>
 
         <div v-if="visibleLimit < filteredCards.length" class="flex justify-center my-10">
-            <button @click="loadMore" class="px-6 py-2 bg-slate-800 text-yellow-500 border border-slate-700 rounded-lg hover:bg-slate-700">Cargar más</button>
+            <button @click="loadMore" class="px-8 py-3 bg-slate-800 text-yellow-500 border border-slate-700 rounded-xl font-bold hover:bg-slate-700 transition">Cargar más</button>
         </div>
     </main>
 
-    <button v-if="showScrollTop" @click="scrollToTop" class="fixed bottom-6 right-6 z-[70] bg-yellow-500 text-black p-3 rounded-full shadow-2xl">
+    <button v-if="showScrollTop" @click="scrollToTop" 
+            class="fixed bottom-6 right-6 z-[90] bg-yellow-500 text-black p-3 rounded-full shadow-2xl border-2 border-yellow-600">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
     </button>
 
-    <div v-if="selectedCard" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-sm" @click.self="selectedCard = null">
+    <div v-if="selectedCard" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-sm" @click.self="selectedCard = null">
         
-        <button v-if="currentCardIndex > 0" @click="prevCard" class="absolute left-4 z-[110] bg-slate-800 text-white p-4 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"/></svg>
+        <button v-if="currentCardIndex > 0" @click="prevCard" class="absolute left-4 md:left-10 z-[110] text-white hover:text-yellow-500 bg-black/50 p-4 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <button v-if="currentCardIndex < filteredCards.length - 1" @click="nextCard" class="absolute right-4 z-[110] bg-slate-800 text-white p-4 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+        <button v-if="currentCardIndex < filteredCards.length - 1" @click="nextCard" class="absolute right-4 md:right-10 z-[110] text-white hover:text-yellow-500 bg-black/50 p-4 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
 
-        <div class="w-full max-w-5xl bg-slate-900 md:rounded-3xl flex flex-col md:flex-row overflow-hidden shadow-2xl border border-slate-800 relative mx-4">
-            <div class="w-full md:w-1/2 bg-black p-6 flex justify-center">
-                <img :src="selectedCard.card_image" class="max-h-[70vh] object-contain">
+        <div class="w-full max-w-5xl bg-slate-900 rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl border border-slate-700 relative">
+            <button @click="selectedCard = null" class="absolute top-4 right-4 z-50 text-white hover:text-yellow-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="w-full md:w-1/2 bg-black p-6 flex justify-center items-center">
+                <img :src="selectedCard.card_image" class="max-h-[75vh] object-contain shadow-2xl">
             </div>
-            <div class="w-full md:w-1/2 p-8 md:p-12">
+            <div class="w-full md:w-1/2 p-8 md:p-12 overflow-y-auto">
                 <h2 class="text-3xl font-bold mb-2">{{selectedCard.card_name}}</h2>
-                <p class="text-yellow-500 font-mono mb-6">{{selectedCard.card_set_id}} | {{selectedCard.rarity}}</p>
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="bg-slate-800 p-4 rounded-xl text-center">
-                        <p class="text-[10px] uppercase text-slate-400">Precio</p>
+                <p class="text-yellow-500 font-mono text-xl mb-6">{{selectedCard.card_set_id}} | {{selectedCard.rarity}}</p>
+                
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
+                        <p class="text-[10px] text-slate-400 uppercase mb-1">Market Price</p>
                         <p class="text-2xl font-bold text-yellow-500">{{selectedCard.market_price}} €</p>
                     </div>
-                    <div class="bg-slate-800 p-4 rounded-xl text-center">
-                        <p class="text-[10px] uppercase text-slate-400">Deseo</p>
-                        <p class="text-2xl">✦ {{selectedCard.deseo || 0}}</p>
+                    <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
+                        <p class="text-[10px] text-slate-400 uppercase mb-1">Deseo</p>
+                        <div class="text-yellow-500 text-xl">
+                            <span v-for="n in 5" :key="n">{{ n <= selectedCard.deseo ? '✦' : '✧' }}</span>
+                        </div>
                     </div>
                 </div>
-                <div :class="selectedCard.tengo ? 'bg-green-500 text-black' : 'bg-slate-700 text-slate-400'" class="p-4 rounded-xl text-center font-bold text-lg">
+
+                <div class="mb-8">
+                    <p class="text-[10px] text-slate-400 uppercase mb-3">Tags</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span v-for="tag in selectedCard.tags" :key="tag" class="bg-slate-800 px-3 py-1 rounded-lg text-xs border border-slate-700 text-slate-300">#{{tag}}</span>
+                    </div>
+                </div>
+
+                <div :class="selectedCard.tengo ? 'bg-green-600/20 text-green-400 border-green-600' : 'bg-slate-800 text-slate-400 border-slate-700'" 
+                     class="p-5 rounded-2xl text-center font-bold border-2 text-xl">
                     {{selectedCard.tengo ? 'EN COLECCIÓN ✓' : 'FALTANTE ✕'}}
                 </div>
             </div>
@@ -154,9 +203,9 @@
 
     createApp({
         setup() {
-            const sidebarOpen = ref(window.innerWidth > 768);
+            const sidebarOpen = ref(window.innerWidth > 1024);
             const selectedCard = ref(null);
-            const masterCards = ref([]);
+            const masterData = ref([]);
             const mainContainer = ref(null);
             const showScrollTop = ref(false);
             const visibleLimit = ref(30);
@@ -165,64 +214,92 @@
                 search: '',
                 rarity: '',
                 priceMin: 0,
-                priceMax: 1000,
+                priceMax: 500,
                 possession: 'todas',
                 interest: 'todas'
             });
 
+            // 1. CARGA DE DATOS (Solo un JSON)
             onMounted(async () => {
-                const res = await fetch('bbdd_maestra_cartas.json');
-                masterCards.value = await res.json();
-                filters.value.priceMax = absoluteMaxPrice.value;
+                try {
+                    const response = await fetch('bbdd_maestra_cartas.json');
+                    const data = await response.json();
+                    // Normalizamos datos para asegurar que tengan las propiedades
+                    masterData.value = data.map(c => ({
+                        ...c,
+                        tengo: c.tengo || false,
+                        deseo: c.deseo || 0,
+                        tags: c.tags || [],
+                        market_price: c.market_price || 0
+                    }));
+                    filters.value.priceMax = absoluteMaxPrice.value;
+                } catch (e) { console.error("Error cargando el JSON", e); }
             });
 
             const absoluteMaxPrice = computed(() => {
-                if (!masterCards.value.length) return 1000;
-                return Math.max(...masterCards.value.map(c => c.market_price || 0));
+                if (!masterData.value.length) return 500;
+                return Math.ceil(Math.max(...masterData.value.map(c => c.market_price)));
             });
 
-            const availableRarities = computed(() => [...new Set(masterCards.value.map(c => c.rarity))].sort());
+            const availableRarities = computed(() => [...new Set(masterData.value.map(c => c.rarity))].sort());
 
+            // 2. FILTRADO
             const filteredCards = computed(() => {
                 const s = filters.value.search.toLowerCase();
-                return masterCards.value.filter(c => {
-                    const matchesSearch = c.card_name.toLowerCase().includes(s) || c.card_set_id.toLowerCase().includes(s);
-                    const matchesRarity = !filters.value.rarity || c.rarity === filters.value.rarity;
-                    const matchesPrice = (c.market_price || 0) >= filters.value.priceMin && (c.market_price || 0) <= filters.value.priceMax;
+                return masterData.value.filter(c => {
+                    const matchesSearch = c.card_name.toLowerCase().includes(s) || 
+                                          c.card_set_id.toLowerCase().includes(s) ||
+                                          c.tags.some(t => t.toLowerCase().includes(s));
                     
-                    let matchesPossession = true;
-                    if (filters.value.possession === 'poseidas') matchesPossession = c.tengo === true;
-                    if (filters.value.possession === 'faltantes') matchesPossession = c.tengo === false;
+                    const matchesRarity = !filters.value.rarity || c.rarity === filters.value.rarity;
+                    const matchesPrice = c.market_price >= filters.value.priceMin && c.market_price <= filters.value.priceMax;
+                    
+                    let matchesPoss = true;
+                    if (filters.value.possession === 'poseidas') matchesPoss = c.tengo;
+                    if (filters.value.possession === 'faltantes') matchesPoss = !c.tengo;
 
-                    let matchesInterest = true;
-                    if (filters.value.interest === 'interesadas') matchesInterest = (c.deseo > 0);
+                    let matchesInt = true;
+                    if (filters.value.interest === 'interesadas') matchesInt = c.deseo > 0;
+                    if (filters.value.interest === 'no_interesadas') matchesInt = c.deseo === 0;
 
-                    return matchesSearch && matchesRarity && matchesPrice && matchesPossession && matchesInterest;
+                    return matchesSearch && matchesRarity && matchesPrice && matchesPoss && matchesInt;
                 });
             });
 
+            // 3. PAGINACIÓN
             const paginatedCards = computed(() => filteredCards.value.slice(0, visibleLimit.value));
-
-            // Navegación Modal
-            const currentCardIndex = computed(() => filteredCards.value.findIndex(c => c.card_set_id === selectedCard.value?.card_set_id));
-            const nextCard = () => { if(currentCardIndex.value < filteredCards.value.length -1) selectedCard.value = filteredCards.value[currentCardIndex.value + 1] };
-            const prevCard = () => { if(currentCardIndex.value > 0) selectedCard.value = filteredCards.value[currentCardIndex.value - 1] };
-
-            // Scroll Infinito y Botón Arriba
+            
+            const loadMore = () => { if (visibleLimit.value < filteredCards.value.length) visibleLimit.value += 30; };
+            
             const handleScroll = (e) => {
                 showScrollTop.value = e.target.scrollTop > 500;
-                if (e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 100) loadMore();
+                if (e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 200) loadMore();
             };
-            const loadMore = () => { if (visibleLimit.value < filteredCards.value.length) visibleLimit.value += 30; };
+
             const scrollToTop = () => mainContainer.value.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // 4. NAVEGACIÓN MODAL
+            const currentCardIndex = computed(() => filteredCards.value.findIndex(c => c.card_set_id === selectedCard.value?.card_set_id));
+            const nextCard = () => { if (currentCardIndex.value < filteredCards.value.length - 1) selectedCard.value = filteredCards.value[currentCardIndex.value + 1]; };
+            const prevCard = () => { if (currentCardIndex.value > 0) selectedCard.value = filteredCards.value[currentCardIndex.value - 1]; };
 
             const resetFilters = () => {
                 filters.value = { search: '', rarity: '', priceMin: 0, priceMax: absoluteMaxPrice.value, possession: 'todas', interest: 'todas' };
             };
 
-            watch(filters, () => visibleLimit.value = 30, { deep: true });
+            const translateRarity = (r) => {
+                const map = { 'L': 'Líder', 'C': 'Común', 'UC': 'Poco Común', 'R': 'Rara', 'SR': 'Súper Rara', 'SEC': 'Secreta', 'P': 'Promocional' };
+                return map[r] || 'Especial';
+            };
 
-            return { sidebarOpen, selectedCard, masterCards, filteredCards, paginatedCards, availableRarities, absoluteMaxPrice, filters, resetFilters, mainContainer, handleScroll, showScrollTop, scrollToTop, loadMore, visibleLimit, currentCardIndex, nextCard, prevCard };
+            watch(filters, () => { visibleLimit.value = 30; }, { deep: true });
+
+            return { 
+                sidebarOpen, selectedCard, filters, filteredCards, paginatedCards, 
+                availableRarities, absoluteMaxPrice, resetFilters, translateRarity,
+                mainContainer, handleScroll, showScrollTop, scrollToTop, loadMore,
+                currentCardIndex, nextCard, prevCard
+            };
         }
     }).mount('#app');
 </script>
