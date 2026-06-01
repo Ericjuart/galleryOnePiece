@@ -50,6 +50,7 @@
 
 <div id="app" v-cloak class="flex h-screen relative">
 
+    <!-- BOTÓN MENÚ FIJO -->
     <button v-if="!sidebarOpen" @click="sidebarOpen = true" 
             class="fixed top-4 left-4 z-[70] bg-yellow-500 text-black p-3 rounded-lg shadow-2xl hover:scale-110 transition-all border-2 border-yellow-600">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -57,6 +58,7 @@
         </svg>
     </button>
 
+    <!-- SIDEBAR -->
     <aside :class="[sidebarOpen ? 'translate-x-0 w-[85%] md:w-80' : '-translate-x-full w-0']" 
            class="fixed top-0 left-0 z-[80] h-full transition-all duration-300 flex flex-col shadow-2xl overflow-hidden border-r border-slate-800">
         
@@ -68,19 +70,37 @@
         </div>
 
         <div class="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
+            <!-- Buscador -->
             <div>
                 <label class="text-[10px] uppercase font-black text-slate-500">Búsqueda</label>
                 <input v-model="filters.search" type="text" placeholder="Nombre, ID o Tag..." class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm">
             </div>
 
+            <!-- Filtro por Colección / Set -->
             <div>
-                <label class="text-[10px] uppercase font-black text-slate-500">Filtrar por Interés</label>
-                <select v-model="filters.interest" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
-                    <option value="todas">Ver Catálogo Completo</option>
-                    <option value="interesadas">Solo Deseadas (Deseo > 0)</option>
+                <label class="text-[10px] uppercase font-black text-slate-500">Colección / Set</label>
+                <select v-model="filters.set" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
+                    <option value="">Todas las Colecciones</option>
+                    <option v-for="s in availableSets" :key="s" :value="s">{{s}}</option>
                 </select>
             </div>
 
+            <!-- Filtro por Nivel de Deseo -->
+            <div>
+                <label class="text-[10px] uppercase font-black text-slate-500">Nivel de Deseo</label>
+                <select v-model="filters.deseo" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
+                    <option value="todos">Todos los niveles</option>
+                    <option value="con_deseo">Cualquier prioridad (> 0)</option>
+                    <option value="0">Sin interés (0★)</option>
+                    <option value="1">Prioridad 1★</option>
+                    <option value="2">Prioridad 2★★</option>
+                    <option value="3">Prioridad 3★★★</option>
+                    <option value="4">Prioridad 4★★★★</option>
+                    <option value="5">Prioridad 5★★★★★</option>
+                </select>
+            </div>
+
+            <!-- Rango Precio -->
             <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-800 space-y-3">
                 <label class="text-[10px] uppercase font-black text-slate-500">Rango Precio (€)</label>
                 <div class="flex gap-2">
@@ -90,8 +110,9 @@
                 <input v-model.number="filters.priceMax" type="range" min="0" :max="absoluteMaxPrice" class="w-full accent-yellow-500">
             </div>
 
+            <!-- Estado de Posesión -->
             <div>
-                <label class="text-[10px] uppercase font-black text-slate-500">Estado</label>
+                <label class="text-[10px] uppercase font-black text-slate-500">Estado de Posesión</label>
                 <select v-model="filters.possession" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
                     <option value="todas">Todas</option>
                     <option value="poseidas">En posesión (✓)</option>
@@ -99,6 +120,7 @@
                 </select>
             </div>
 
+            <!-- Rareza -->
             <div>
                 <label class="text-[10px] uppercase font-black text-slate-500">Rareza</label>
                 <select v-model="filters.rarity" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
@@ -113,6 +135,7 @@
         </div>
     </aside>
 
+    <!-- MAIN AREA -->
     <main ref="mainContainer" @scroll="handleScroll" 
           :class="[sidebarOpen ? 'md:ml-80' : 'ml-0']" 
           class="flex-1 h-full overflow-y-auto p-4 md:p-8 transition-all duration-300">
@@ -128,11 +151,11 @@
                         <img :src="card.card_image" class="w-full h-full object-cover" loading="lazy">
                     </div>
                     <div class="flip-card-back">
-                        <p class="text-yellow-500 font-bold leading-tight">{{card.card_name}}</p>
-                        <p class="text-[10px] text-slate-400 mb-4">{{card.card_set_id}}</p>
+                        <p class="text-yellow-500 font-bold leading-tight mb-1">{{card.card_name}}</p>
+                        <p class="text-[11px] text-slate-400 font-mono mb-4">{{card.card_set_id}}</p>
                         <div class="bg-slate-950/80 p-2 rounded text-xs text-left space-y-1 border border-slate-700">
-                            <p>Precio: <span class="text-yellow-500">{{card.market_price}}€</span></p>
-                            <p>Rareza: {{card.rarity}}</p>
+                            <p>Precio: <span class="text-yellow-500 font-bold">{{card.market_price}}€</span></p>
+                            <p>Rareza: <span class="text-slate-300">{{card.rarity}}</span></p>
                         </div>
                     </div>
                 </div>
@@ -144,13 +167,16 @@
         </div>
     </main>
 
+    <!-- BOTÓN IR ARRIBA -->
     <button v-if="showScrollTop" @click="scrollToTop" 
             class="fixed bottom-6 right-6 z-[90] bg-yellow-500 text-black p-3 rounded-full shadow-2xl border-2 border-yellow-600">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
     </button>
 
+    <!-- MODAL DETALLE -->
     <div v-if="selectedCard" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-sm" @click.self="selectedCard = null">
         
+        <!-- Flechas Navegación -->
         <button v-if="currentCardIndex > 0" @click="prevCard" class="absolute left-4 md:left-10 z-[110] text-white hover:text-yellow-500 bg-black/50 p-4 rounded-full">
             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
@@ -171,25 +197,25 @@
                 
                 <div class="grid grid-cols-2 gap-4 mb-8">
                     <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                        <p class="text-[10px] text-slate-400 uppercase mb-1">Market Price</p>
+                        <p class="text-[10px] text-slate-400 uppercase mb-1">Precio Mercado</p>
                         <p class="text-2xl font-bold text-yellow-500">{{selectedCard.market_price}} €</p>
                     </div>
                     <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                        <p class="text-[10px] text-slate-400 uppercase mb-1">Deseo</p>
+                        <p class="text-[10px] text-slate-400 uppercase mb-1">Nivel Deseo</p>
                         <div class="text-yellow-500 text-xl">
                             <span v-for="n in 5" :key="n">{{ n <= selectedCard.deseo ? '✦' : '✧' }}</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="mb-8">
+                <div class="mb-8" v-if="selectedCard.tags && selectedCard.tags.length">
                     <p class="text-[10px] text-slate-400 uppercase mb-3">Tags</p>
                     <div class="flex flex-wrap gap-2">
                         <span v-for="tag in selectedCard.tags" :key="tag" class="bg-slate-800 px-3 py-1 rounded-lg text-xs border border-slate-700 text-slate-300">#{{tag}}</span>
                     </div>
                 </div>
 
-                <div class="selectedCard.tengo ? 'bg-green-600/20 text-green-400 border-green-600' : 'bg-slate-800 text-slate-400 border-slate-700'" 
+                <div :class="selectedCard.tengo ? 'bg-green-600/20 text-green-400 border-green-600' : 'bg-slate-800 text-slate-400 border-slate-700'" 
                      class="p-5 rounded-2xl text-center font-bold border-2 text-xl">
                     {{selectedCard.tengo ? 'EN COLECCIÓN ✓' : 'FALTANTE ✕'}}
                 </div>
@@ -212,28 +238,85 @@
 
             const filters = ref({
                 search: '',
+                set: '', 
                 rarity: '',
                 priceMin: 0,
                 priceMax: 500,
                 possession: 'todas',
-                interest: 'todas'
+                deseo: 'todos' 
             });
 
-            // 1. CARGA DE DATOS (Solo un JSON)
+            // CARGA Y NORMALIZACIÓN TOTAL DEL JSON (A PRUEBA DE ERRORES)
             onMounted(async () => {
                 try {
                     const response = await fetch('bbdd_maestra_cartas.json');
                     const data = await response.json();
-                    // Normalizamos datos para asegurar que tengan las propiedades
-                    masterData.value = data.map(c => ({
-                        ...c,
-                        tengo: c.tengo || false,
-                        deseo: c.deseo || 0,
-                        tags: c.tags || [],
-                        market_price: c.market_price || 0
-                    }));
+                    
+                    masterData.value = data.map(c => {
+                        // 1. Mapeo inteligente de Nombre
+                        const card_name = c.card_name || c.name || c.title || 'Sin Nombre';
+                        
+                        // 2. Mapeo inteligente de Código / Set ID
+                        const card_set_id = c.card_set_id || c.card_id || c.id || c.code || 'S/N';
+                        
+                        // 3. Mapeo inteligente de Imagenes
+                        const card_image = c.card_image || c.image || c.image_url || c.imageUrl || c.img || '';
+                        
+                        // 4. Mapeo inteligente de Precios
+                        const market_price = c.market_price || c.price || c.marketPrice || 0;
+                        
+                        // 5. Mapeo inteligente de Rarezas
+                        const rarity = c.rarity || c.rare || 'C';
+                        
+                        // 6. Conversión estricta a booleano del campo 'tengo'
+                        let tengo = false;
+                        if (c.tengo !== undefined) {
+                            tengo = (c.tengo === true || c.tengo === 1 || c.tengo === 'true' || c.tengo === '✓' || String(c.tengo).toLowerCase() === 'si');
+                        } else if (c.owned !== undefined) {
+                            tengo = !!c.owned;
+                        }
+
+                        // 7. Conversión limpia a entero de 'deseo'
+                        let deseo = 0;
+                        if (c.deseo !== undefined) deseo = parseInt(c.deseo) || 0;
+                        else if (c.want !== undefined) deseo = parseInt(c.want) || 0;
+
+                        // 8. Conversión limpia de los 'tags' (soporta arrays o strings separados por comas)
+                        let tags = [];
+                        const rawTags = c.tags || c.tag || [];
+                        if (Array.isArray(rawTags)) {
+                            tags = rawTags;
+                        } else if (typeof rawTags === 'string') {
+                            tags = rawTags.split(',').map(t => t.trim());
+                        }
+
+                        // Retornamos el objeto unificado
+                        return {
+                            ...c,
+                            card_name,
+                            card_set_id,
+                            card_image,
+                            market_price: parseFloat(market_price) || 0,
+                            rarity,
+                            tengo,
+                            deseo,
+                            tags
+                        };
+                    });
+                    
                     filters.value.priceMax = absoluteMaxPrice.value;
-                } catch (e) { console.error("Error cargando el JSON", e); }
+                } catch (e) { console.error("Error crítico cargando o procesando el JSON:", e); }
+            });
+
+            // Extraer las colecciones dinámicamente usando el card_set_id limpio
+            const availableSets = computed(() => {
+                const sets = masterData.value.map(c => {
+                    if (c.card_set_id && c.card_set_id.includes('-')) {
+                        return c.card_set_id.split('-')[0].trim();
+                    }
+                    return null;
+                }).filter(Boolean);
+                return [...new Set(sets)].sort();
             });
 
             const absoluteMaxPrice = computed(() => {
@@ -243,7 +326,7 @@
 
             const availableRarities = computed(() => [...new Set(masterData.value.map(c => c.rarity))].sort());
 
-            // 2. FILTRADO
+            // Lógica de filtrado
             const filteredCards = computed(() => {
                 const s = filters.value.search.toLowerCase();
                 return masterData.value.filter(c => {
@@ -251,6 +334,7 @@
                                           c.card_set_id.toLowerCase().includes(s) ||
                                           c.tags.some(t => t.toLowerCase().includes(s));
                     
+                    const matchesSet = !filters.value.set || (c.card_set_id && c.card_set_id.startsWith(filters.value.set));
                     const matchesRarity = !filters.value.rarity || c.rarity === filters.value.rarity;
                     const matchesPrice = c.market_price >= filters.value.priceMin && c.market_price <= filters.value.priceMax;
                     
@@ -258,15 +342,17 @@
                     if (filters.value.possession === 'poseidas') matchesPoss = c.tengo;
                     if (filters.value.possession === 'faltantes') matchesPoss = !c.tengo;
 
-                    let matchesInt = true;
-                    if (filters.value.interest === 'interesadas') matchesInt = c.deseo > 0;
-                    if (filters.value.interest === 'no_interesadas') matchesInt = c.deseo === 0;
+                    let matchesDeseo = true;
+                    if (filters.value.deseo === 'con_deseo') {
+                        matchesDeseo = c.deseo > 0;
+                    } else if (filters.value.deseo !== 'todos') {
+                        matchesDeseo = c.deseo === parseInt(filters.value.deseo);
+                    }
 
-                    return matchesSearch && matchesRarity && matchesPrice && matchesPoss && matchesInt;
+                    return matchesSearch && matchesSet && matchesRarity && matchesPrice && matchesPoss && matchesDeseo;
                 });
             });
 
-            // 3. PAGINACIÓN
             const paginatedCards = computed(() => filteredCards.value.slice(0, visibleLimit.value));
             
             const loadMore = () => { if (visibleLimit.value < filteredCards.value.length) visibleLimit.value += 30; };
@@ -278,25 +364,28 @@
 
             const scrollToTop = () => mainContainer.value.scrollTo({ top: 0, behavior: 'smooth' });
 
-            // 4. NAVEGACIÓN MODAL
+            // ENCONTRAR ÍNDICE DE FORMA SEGURA BASADO EN EL ID ESTANDARIZADO
             const currentCardIndex = computed(() => filteredCards.value.findIndex(c => c.card_set_id === selectedCard.value?.card_set_id));
             const nextCard = () => { if (currentCardIndex.value < filteredCards.value.length - 1) selectedCard.value = filteredCards.value[currentCardIndex.value + 1]; };
             const prevCard = () => { if (currentCardIndex.value > 0) selectedCard.value = filteredCards.value[currentCardIndex.value - 1]; };
 
             const resetFilters = () => {
-                filters.value = { search: '', rarity: '', priceMin: 0, priceMax: absoluteMaxPrice.value, possession: 'todas', interest: 'todas' };
-            };
-
-            const translateRarity = (r) => {
-                const map = { 'L': 'Líder', 'C': 'Común', 'UC': 'Poco Común', 'R': 'Rara', 'SR': 'Súper Rara', 'SEC': 'Secreta', 'P': 'Promocional' };
-                return map[r] || 'Especial';
+                filters.value = { 
+                    search: '', 
+                    set: '', 
+                    rarity: '', 
+                    priceMin: 0, 
+                    priceMax: absoluteMaxPrice.value, 
+                    possession: 'todas', 
+                    deseo: 'todos' 
+                };
             };
 
             watch(filters, () => { visibleLimit.value = 30; }, { deep: true });
 
             return { 
                 sidebarOpen, selectedCard, filters, filteredCards, paginatedCards, 
-                availableRarities, absoluteMaxPrice, resetFilters, translateRarity,
+                availableRarities, availableSets, absoluteMaxPrice, resetFilters,
                 mainContainer, handleScroll, showScrollTop, scrollToTop, loadMore,
                 currentCardIndex, nextCard, prevCard
             };
