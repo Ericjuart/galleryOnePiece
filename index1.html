@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OP TCG - Grand Museum</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        [v-cloak] { display: none; }
+        
+        /* Efecto 3D para el Volteo */
+        .flip-card {
+            background-color: transparent;
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+        .flip-card-back {
+            background-color: #1e293b;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 1rem;
+            border: 2px solid #eab308;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+        span.conteo{ 
+            font-weight: bold;
+            color: rgb(234 179 8 / 1);
+        }
+        div.conteo{
+            margin-bottom: 1rem;
+        }
+        #app aside .logo {
+            padding-top: 0rem;
+            padding-bottom: 0rem;
+            padding-left: 4rem;
+        }
+        div.mb-10{
+            margin-top: 0rem;
+        }
+        .fondo{
+            background-attachment: fixed;
+            background-image: url("d9aa8f8173976dbdd3e2148c305faa5c.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            color: #f1f5f9;
+        }
+        .fondo::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(146, 147, 149, 0.7) 0%, rgba(2, 6, 23, 0.95) 100%);
+            z-index: -1;
+        }
+
+        aside {
+            background-color: rgba(15, 23, 42, 0.9) !important;
+            backdrop-filter: blur(10px);
+        }
+
+        main {
+            background: transparent;
+        }
+
+        .flip-card-front {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
+        }
+
+        .card-poseida {
+            animation: pulse-green 3s infinite ease-in-out;
+            border-color: #22c55e !important;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #eab308; }
+    </style>
+</head>
+<body class="bg-[#020617] fondo text-slate-200 min-h-screen overflow-hidden">
+
+<div id="app" v-cloak class="flex h-screen relative">
+
+    <!-- MENÚ LATERAL -->
+    <aside :class="[
+        sidebarOpen ? 'translate-x-0 w-[85%] md:w-80' : 'hidden -translate-x-full w-0',
+            'fixed top-0 left-0 z-[60] h-full bg-slate-900 border-r border-slate-800 transition-all duration-300 flex flex-col shadow-2xl'
+        ]">
+
+            <button @click="sidebarOpen = false" class="absolute top-4 right-4 text-slate-400 hover:text-yellow-500 transition-colors">
+                <img width="32" height="32" src="https://img.icons8.com/external-dreamstale-lineal-dreamstale/32/external-bones-holidays-dreamstale-lineal-dreamstale.png" alt="Close"/>
+            </button>
+
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-6 mt-8">
+                <div class="mb-6 flex justify-center md:justify-start">
+                    <img src="https://logos-world.net/wp-content/uploads/2021/09/One-Piece-Logo-700x394.png" class="w-32">
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Búsqueda</label>
+                        <input v-model="filters.search" type="text" placeholder="Ej: Gear 5, Zoro..." class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Colección (Set)</label>
+                        <select v-model="filters.set" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
+                            <option value="">Todos los Sets</option>
+                            <option v-for="set in availableSets" :key="set" :value="set">{{set}}</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Rareza</label>
+                        <select v-model="filters.rarity" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
+                            <option value="">Todas las Rarezas</option>
+                            <option v-for="r in availableRarities" :key="r" :value="r">{{r}} - {{translateRarity(r)}}</option>
+                        </select>
+                    </div>
+
+                    <!-- NUEVO FILTRO DE INTERÉS / PRIORIDAD -->
+                    <div>
+                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Filtrar por mi Interés</label>
+                        <select v-model="filters.interest" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
+                            <option value="todas">Ver Catálogo Completo</option>
+                            <option value="interesadas">Solo cartas de mi Interés/Deseos</option>
+                            <option value="no_interesadas">Ocultar mis cartas de Interés</option>
+                        </select>
+                    </div>
+
+                    <!-- MODIFICACIÓN: FILTRADO DE RANGO DE PRECIO -->
+                    <div class="space-y-2 bg-slate-950/40 p-3 rounded-xl border border-slate-800">
+                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter block">Rango de Precios (€)</label>
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs text-slate-400"><span>Mín: {{filters.priceMin}}€</span></div>
+                            <input v-model.number="filters.priceMin" type="range" min="0" :max="absoluteMaxPrice" class="w-full accent-yellow-500">
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs text-slate-400"><span>Máx: {{filters.priceMax}}€</span></div>
+                            <input v-model.number="filters.priceMax" type="range" min="0" :max="absoluteMaxPrice" class="w-full accent-yellow-500">
+                        </div>
+                        <div class="flex gap-2 pt-1">
+                            <input v-model.number="filters.priceMin" type="number" placeholder="Min €" class="w-1/2 bg-slate-950 p-2 rounded border border-slate-800 text-xs text-center text-white">
+                            <input v-model.number="filters.priceMax" type="number" placeholder="Max €" class="w-1/2 bg-slate-950 p-2 rounded border border-slate-800 text-xs text-center text-white">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Mínimo Deseo ({{filters.minDeseo}}★)</label>
+                        <input v-model.number="filters.minDeseo" type="range" min="0" max="5" class="w-full accent-yellow-500 mt-2">
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Estado Colección</label>
+                        <select v-model="filters.possession" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
+                            <option value="todas">Ver todas (Poseídas y Faltantes)</option>
+                            <option value="poseidas">En posesión (✓)</option>
+                            <option value="faltantes">Faltantes (✕)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-900 border-t border-slate-800">
+                <button @click="resetFilters" 
+                        class="w-full py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-black uppercase text-xs rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    Limpiar Filtros
+                </button>
+            </div>
+        </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <!-- MODIFICACIÓN 1 & 5: Evento scroll añadido y referencia de control mainContainer -->
+    <main ref="mainContainer" @scroll="handleScroll" :class="sidebarOpen ? 'md:ml-80' : 'md:ml-0'" 
+        class="flex-1 h-full overflow-y-auto p-4 md:p-8 transition-all duration-300 relative">
+
+            <!-- MODIFICACIÓN 1: Botón de menú fijado cuando está minimizado -->
+            <button v-if="!sidebarOpen" @click="sidebarOpen = true" 
+                    class="fixed top-4 left-4 z-[50] bg-yellow-500 text-black p-3 rounded-lg shadow-xl hover:scale-110 transition-all active:scale-95 border-2 border-yellow-600 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
+                </svg>
+            </button>
+
+            <div class="flex justify-between items-center mb-10 mt-16 md:mt-0">
+                <span class="text-yellow-500 font-bold text-2xl ml-2 md:ml-0">{{filteredCards.length}} Cartas Encontradas</span>
+            </div>
+
+            <!-- CONTENEDOR GRID -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-10">
+                <!-- Se renderiza mediante paginatedCards para optimización extrema de rendimiento -->
+                <div v-for="card in paginatedCards" :key="card.card_set_id" class="flip-card aspect-[11/16] cursor-pointer" @click="selectedCard = card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-2xl transition-all duration-500" :class="{ 'card-poseida border-[3px]': card.tengo, 'border border-white/10': !card.tengo }">
+                             <img :src="card.card_image" class="w-full h-full object-cover" loading="lazy">
+                            <div v-if="card.tengo" class="absolute inset-0 bg-green-500/10 border-4 border-green-500/50 rounded-xl"></div>
+                        </div>
+                        <div class="flip-card-back transition-all duration-500" :class="{ 'card-poseida border-[3px]': card.tengo, 'border border-white/10': !card.tengo }">
+                            <img src="https://m.media-amazon.com/images/I/51xnq29+enL.jpg" class="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none">
+                            <div class="relative z-10">
+                                <p class="text-yellow-500 font-bold text-lg leading-tight">{{card.card_name}}</p>
+                                <p class="text-[10px] text-slate-400 mb-4">{{card.card_set_id}}</p>
+                                
+                                <div class="space-y-2 text-left bg-slate-950/80 p-3 rounded-lg border border-slate-700">
+                                    <div class="flex justify-between text-xs"><span>Rareza:</span> <span class="text-yellow-500">{{card.rarity}}</span></div>
+                                    <div class="flex justify-between text-xs"><span>Precio:</span> <span class="text-yellow-500">{{card.market_price_en}}€</span></div>
+                                    <div class="flex justify-between text-xs"><span>Set ID:</span> <span>{{card.set_id}}</span></div>
+                                </div>
+
+                                <div class="mt-4 flex justify-center gap-1">
+                                    <span v-for="n in 5" :key="n" :class="n <= card.deseo ? 'text-yellow-500' : 'text-slate-700'">✦</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODIFICACIÓN 5: Botón Cargar Más manual al pie de página -->
+            <div v-if="visibleLimit < filteredCards.length" class="flex justify-center my-12">
+                <button @click="loadMore" class="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-yellow-500 border border-slate-700 font-bold rounded-xl transition transform active:scale-95 shadow-xl">
+                    Cargar más cartas...
+                </button>
+            </div>
+        </main>
+
+    <!-- MODIFICACIÓN 1: Botón Flotante para ir arriba de todo (Scroll to Top) -->
+    <button v-if="showScrollTop" @click="scrollToTop" 
+            class="fixed bottom-6 right-6 z-[70] bg-yellow-500 text-black p-3.5 rounded-full shadow-2xl hover:scale-110 transition-all active:scale-95 border-2 border-yellow-600">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
+        </svg>
+    </button>
+
+    <!-- VISUALIZADOR DE DETALLE (MODAL) -->
+    <div v-if="selectedCard" class="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-4 bg-black/95 backdrop-blur-sm" @click.self="selectedCard = null">
+        
+        <!-- MODIFICACIÓN 2: Flecha navegación Carta Anterior -->
+        <button v-if="currentCardIndex > 0" @click="prevCard" 
+                class="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-[110] bg-slate-900/80 hover:bg-yellow-500 hover:text-black border border-slate-700 text-white p-4 rounded-full transition shadow-2xl">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+            </svg>
+        </button>
+
+        <!-- MODIFICACIÓN 2: Flecha navegación Carta Siguiente -->
+        <button v-if="currentCardIndex < filteredCards.length - 1" @click="nextCard" 
+                class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-[110] bg-slate-900/80 hover:bg-yellow-500 hover:text-black border border-slate-700 text-white p-4 rounded-full transition shadow-2xl">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+            </svg>
+        </button>
+
+        <div class="w-full h-full md:h-auto md:max-w-5xl bg-slate-900 md:rounded-3xl overflow-y-auto flex flex-col md:flex-row shadow-2xl border border-slate-800 relative">
+            <button @click="selectedCard = null" class="absolute top-4 right-4 z-50 text-white bg-black/50 p-2 rounded-full md:bg-transparent">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+            <div class="w-full md:w-1/2 p-6 bg-black flex justify-center items-center">
+                <img :src="selectedCard.card_image" class="max-h-[45vh] md:max-h-[80vh] w-auto object-contain rounded-xl">
+            </div>
+            <div class="w-full md:w-1/2 p-6 md:p-12">
+                <h2 class="text-3xl font-bold mb-4">{{selectedCard.card_name}}</h2>
+                <p class="text-yellow-500 text-4xl font-black mb-6">{{selectedCard.rarity}} - {{translateRarity(selectedCard.rarity)}}</p>
+                <div class="bg-slate-800 p-4 rounded-xl mb-6">
+                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-2">ID Carta</p>
+                    <p class="font-mono">{{selectedCard.card_set_id}}</p>
+                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-2 mt-2">Colección</p>
+                    <p class="font-mono">{{selectedCard.set_id}} - {{selectedCard.set_name}}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-6 mb-6 border-y border-slate-800 py-6">
+                    <div>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Precio de Mercado</p>
+                        <p class="text-2xl md:text-3xl font-bold text-yellow-500">{{selectedCard.market_price_en}} €</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Deseo</p>
+                        <div class="text-xl md:text-2xl">
+                            <span v-for="n in 5" :key="n" :class="n <= selectedCard.deseo ? 'text-yellow-500' : 'text-slate-800'">✦</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-3">Tags personalizados</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span v-if="selectedCard.tags && selectedCard.tags.length === 0" class="text-xs text-slate-600 italic">Sin tags guardados</span>
+                        <span v-for="tag in selectedCard.tags" :key="tag" class="bg-slate-800 border border-slate-700 px-3 py-1 rounded-lg text-xs">#{{tag}}</span>
+                    </div>
+                </div>
+                <div :class="selectedCard.tengo ? 'bg-green-500 text-black' : 'bg-slate-700 text-slate-400'" class="p-4 rounded-xl text-center font-bold">
+                    {{selectedCard.tengo ? '✓ EN COLECCIÓN' : 'PENDIENTE'}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const { createApp, ref, computed, onMounted, watch } = Vue;
+
+    createApp({
+        setup() {
+            const sidebarOpen = ref(window.innerWidth > 768);
+            const selectedCard = ref(null);
+            const masterData = ref([]);
+            
+            // Estado para el control del scroll y paginación (Modificación 1 y 5)
+            const mainContainer = ref(null);
+            const showScrollTop = ref(false);
+            const visibleLimit = ref(30); // Número de cartas iniciales visibles
+
+            // Tu colección e intereses guardados
+            const userCollection = ref([
+                { card_set_id: "OP01-001", deseo: 3, tengo: false, tags: ["Zoro","Supernova", "Mugiwara"] },
+                { card_set_id: "OP01-002", deseo: 5, tengo: true, tags: ["Law","Supernova","Peor generación"] },
+                { card_set_id: "OP01-003", deseo: 4, tengo: false, tags: ["Luffy","Younkou", "D."] },
+                { card_set_id: "OP01-013_p1", deseo: 2, tengo: true, tags: ["Sanji", "Cocinero"] },
+                { card_set_id: "OP01-015", deseo: 1, tengo: true, tags: ["Chopper", "Mugiwara"] }
+            ]);
+
+            // Configuración de Filtros (Modificación 3 y 4 integrados)
+            const filters = ref({
+                search: '',
+                set: '',
+                rarity: '',
+                minDeseo: 0,
+                priceMin: 0,
+                priceMax: 150, 
+                possession: 'todas',
+                interest: 'todas' // Nueva propiedad para gestionar el catálogo completo vs interesados
+            });
+
+            // 3. CARGAR JSON MAESTRO
+            onMounted(async () => {
+                try {
+                    // Carga tu archivo JSON local
+                    const response = await fetch('bbdd_maestra_cartas.json');
+                    masterData.value = await response.json();
+                    
+                    // Inicializar el rango máximo dinámico según el precio real más alto de la BBDD
+                    filters.value.priceMax = absoluteMaxPrice.value;
+                } catch (error) {
+                    console.error("Error cargando la base de datos maestra:", error);
+                }
+            });
+
+            // MODIFICACIÓN 4: Cambiado el orden de procesamiento. Mapeamos TODO el JSON maestro 
+            // y le acoplamos tus datos de colección donde coincidan.
+            const allCards = computed(() => {
+                if (!masterData.value.length) return [];
+
+                return masterData.value.map(masterCard => {
+                    // Intentar acoplar datos por ID de set
+                    const userCard = userCollection.value.find(u => u.card_set_id === masterCard.card_set_id || u.card_set_id === masterCard.card_image_id);
+                    
+                    return {
+                        ...masterCard,
+                        market_price_en: masterCard.market_price || 0,
+                        // Si existe en tu JSON personalizado, hereda sus propiedades; si no, adquiere estados por defecto
+                        tengo: userCard ? userCard.tengo : false,
+                        deseo: userCard ? userCard.deseo : 0,
+                        tags: userCard ? userCard.tags : [],
+                        isInterested: !!userCard // Flag útil para saber si está en tu lista de seguimiento
+                    };
+                });
+            });
+
+            const availableSets = computed(() => [...new Set(allCards.value.map(c => c.set_id).filter(Boolean))].sort());
+            const availableRarities = computed(() => [...new Set(allCards.value.map(c => c.rarity).filter(Boolean))].sort());
+
+            const absoluteMaxPrice = computed(() => {
+                if (masterData.value.length === 0) return 200;
+                const prices = masterData.value.map(c => parseFloat(c.market_price) || 0);
+                return Math.ceil(Math.max(...prices, 10));
+            });
+
+            // FILTRADO INTEGRAL DE DATOS
+            const filteredCards = computed(() => {
+                const searchTxt = filters.value.search.toLowerCase();
+                
+                return allCards.value.filter(c => {
+                    const matchesSearch = (c.card_name || "").toLowerCase().includes(searchTxt) || 
+                                          (c.tags || []).some(t => t.toLowerCase().includes(searchTxt)) ||
+                                          (c.card_set_id || "").toLowerCase().includes(searchTxt);
+                    
+                    const matchesSet = !filters.value.set || c.set_id === filters.value.set;
+                    const matchesRarity = !filters.value.rarity || c.rarity === filters.value.rarity;
+                    const matchesDeseo = c.deseo >= filters.value.minDeseo;
+                    
+                    // Modificación 3: Filtro estricto por rango mínimo y máximo
+                    const price = parseFloat(c.market_price_en) || 0;
+                    const matchesPrice = price >= filters.value.priceMin && price <= filters.value.priceMax;
+
+                    let matchesPossession = true;
+                    if (filters.value.possession === 'poseidas') {
+                        matchesPossession = c.tengo === true;
+                    } else if (filters.value.possession === 'faltantes') {
+                        matchesPossession = c.tengo === false;
+                    }
+
+                    // Modificación 4: Lógica de interés aplicada al catálogo completo
+                    let matchesInterest = true;
+                    if (filters.value.interest === 'interesadas') {
+                        matchesInterest = c.isInterested || c.deseo > 0;
+                    } else if (filters.value.interest === 'no_interesadas') {
+                        matchesInterest = !c.isInterested && c.deseo === 0;
+                    }
+
+                    return matchesSearch && matchesSet && matchesRarity && matchesDeseo && matchesPrice && matchesPossession && matchesInterest;
+                });
+            });
+
+            // MODIFICACIÓN 5: Segmentación para la visualización fluida (paginación reactiva)
+            const paginatedCards = computed(() => {
+                return filteredCards.value.slice(0, visibleLimit.value);
+            });
+
+            // MODIFICACIÓN 5: Resetear el visor al cambiar cualquier criterio de filtrado
+            watch(filters, () => {
+                visibleLimit.value = 30;
+            }, { deep: true });
+
+            // MODIFICACIÓN 5: Escuchador del contenedor para Infinite Scroll automático
+            const handleScroll = (e) => {
+                const target = e.target;
+                // Mostrar/ocultar botón 'Ir Arriba'
+                showScrollTop.value = target.scrollTop > 400;
+
+                // Si queda menos de 300px para tocar fondo, inyecta más elementos
+                if (target.scrollHeight - target.scrollTop <= target.clientHeight + 300) {
+                    loadMore();
+                }
+            };
+
+            const loadMore = () => {
+                if (visibleLimit.value < filteredCards.value.length) {
+                    visibleLimit.value += 30;
+                }
+            };
+
+            // MODIFICACIÓN 1: Función para enviar arriba del todo
+            const scrollToTop = () => {
+                if (mainContainer.value) {
+                    mainContainer.value.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            };
+
+            // MODIFICACIÓN 2: Lógica de navegación interna del visor de detalles
+            const currentCardIndex = computed(() => {
+                if (!selectedCard.value) return -1;
+                return filteredCards.value.findIndex(c => c.card_set_id === selectedCard.value.card_set_id);
+            });
+
+            const nextCard = () => {
+                if (currentCardIndex.value < filteredCards.value.length - 1) {
+                    selectedCard.value = filteredCards.value[currentCardIndex.value + 1];
+                }
+            };
+
+            const prevCard = () => {
+                if (currentCardIndex.value > 0) {
+                    selectedCard.value = filteredCards.value[currentCardIndex.value - 1];
+                }
+            };
+
+            const translateRarity = (r) => {
+                const map = { 
+                    'L': 'Líder', 'C': 'Común', 'UC': 'Poco Común',
+                    'R': 'Rara', 'SR': 'Súper Rara', 'SEC': 'Secreta', 'P': 'Promocional' 
+                };
+                return map[r] || 'Especial';
+            };
+
+            const resetFilters = () => {
+                filters.value = {
+                    search: '',
+                    set: '',
+                    rarity: '',
+                    minDeseo: 0,
+                    priceMin: 0,
+                    priceMax: absoluteMaxPrice.value,
+                    possession: 'todas',
+                    interest: 'todas'
+                };
+                visibleLimit.value = 30;
+            };
+
+            return { 
+                sidebarOpen, selectedCard, filters, userCollection, allCards, 
+                filteredCards, paginatedCards, availableSets, availableRarities, 
+                absoluteMaxPrice, translateRarity, resetFilters,
+                mainContainer, handleScroll, showScrollTop, scrollToTop, loadMore, visibleLimit,
+                currentCardIndex, nextCard, prevCard
+            };
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>
