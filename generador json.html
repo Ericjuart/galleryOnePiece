@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Fusionador One Piece - Ultra Reparador</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #1a1a1a; color: #eee; display: flex; justify-content: center; padding: 40px; }
+        .box { background: #252525; padding: 30px; border-radius: 12px; width: 550px; border: 1px solid #444; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+        h2 { color: #4db8ff; text-align: center; margin-top: 0; }
+        .input-group { margin: 20px 0; border-bottom: 1px solid #333; padding-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: #aaa; }
+        input { width: 100%; color: #ccc; background: #111; border: 1px solid #444; padding: 10px; border-radius: 5px; box-sizing: border-box; }
+        button { 
+            width: 100%; padding: 15px; background: #4db8ff; border: none; border-radius: 5px; 
+            color: #111; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.2s;
+        }
+        button:hover { background: #80ccff; transform: translateY(-2px); }
+        #log { margin-top: 20px; padding: 15px; border-radius: 5px; font-size: 14px; white-space: pre-wrap; background: #111; border: 1px solid #333; }
+        .error { color: #ff6666; border-color: #ff6666 !important; }
+        .success { color: #66ff99; border-color: #66ff99 !important; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Fusionador de Cartas</h2>
+    <p style="font-size: 0.8em; color: #888; text-align: center;">Esta versión limpia puntos suspensivos y arregla comillas faltantes.</p>
+    
+    <div class="input-group">
+        <label>Archivo 1 (Datos de Precios e Imágenes):</label>
+        <input type="file" id="file1">
+    </div>
+
+    <div class="input-group">
+        <label>Archivo 2 (Tus Tags, Deseos y Tengo):</label>
+        <input type="file" id="file2">
+    </div>
+
+    <button id="btn">REPARAR Y FUSIONAR</button>
+
+    <div id="log">Esperando archivos...</div>
+</div>
+
+<script>
+    // Función para limpiar el texto de errores comunes antes de procesar
+    function limpiarYParsear(texto) {
+        let limpio = texto
+            .replace(/\.\.\.+/g, '')             // Borra puntos suspensivos (...)
+            .replace(/,\s*([\]}])/g, '$1')       // Borra comas sobrantes antes de cerrar } o ]
+            .replace(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g, '$1"$2":'); // Pone comillas a las llaves que no tengan
+
+        try {
+            return JSON.parse(limpio);
+        } catch (e) {
+            // Intento final usando evaluación de JS si el JSON estricto falla
+            try {
+                return Function('"use strict";return (' + limpio + ')')();
+            } catch (err) {
+                throw new Error("Sintaxis irreparable. Revisa que no falten corchetes [ ] o llaves { }.");
+            }
+        }
+    }
+
+    document.getElementById('btn').onclick = async () => {
+        const f1 = document.getElementById('file1').files[0];
+        const f2 = document.getElementById('file2').files[0];
+        const log = document.getElementById('log');
+        
+        if (!f1 || !f2) {
+            log.innerText = "❌ Selecciona ambos archivos.";
+            log.className = "error";
+            return;
+        }
+
+        try {
+            log.innerText = "⏳ Limpiando y procesando...";
+            log.className = "";
+
+            const data1 = limpiarYParsear(await f1.text());
+            const data2 = limpiarYParsear(await f2.text());
+
+            const mapaExtra = new Map();
+            data2.forEach(obj => {
+                if (obj.card_set_id) mapaExtra.set(obj.card_set_id, obj);
+            });
+
+            const resultado = data1.map(carta => {
+                const extra = mapaExtra.get(carta.card_image_id || carta.card_set_id);
+                if (extra) {
+                    return {
+                        ...carta,
+                        tengo: extra.tengo !== undefined ? extra.tengo : (carta.tengo || false),
+                        deseo: extra.deseo !== undefined ? extra.deseo : 0,
+                        tags: extra.tags || []
+                    };
+                }
+                return carta;
+            });
+
+            const blob = new Blob([JSON.stringify(resultado, null, 4)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = "coleccion_unificada.json";
+            link.click();
+
+            log.innerText = "✅ ¡Fusión completada!\n" + resultado.length + " cartas procesadas.\nSe ha descargado 'coleccion_unificada.json'.";
+            log.className = "success";
+
+        } catch (err) {
+            log.innerText = "❌ ERROR: " + err.message;
+            log.className = "error";
+        }
+    };
+</script>
+
+</body>
+</html>

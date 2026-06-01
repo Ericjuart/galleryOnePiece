@@ -3,332 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OP TCG - Grand Museum</title>
+    <title>OP TCG - Grand Museum v2</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         [v-cloak] { display: none; }
-        
-        /* Efecto 3D para el Volteo */
-        .flip-card {
-            background-color: transparent;
-            perspective: 1000px;
-        }
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-        }
-        .flip-card:hover .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            border-radius: 0.75rem;
-            overflow: hidden;
-        }
-        .flip-card-back {
-            background-color: #1e293b;
-            transform: rotateY(180deg);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 1rem;
-            border: 2px solid #eab308;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 10px;
-        }
-        span.conteo{ 
-            font-weight: bold;
-            color: rgb(234 179 8 / 1);
-        }
-        div.conteo{
-            margin-bottom: 1rem;
-        }
-        #app aside .logo {
-            padding-top: 0rem;
-            padding-bottom: 0rem;
-            padding-left: 4rem;
-        }
-        div.mb-10{
-            margin-top: 0rem;
-        }
-        .fondo{
-            background-attachment: fixed;
-            background-image: url("d9aa8f8173976dbdd3e2148c305faa5c.jpg");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            position: relative;
-            color: #f1f5f9;
-        }
-        .fondo::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(146, 147, 149, 0.7) 0%, rgba(2, 6, 23, 0.95) 100%);
-            z-index: -1;
-        }
-
-        aside {
-            background-color: rgba(15, 23, 42, 0.9) !important;
-            backdrop-filter: blur(10px);
-        }
-
-        main {
-            background: transparent;
-        }
-
-        .flip-card-front {
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        @keyframes pulse-green {
-            0% { box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
-            50% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.8); }
-            100% { box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
-        }
-
-        .card-poseida {
-            animation: pulse-green 3s infinite ease-in-out;
-            border-color: #22c55e !important;
-        }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #eab308; }
+        .flip-card { background-color: transparent; perspective: 1000px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 0.75rem; overflow: hidden; }
+        .flip-card-back { background-color: #1e293b; transform: rotateY(180deg); display: flex; flex-direction: column; justify-content: center; padding: 1rem; border: 2px solid #eab308; }
+        .fondo { background-attachment: fixed; background-image: url("d9aa8f8173976dbdd3e2148c305faa5c.jpg"); background-size: cover; background-position: center; position: relative; color: #f1f5f9; }
+        .fondo::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(146, 147, 149, 0.7) 0%, rgba(2, 6, 23, 0.95) 100%); z-index: -1; }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); } 50% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.8); } 100% { box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); } }
+        .card-poseida { animation: pulse-green 3s infinite ease-in-out; border-color: #22c55e !important; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-[#020617] fondo text-slate-200 min-h-screen overflow-hidden">
 
 <div id="app" v-cloak class="flex h-screen relative">
 
-    <!-- MENÚ LATERAL -->
-    <aside :class="[
-        sidebarOpen ? 'translate-x-0 w-[85%] md:w-80' : 'hidden -translate-x-full w-0',
-            'fixed top-0 left-0 z-[60] h-full bg-slate-900 border-r border-slate-800 transition-all duration-300 flex flex-col shadow-2xl'
-        ]">
+    <aside :class="[sidebarOpen ? 'translate-x-0 w-[85%] md:w-80' : 'hidden -translate-x-full w-0', 'fixed top-0 left-0 z-[60] h-full bg-slate-900 border-r border-slate-800 transition-all duration-300 flex flex-col shadow-2xl']">
+        <button @click="sidebarOpen = false" class="absolute top-4 right-4 text-slate-400 hover:text-yellow-500">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
 
-            <button @click="sidebarOpen = false" class="absolute top-4 right-4 text-slate-400 hover:text-yellow-500 transition-colors">
-                <img width="32" height="32" src="https://img.icons8.com/external-dreamstale-lineal-dreamstale/32/external-bones-holidays-dreamstale-lineal-dreamstale.png" alt="Close"/>
-            </button>
-
-            <div class="flex-1 overflow-y-auto custom-scrollbar p-6 mt-8">
-                <div class="mb-6 flex justify-center md:justify-start">
-                    <img src="https://logos-world.net/wp-content/uploads/2021/09/One-Piece-Logo-700x394.png" class="w-32">
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-6 mt-10">
+            <div class="space-y-6">
+                <div>
+                    <label class="text-[10px] uppercase font-black text-slate-500">Búsqueda</label>
+                    <input v-model="filters.search" type="text" placeholder="Nombre, ID, Tags..." class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm">
                 </div>
 
-                <div class="space-y-6">
-                    <div>
-                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Búsqueda</label>
-                        <input v-model="filters.search" type="text" placeholder="Ej: Gear 5, Zoro..." class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
-                    </div>
+                <div>
+                    <label class="text-[10px] uppercase font-black text-slate-500">Filtrar Interés</label>
+                    <select v-model="filters.interest" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
+                        <option value="todas">Todas las cartas</option>
+                        <option value="interesadas">Solo mis intereses (Deseo > 0)</option>
+                    </select>
+                </div>
 
-                    <div>
-                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Colección (Set)</label>
-                        <select v-model="filters.set" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
-                            <option value="">Todos los Sets</option>
-                            <option v-for="set in availableSets" :key="set" :value="set">{{set}}</option>
-                        </select>
-                    </div>
+                <div>
+                    <label class="text-[10px] uppercase font-black text-slate-500">Estado de Posesión</label>
+                    <select v-model="filters.possession" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
+                        <option value="todas">Ver todas</option>
+                        <option value="poseidas">Poseídas (Tengo)</option>
+                        <option value="faltantes">No las tengo</option>
+                    </select>
+                </div>
 
-                    <div>
-                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Rareza</label>
-                        <select v-model="filters.rarity" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
-                            <option value="">Todas las Rarezas</option>
-                            <option v-for="r in availableRarities" :key="r" :value="r">{{r}} - {{translateRarity(r)}}</option>
-                        </select>
+                <div class="space-y-2 p-3 bg-slate-950/50 rounded-xl border border-slate-800">
+                    <label class="text-[10px] uppercase font-black text-slate-500">Rango de Precio (€)</label>
+                    <div class="flex gap-2">
+                        <input v-model.number="filters.priceMin" type="number" class="w-1/2 bg-slate-900 p-2 rounded text-xs text-center" placeholder="Min">
+                        <input v-model.number="filters.priceMax" type="number" class="w-1/2 bg-slate-900 p-2 rounded text-xs text-center" placeholder="Max">
                     </div>
+                    <input v-model.number="filters.priceMax" type="range" min="0" :max="absoluteMaxPrice" class="w-full accent-yellow-500">
+                </div>
 
-                    <!-- NUEVO FILTRO DE INTERÉS / PRIORIDAD -->
-                    <div>
-                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Filtrar por mi Interés</label>
-                        <select v-model="filters.interest" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
-                            <option value="todas">Ver Catálogo Completo</option>
-                            <option value="interesadas">Solo cartas Deseadas</option>
-                            <option value="no_interesadas">Ocultar mis cartas de Interés</option>
-                        </select>
-                    </div>
-
-                    <!-- MODIFICACIÓN: FILTRADO DE RANGO DE PRECIO -->
-                    <div class="space-y-2 bg-slate-950/40 p-3 rounded-xl border border-slate-800">
-                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter block">Rango de Precios (€)</label>
-                        <div class="space-y-1">
-                            <div class="flex justify-between text-xs text-slate-400"><span>Mín: {{filters.priceMin}}€</span></div>
-                            <input v-model.number="filters.priceMin" type="range" min="0" :max="absoluteMaxPrice" class="w-full accent-yellow-500">
-                        </div>
-                        <div class="space-y-1">
-                            <div class="flex justify-between text-xs text-slate-400"><span>Máx: {{filters.priceMax}}€</span></div>
-                            <input v-model.number="filters.priceMax" type="range" min="0" :max="absoluteMaxPrice" class="w-full accent-yellow-500">
-                        </div>
-                        <div class="flex gap-2 pt-1">
-                            <input v-model.number="filters.priceMin" type="number" placeholder="Min €" class="w-1/2 bg-slate-950 p-2 rounded border border-slate-800 text-xs text-center text-white">
-                            <input v-model.number="filters.priceMax" type="number" placeholder="Max €" class="w-1/2 bg-slate-950 p-2 rounded border border-slate-800 text-xs text-center text-white">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Mínimo Deseo ({{filters.minDeseo}}★)</label>
-                        <input v-model.number="filters.minDeseo" type="range" min="0" max="5" class="w-full accent-yellow-500 mt-2">
-                    </div>
-
-                    <div>
-                        <label class="text-[10px] uppercase font-black text-slate-500 tracking-tighter">Estado Colección</label>
-                        <select v-model="filters.possession" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm text-white">
-                            <option value="todas">Ver todas (Poseídas y Faltantes)</option>
-                            <option value="poseidas">En posesión (✓)</option>
-                            <option value="faltantes">Faltantes (✕)</option>
-                        </select>
-                    </div>
+                <div>
+                    <label class="text-[10px] uppercase font-black text-slate-500">Rareza</label>
+                    <select v-model="filters.rarity" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
+                        <option value="">Todas</option>
+                        <option v-for="r in availableRarities" :key="r" :value="r">{{r}}</option>
+                    </select>
                 </div>
             </div>
+        </div>
 
-            <div class="p-4 bg-slate-900 border-t border-slate-800">
-                <button @click="resetFilters" 
-                        class="w-full py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-black uppercase text-xs rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                    Limpiar Filtros
-                </button>
-            </div>
-        </aside>
+        <div class="p-4 bg-slate-900 border-t border-slate-800">
+            <button @click="resetFilters" class="w-full py-3 bg-yellow-500 text-black font-bold uppercase text-xs rounded-xl">Limpiar Filtros</button>
+        </div>
+    </aside>
 
-    <!-- ÁREA PRINCIPAL -->
-    <!-- MODIFICACIÓN 1 & 5: Evento scroll añadido y referencia de control mainContainer -->
-    <main ref="mainContainer" @scroll="handleScroll" :class="sidebarOpen ? 'md:ml-80' : 'md:ml-0'" 
-        class="flex-1 h-full overflow-y-auto p-4 md:p-8 transition-all duration-300 relative">
+    <main ref="mainContainer" @scroll="handleScroll" :class="sidebarOpen ? 'md:ml-80' : 'md:ml-0'" class="flex-1 h-full overflow-y-auto p-4 md:p-8 transition-all duration-300 relative">
+        
+        <button v-if="!sidebarOpen" @click="sidebarOpen = true" class="fixed top-4 left-4 z-[50] bg-yellow-500 text-black p-3 rounded-lg shadow-xl border-2 border-yellow-600">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
 
-            <!-- MODIFICACIÓN 1: Botón de menú fijado cuando está minimizado -->
-            <button v-if="!sidebarOpen" @click="sidebarOpen = true" 
-                    class="fixed top-4 left-4 z-[50] bg-yellow-500 text-black p-3 rounded-lg shadow-xl hover:scale-110 transition-all active:scale-95 border-2 border-yellow-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
-                </svg>
-            </button>
+        <div class="mb-10 mt-16 md:mt-0 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-yellow-500">{{filteredCards.length}} Cartas</h1>
+        </div>
 
-            <div class="flex justify-between items-center mb-10 mt-16 md:mt-0">
-                <span class="text-yellow-500 font-bold text-2xl ml-2 md:ml-0">{{filteredCards.length}} Deseos</span>
-            </div>
-
-            <!-- CONTENEDOR GRID -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-10">
-                <!-- Se renderiza mediante paginatedCards para optimización extrema de rendimiento -->
-                <div v-for="card in paginatedCards" :key="card.card_set_id" class="flip-card aspect-[11/16] cursor-pointer" @click="selectedCard = card">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front shadow-2xl transition-all duration-500" :class="{ 'card-poseida border-[3px]': card.tengo, 'border border-white/10': !card.tengo }">
-                             <img :src="card.card_image" class="w-full h-full object-cover" loading="lazy">
-                            <div v-if="card.tengo" class="absolute inset-0 bg-green-500/10 border-4 border-green-500/50 rounded-xl"></div>
-                        </div>
-                        <div class="flip-card-back transition-all duration-500" :class="{ 'card-poseida border-[3px]': card.tengo, 'border border-white/10': !card.tengo }">
-                            <img src="https://m.media-amazon.com/images/I/51xnq29+enL.jpg" class="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none">
-                            <div class="relative z-10">
-                                <p class="text-yellow-500 font-bold text-lg leading-tight">{{card.card_name}}</p>
-                                <p class="text-[10px] text-slate-400 mb-4">{{card.card_set_id}}</p>
-                                
-                                <div class="space-y-2 text-left bg-slate-950/80 p-3 rounded-lg border border-slate-700">
-                                    <div class="flex justify-between text-xs"><span>Rareza:</span> <span class="text-yellow-500">{{card.rarity}}</span></div>
-                                    <div class="flex justify-between text-xs"><span>Precio:</span> <span class="text-yellow-500">{{card.market_price_en}}€</span></div>
-                                    <div class="flex justify-between text-xs"><span>Set ID:</span> <span>{{card.set_id}}</span></div>
-                                </div>
-
-                                <div class="mt-4 flex justify-center gap-1">
-                                    <span v-for="n in 5" :key="n" :class="n <= card.deseo ? 'text-yellow-500' : 'text-slate-700'">✦</span>
-                                </div>
-                            </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+            <div v-for="card in paginatedCards" :key="card.card_set_id" class="flip-card aspect-[11/16] cursor-pointer" @click="selectedCard = card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front shadow-2xl transition-all" :class="{'card-poseida border-4': card.tengo, 'border border-white/10': !card.tengo}">
+                        <img :src="card.card_image" class="w-full h-full object-cover" loading="lazy">
+                    </div>
+                    <div class="flip-card-back">
+                        <p class="text-yellow-500 font-bold leading-tight">{{card.card_name}}</p>
+                        <p class="text-[10px] text-slate-400 mb-4">{{card.card_set_id}}</p>
+                        <div class="bg-slate-950/80 p-2 rounded text-xs text-left space-y-1">
+                            <p>Precio: <span class="text-yellow-500">{{card.market_price}}€</span></p>
+                            <p>Rareza: {{card.rarity}}</p>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- MODIFICACIÓN 5: Botón Cargar Más manual al pie de página -->
-            <div v-if="visibleLimit < filteredCards.length" class="flex justify-center my-12">
-                <button @click="loadMore" class="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-yellow-500 border border-slate-700 font-bold rounded-xl transition transform active:scale-95 shadow-xl">
-                    Cargar más cartas...
-                </button>
-            </div>
-        </main>
+        <div v-if="visibleLimit < filteredCards.length" class="flex justify-center my-10">
+            <button @click="loadMore" class="px-6 py-2 bg-slate-800 text-yellow-500 border border-slate-700 rounded-lg hover:bg-slate-700">Cargar más</button>
+        </div>
+    </main>
 
-    <!-- MODIFICACIÓN 1: Botón Flotante para ir arriba de todo (Scroll to Top) -->
-    <button v-if="showScrollTop" @click="scrollToTop" 
-            class="fixed bottom-6 right-6 z-[70] bg-yellow-500 text-black p-3.5 rounded-full shadow-2xl hover:scale-110 transition-all active:scale-95 border-2 border-yellow-600">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
-        </svg>
+    <button v-if="showScrollTop" @click="scrollToTop" class="fixed bottom-6 right-6 z-[70] bg-yellow-500 text-black p-3 rounded-full shadow-2xl">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
     </button>
 
-    <!-- VISUALIZADOR DE DETALLE (MODAL) -->
-    <div v-if="selectedCard" class="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-4 bg-black/95 backdrop-blur-sm" @click.self="selectedCard = null">
+    <div v-if="selectedCard" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-sm" @click.self="selectedCard = null">
         
-        <!-- MODIFICACIÓN 2: Flecha navegación Carta Anterior -->
-        <button v-if="currentCardIndex > 0" @click="prevCard" 
-                class="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-[110] bg-slate-900/80 hover:bg-yellow-500 hover:text-black border border-slate-700 text-white p-4 rounded-full transition shadow-2xl">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15 18 9 12 15 6"/>
-            </svg>
+        <button v-if="currentCardIndex > 0" @click="prevCard" class="absolute left-4 z-[110] bg-slate-800 text-white p-4 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button v-if="currentCardIndex < filteredCards.length - 1" @click="nextCard" class="absolute right-4 z-[110] bg-slate-800 text-white p-4 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
 
-        <!-- MODIFICACIÓN 2: Flecha navegación Carta Siguiente -->
-        <button v-if="currentCardIndex < filteredCards.length - 1" @click="nextCard" 
-                class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-[110] bg-slate-900/80 hover:bg-yellow-500 hover:text-black border border-slate-700 text-white p-4 rounded-full transition shadow-2xl">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"/>
-            </svg>
-        </button>
-
-        <div class="w-full h-full md:h-auto md:max-w-5xl bg-slate-900 md:rounded-3xl overflow-y-auto flex flex-col md:flex-row shadow-2xl border border-slate-800 relative">
-            <button @click="selectedCard = null" class="absolute top-4 right-4 z-50 text-white bg-black/50 p-2 rounded-full md:bg-transparent">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-            </button>
-            <div class="w-full md:w-1/2 p-6 bg-black flex justify-center items-center">
-                <img :src="selectedCard.card_image" class="max-h-[45vh] md:max-h-[80vh] w-auto object-contain rounded-xl">
+        <div class="w-full max-w-5xl bg-slate-900 md:rounded-3xl flex flex-col md:flex-row overflow-hidden shadow-2xl border border-slate-800 relative mx-4">
+            <div class="w-full md:w-1/2 bg-black p-6 flex justify-center">
+                <img :src="selectedCard.card_image" class="max-h-[70vh] object-contain">
             </div>
-            <div class="w-full md:w-1/2 p-6 md:p-12">
-                <h2 class="text-3xl font-bold mb-4">{{selectedCard.card_name}}</h2>
-                <p class="text-yellow-500 text-4xl font-black mb-6">{{selectedCard.rarity}} - {{translateRarity(selectedCard.rarity)}}</p>
-                <div class="bg-slate-800 p-4 rounded-xl mb-6">
-                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-2">ID Carta</p>
-                    <p class="font-mono">{{selectedCard.card_set_id}}</p>
-                    <p class="text-xs text-slate-400 uppercase tracking-widest mb-2 mt-2">Colección</p>
-                    <p class="font-mono">{{selectedCard.set_id}} - {{selectedCard.set_name}}</p>
-                </div>
-                <div class="grid grid-cols-2 gap-6 mb-6 border-y border-slate-800 py-6">
-                    <div>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Precio de Mercado</p>
-                        <p class="text-2xl md:text-3xl font-bold text-yellow-500">{{selectedCard.market_price_en}} €</p>
+            <div class="w-full md:w-1/2 p-8 md:p-12">
+                <h2 class="text-3xl font-bold mb-2">{{selectedCard.card_name}}</h2>
+                <p class="text-yellow-500 font-mono mb-6">{{selectedCard.card_set_id}} | {{selectedCard.rarity}}</p>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-slate-800 p-4 rounded-xl text-center">
+                        <p class="text-[10px] uppercase text-slate-400">Precio</p>
+                        <p class="text-2xl font-bold text-yellow-500">{{selectedCard.market_price}} €</p>
                     </div>
-                    <div>
-                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Deseo</p>
-                        <div class="text-xl md:text-2xl">
-                            <span v-for="n in 5" :key="n" :class="n <= selectedCard.deseo ? 'text-yellow-500' : 'text-slate-800'">✦</span>
-                        </div>
+                    <div class="bg-slate-800 p-4 rounded-xl text-center">
+                        <p class="text-[10px] uppercase text-slate-400">Deseo</p>
+                        <p class="text-2xl">✦ {{selectedCard.deseo || 0}}</p>
                     </div>
                 </div>
-
-                <div class="mb-6">
-                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-3">Tags personalizados</p>
-                    <div class="flex flex-wrap gap-2">
-                        <span v-if="selectedCard.tags && selectedCard.tags.length === 0" class="text-xs text-slate-600 italic">Sin tags guardados</span>
-                        <span v-for="tag in selectedCard.tags" :key="tag" class="bg-slate-800 border border-slate-700 px-3 py-1 rounded-lg text-xs">#{{tag}}</span>
-                    </div>
-                </div>
-                <div :class="selectedCard.tengo ? 'bg-green-500 text-black' : 'bg-slate-700 text-slate-400'" class="p-4 rounded-xl text-center font-bold">
-                    {{selectedCard.tengo ? '✓ EN COLECCIÓN' : 'PENDIENTE'}}
+                <div :class="selectedCard.tengo ? 'bg-green-500 text-black' : 'bg-slate-700 text-slate-400'" class="p-4 rounded-xl text-center font-bold text-lg">
+                    {{selectedCard.tengo ? 'EN COLECCIÓN ✓' : 'FALTANTE ✕'}}
                 </div>
             </div>
         </div>
@@ -342,622 +156,73 @@
         setup() {
             const sidebarOpen = ref(window.innerWidth > 768);
             const selectedCard = ref(null);
-            const masterData = ref([]);
-            
-            // Estado para el control del scroll y paginación (Modificación 1 y 5)
+            const masterCards = ref([]);
             const mainContainer = ref(null);
             const showScrollTop = ref(false);
-            const visibleLimit = ref(30); // Número de cartas iniciales visibles
+            const visibleLimit = ref(30);
 
-            // Tu colección e intereses guardados
-            const userCollection = ref([
-               { card_set_id: "OP01-001", deseo: 1, tengo: false, tags: ["Zoro","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación"] },
-                { card_set_id: "OP01-002", deseo: 1, tengo: false, tags: ["Law","Supernova","Peor generación", "Espadachín","Capitán", "D.", "Piratas Heart"] },
-                { card_set_id: "OP01-003", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"] },
-                { card_set_id: "OP01-013_p1", deseo: 1, tengo: false, tags: ["Sanji", "Mugiwara", "Cocinero"] },
-                { card_set_id: "OP01-016_p1", deseo: 1, tengo: false, tags: ["Nami", "Mujer", "Navegante", "Mugiwara"] },
-                { card_set_id: "OP01-030", deseo: 1, tengo: false, tags: ["Evento", "Mugiwara", "2 años", "Timeskip"] },
-                { card_set_id: "OP01-047_p1", deseo: 1, tengo: false, tags: ["Law","Supernova","Peor generación", "Espadachín","Capitán", "D.", "Piratas Heart"] },
-                { card_set_id: "OP01-060", deseo: 1, tengo: false, tags: ["Doflamingo", "Shichibukai", "Piratas Donquixote", "Capitán"] },
-                { card_set_id: "OP01-061", deseo: 1, tengo: false, tags: ["Kaido", "Piratas Bestia", "Yonkou"] },
-                { card_set_id: "OP01-062", deseo: 1, tengo: false, tags: ["Crocodile", "Shichibukai", "Baroque Works", "Logia", "Arabasta","Cross Wild"]},
-                { card_set_id: "OP01-071", deseo: 1, tengo: false, tags: ["Jinbe", "Younkou", "Mugiwara", "Gyojin", "Shichibukai"] },
-                { card_set_id: "OP01-075", deseo: 1, tengo: false, tags: ["Pacifista", "Marina", "Kuma","Shichibukai"] },
-                { card_set_id: "OP01-079", deseo: 1, tengo: false, tags: ["Nico Robin", "Baroque Works", "Ms. All Sunday", "Mugiwara", "Arquologa"] },
-                { card_set_id: "OP01-084", deseo: 1, tengo: false, tags: ["Mr.2", "Bon Kurei", "Baroque Works"] },
-                { card_set_id: "OP01-085", deseo: 1, tengo: false, tags: ["Mr.3", "Bon Kurei", "Baroque Works", "Cross Wild"]  },
-                { card_set_id: "OP01-096", deseo: 1, tengo: false, tags: ["King", "Piratas Bestias", "Tres Plagas", "Lunaria", "vicecapitán"] },
-                { card_set_id: "OP01-120", deseo: 2, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"] },
-                { card_set_id: "OP01-121", deseo: 1, tengo: false, tags: ["Yamato", "Wano", "Hija de Kaido"] },
-                { card_set_id: "OP01-121_p1", deseo: 1, tengo: false, tags: ["Yamato", "Wano", "Hija de Kaido"] },
-                { card_set_id: "OP02-001", deseo: 1, tengo: false, tags: ["Barbablanca","Younkou", "Capitán", "Edward Newgate"] },
-                { card_set_id: "OP02-002_p1", deseo: 1, tengo: false, tags: ["Garp", "Marina", "D.", "ViceAlmirante"] },
-                { card_set_id: "OP02-004_p1", deseo: 1, tengo: false, tags: ["Barbablanca","Younkou", "Capitán", "Edward Newgate"] },
-                { card_set_id: "OP02-013_p1", deseo: 2, tengo: false, tags: ["Ace", "vicecapitán", "D.", "Barbablanca", "Hermanos"] },
-                { card_set_id: "OP02-013_p2", deseo: 4, tengo: false, tags: ["Ace", "vicecapitán", "D.", "Barbablanca","Hermanos","Manga"] },
-                { card_set_id: "OP02-022", deseo: 1, tengo: false, tags: ["Evento", "Barbablanca", "Guerra"] },
-                { card_set_id: "OP02-058_p1", deseo: 2, tengo: false, tags: ["Buggy", "Capitán", "Yonkou","Cross Guild","Shichibukai", "Impel Down"] },
-                { card_set_id: "OP02-058", deseo: 1, tengo: false, tags: ["Buggy", "Capitán", "Yonkou","Cross Guild","Shichibukai", "Impel Down"] },
-                { card_set_id: "OP02-066", deseo: 1, tengo: false, tags: ["Evento", "Impel Down"] },
-                { card_set_id: "OP02-085_p1", deseo: 2, tengo: false, tags: ["Magellan", "Impel Down", "Veneno"] },
-                { card_set_id: "OP02-093", deseo: 1, tengo: false, tags: ["Smoker", "Marina", "VideAlmirante"] },
-                { card_set_id: "OP02-096", deseo: 2, tengo: false, tags: ["Kuzan", "Almirante", "Marina","Aokiji", "Barbanegra"] },
-                { card_set_id: "OP02-096_p1", deseo: 2, tengo: false, tags: ["Kuzan", "Almirante", "Marina","Aokiji", "Barbanegra"] },
-                { card_set_id: "OP02-108_p1", deseo: 1, tengo: false, tags: ["Rosinante", "Piratas Donquixote", "Marina"] },
-                { card_set_id: "OP02-114", deseo: 2, tengo: false, tags: ["Borsalino", "Almirante", "Marina", "Kizaru"] },
-                { card_set_id: "OP02-114_p1", deseo: 2, tengo: false, tags: ["Borsalino", "Almirante", "Marina", "Kizaru"] },
-                { card_set_id: "OP02-115_p1", deseo: 1, tengo: false, tags: ["Garp", "Marina", "D.", "ViceAlmirante"]  },
-                { card_set_id: "OP03-013_p1", deseo: 1, tengo: false, tags: ["Marco", "Barbablanca", "Fénix", "vicecapitán"] },
-                { card_set_id: "OP03-018_p1", deseo: 1, tengo: false, tags: ["Evento","Ace", "vicecapitán", "D.", "Barbablanca", "Hermanos"] },
-                { card_set_id: "OP03-022_p1", deseo: 1, tengo: false, tags: ["Arlong", "East Blue", "Gyojin", "Capitán", "Blanco y Negro"] },
-                { card_set_id: "OP03-040", deseo: 1, tengo: false, tags: ["Nami", "Mujer", "Navegante", "Mugiwara"] },
-                { card_set_id: "OP03-041", deseo: 1, tengo: false, tags: ["Usopp","Tirador", "Mugiwara"]},
-                { card_set_id: "OP03-041_p1", deseo: 1, tengo: false, tags: ["Usopp","Tirador", "Mugiwara"] },
-                { card_set_id: "OP03-078", deseo: 1, tengo: false, tags: ["Issho", "Fujitora", "Marina", "Almirante", "Ciego"] },
-                { card_set_id: "OP03-078_p1", deseo: 1, tengo: false, tags: ["Issho", "Fujitora", "Marina", "Almirante", "Ciego"] },
-                { card_set_id: "OP03-099_p1", deseo: 1, tengo: false, tags: ["Katakuri", "Big Mom", "Vicecapitán", "Blanco y Negro"] },
-                { card_set_id: "OP03-122", deseo: 1, tengo: false, tags: ["Sogeking", "Usopp","Tirador", "Mugiwara"] },
-                { card_set_id: "OP03-122_p1", deseo: 1, tengo: false, tags: ["Sogeking", "Usopp", "Mugiwara", "Tirador"] },
-                { card_set_id: "OP03-122_p2", deseo: 1, tengo: false, tags: ["Sogeking", "Usopp", "Mugiwara", "Tirador","Manga"] },
-                { card_set_id: "OP03-123", deseo: 1, tengo: false, tags: ["Katakuri", "Big Mom", "Vicecapitán"] },
-                { card_set_id: "OP03-123_p1", deseo: 1, tengo: false, tags: ["Katakuri", "Big Mom", "Vicecapitán"] },
-                { card_set_id: "OP04-015", deseo: 1, tengo: false, tags: ["Zoro","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación"] },
-                { card_set_id: "OP04-019_p1", deseo: 1, tengo: false, tags: ["Doflamingo", "Shichibukai", "Piratas Donquixote", "Capitán", "Grupo"] },
-                { card_set_id: "OP04-044", deseo: 1, tengo: false, tags: ["Kaido", "Piratas Bestia", "Yonkou", "Forma Bestia"] },
-                { card_set_id: "OP04-044_p1", deseo: 1, tengo: false, tags: ["Kaido", "Piratas Bestia", "Yonkou", "Forma Bestia"]},
-                { card_set_id: "OP04-058_p1", deseo: 1, tengo: false, tags: ["Crocodile", "Shichibukai", "Baroque Works", "Grupo"] },
-                { card_set_id: "OP04-083_p1", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "D.", "vicecapitán"] },
-                { card_set_id: "OP04-083_p2", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "D.", "vicecapitán", "Manga"] },
-                { card_set_id: "OP04-090_p1", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos", "Gear 4"] },
-                { card_set_id: "OP04-090", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos","Gear 4"] },
-                { card_set_id: "OP04-112", deseo: 1, tengo: false, tags: ["Yamato", "Wano", "Hija de Kaido"] },
-                { card_set_id: "OP04-112_p1", deseo: 1, tengo: false, tags: ["Yamato", "Wano", "Hija de Kaido"] },
-                { card_set_id: "OP04-119_p1", deseo: 1, tengo: false, tags: ["Rosinante", "Piratas Donquixote", "Marina"]  },
-                { card_set_id: "OP05-027", deseo: 1, tengo: false, tags: ["Law","Supernova","Peor generación", "Espadachín","Capitán", "D.", "Piratas Heart", "niño"]},
-                { card_set_id: "OP05-028", deseo: 1, tengo: false, tags: ["Doflamingo", "Shichibukai", "Piratas Donquixote", "Capitán"]  },
-                { card_set_id: "OP05-041", deseo: 1, tengo: false, tags: ["Akainu", "Sakazuki", "Marina", "Almirante", "Comandante"] },
-                { card_set_id: "OP05-051", deseo: 1, tengo: false, tags: ["Borsalino", "Almirante", "Marina", "Kizaru"]},
-                { card_set_id: "OP05-060", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"] },
-                { card_set_id: "OP05-060_p1", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"] },
-                { card_set_id: "OP05-066", deseo: 1, tengo: false, tags: ["Jinbe", "Younkou", "Mugiwara", "Gyojin", "Shichibukai"] },
-                { card_set_id: "OP05-069_p1", deseo: 1, tengo: false, tags: ["Law","Supernova","Peor generación", "Espadachín","Capitán", "D.", "Piratas Heart"] },
-                { card_set_id: "OP05-069_p2", deseo: 1, tengo: false, tags: ["Law","Supernova","Peor generación", "Espadachín","Capitán", "D.", "Piratas Heart","Manga"] },
-                { card_set_id: "OP05-074_p2", deseo: 1, tengo: false, tags: ["Eustass Kid", "Peor generación", "Supernova", "Manga"] },
-                { card_set_id: "OP05-100", deseo: 1, tengo: false, tags: ["Enel", "Skypiea", "Dios", "Logia"] },
-                { card_set_id: "OP05-100_p1", deseo: 1, tengo: false, tags: ["Enel", "Skypiea", "Dios", "Logia"] },
-                { card_set_id: "OP05-118", deseo: 1, tengo: false, tags: ["Kaido", "Piratas Bestia", "Yonkou", "Dragon"] },
-                { card_set_id: "OP05-118_p1", deseo: 1, tengo: false, tags: ["Kaido", "Piratas Bestia", "Yonkou","Dragon"] },
-                { card_set_id: "OP05-119", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"] },
-                { card_set_id: "OP05-119_p1", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"]},
-                { card_set_id: "OP05-119_p2", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos", "Manga"] },
-                { card_set_id: "OP06-007_p1", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"]},
-                { card_set_id: "OP06-021", deseo: 1, tengo: false, tags: ["Perona", "Thriller Bark", "Mujer"] },
-                { card_set_id: "OP06-021_p1", deseo: 1, tengo: false, tags: ["Perona", "Thriller Bark", "Mujer"] },
-                { card_set_id: "OP06-022", deseo: 1, tengo: false, tags: ["Yamato", "Wano", "Hija de Kaido"] },
-                { card_set_id: "OP06-042", deseo: 1, tengo: false, tags: ["Reiju", "Germa 66", "Vinsmoke", "Mujer"] },
-                { card_set_id: "OP06-068", deseo: 1, tengo: false, tags: ["Reiju", "Germa 66", "Vinsmoke", "Mujer"] },
-                { card_set_id: "OP06-086_p1", deseo: 1, tengo: false, tags: ["Moria", "Thriller Bark", "Shichibukai", "Capitán"] },
-                { card_set_id: "OP06-093_p1", deseo: 1, tengo: false, tags:  ["Perona", "Thriller Bark", "Mujer"] },
-                { card_set_id: "OP06-096", deseo: 1, tengo: false, tags: ["Evento","Zoro","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación"] },
-                { card_set_id: "OP06-101_p2", deseo: 1, tengo: false, tags: ["Nami", "Mujer", "Navegante", "Mugiwara"] },
-                { card_set_id: "OP06-118_p1", deseo: 1, tengo: false, tags: ["Zoro","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación"] },
-                { card_set_id: "OP06-118_p2", deseo: 1, tengo: false, tags: ["Zoro","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación","Manga"]  },
-                { card_set_id: "OP07-001", deseo: 1, tengo: false, tags: ["Dragon", "Revolucionario", "Líder", "D."] },
-                { card_set_id: "OP07-001_p1", deseo: 1, tengo: false, tags: ["Dragon", "Revolucionario", "Líder", "D."] },
-                { card_set_id: "OP07-019", deseo: 1, tengo: false, tags: ["Bonney", "Peor generación", "Supernova", "Mujer"] },
-                { card_set_id: "OP07-019_p1", deseo: 1, tengo: false, tags: ["Bonney", "Peor generación", "Supernova", "Mujer"] },
-                { card_set_id: "OP07-026_p1", deseo: 1, tengo: false, tags: ["Bonney", "Peor generación", "Supernova", "Mujer"] },
-                { card_set_id: "OP07-029", deseo: 1, tengo: false, tags:["Hawkins", "Peor generación", "Supernova",]  },
-                { card_set_id: "OP07-029_p1", deseo: 1, tengo: false, tags: ["Hawkins", "Peor generación", "Supernova",] },
-                { card_set_id: "OP07-033", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"] },
-                { card_set_id: "OP07-038", deseo: 1, tengo: false, tags: ["Boa Hancock", "Shichibukai", "Mujer", "Kuja"] },
-                { card_set_id: "OP07-038_p1", deseo: 1, tengo: false, tags: ["Boa Hancock", "Shichibukai", "Mujer", "Kuja", "Grupo"] },
-                { card_set_id: "OP07-045_p1", deseo: 1, tengo: false, tags: ["Jinbe", "Younkou", "Mugiwara", "Gyojin", "Shichibukai"]},
-                { card_set_id: "OP07-047_p1", deseo: 1, tengo: false, tags: ["Law","Supernova","Peor generación", "Espadachín","Capitán", "D.", "Piratas Heart"]  },
-                { card_set_id: "OP07-051_p1", deseo: 1, tengo: false, tags: ["Boa Hancock", "Shichibukai", "Mujer", "Kuja", ]  },
-                { card_set_id: "OP07-051_p2", deseo: 1, tengo: false, tags: ["Boa Hancock", "Shichibukai", "Mujer", "Kuja", "Manga"] },
-                { card_set_id: "OP07-053", deseo: 1, tengo: false, tags: ["Ace", "D.", "Barbablanca"] },
-                { card_set_id: "OP07-079_p1", deseo: 1, tengo: false, tags: ["Rob Lucci", "CP0", "Zoan", "Grupo"] },
-                { card_set_id: "OP07-085", deseo: 1, tengo: false, tags:["Stussy", "CP0", "Agente", "Mujer"] },
-                { card_set_id: "OP07-097_p1", deseo: 1, tengo: false, tags: ["Vegapunk", "Egghead", "Científico","Grupo"] },
-                { card_set_id: "OP07-118", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "D."] },
-                { card_set_id: "OP07-118_p1", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "D."]  },
-                { card_set_id: "OP07-119", deseo: 1, tengo: false, tags: ["Ace", "D.", "Barbablanca"] },
-                { card_set_id: "OP07-119_p1", deseo: 1, tengo: false, tags: ["Ace", "D.", "Barbablanca"] },
-                { card_set_id: "OP08-002", deseo: 1, tengo: false, tags: ["Marco", "Barbablanca", "Fénix", "vicecapitán"] },
-                { card_set_id: "OP08-052_p1", deseo: 1, tengo: false, tags: ["Ace", "D.", "Barbablanca"]},
-                { card_set_id: "OP08-053", deseo: 1, tengo: false, tags: ["Evento","Ace", "D.", "Barbablanca"] },
-                { card_set_id: "OP08-057", deseo: 1, tengo: false, tags: ["King", "Piratas Bestias", "Tres Plagas", "Lunaria", "vicecapitán"]},
-                { card_set_id: "OP08-058_p1", deseo: 1, tengo: false, tags: ["Pudding", "Banda Big Mom", "Mujer"] },
-                { card_set_id: "OP08-059", deseo: 1, tengo: false, tags: ["King", "Piratas Bestias", "Tres Plagas", "Lunaria", "vicecapitán"] },
-                { card_set_id: "OP08-069_p1", deseo: 1, tengo: false, tags: ["Charlotte Linlin", "Big Mom", "Younkou"] },
-                { card_set_id: "OP08-079_p1", deseo: 1, tengo: false, tags: ["Kaido", "Piratas Bestia", "Yonkou"] },
-                { card_set_id: "OP08-112", deseo: 1, tengo: false, tags: ["S-Snake", "Serafín", "Mujer"] },
-                { card_set_id: "OP08-112_p1", deseo: 1, tengo: false, tags: ["S-Snake", "Serafín", "Mujer"] },
-                { card_set_id: "OP08-118", deseo: 1, tengo: false, tags: ["Rayleigh", "Piratas de Roger", "vicecapitán", "Espadachín"] },
-                { card_set_id: "OP08-118_p1", deseo: 1, tengo: false, tags:["Rayleigh", "Piratas de Roger", "vicecapitán", "Espadachín"] },
-                { card_set_id: "OP08-118_p2", deseo: 1, tengo: false, tags:["Rayleigh", "Piratas de Roger", "vicecapitán", "Espadachín", "Manga"] },
-                { card_set_id: "OP08-119", deseo: 1, tengo: false, tags: ["Kaido", "Piratas Bestia", "Yonkou", "Charlotte Linlin", "Big Mom"] },
-                { card_set_id: "ST02-007_p2", deseo: 1, tengo: false, tags: ["Bonney", "Peor generación", "Supernova"] },
-                { card_set_id: "OP09-001", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"] },
-                { card_set_id: "OP09-001_p1", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"]},
-                { card_set_id: "OP09-004", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"] },
-                { card_set_id: "OP09-004_p1", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"] },
-                { card_set_id: "OP09-004_p2", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín", "Manga"] },
-                { card_set_id: "OP09-004_p3", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín", "Cartel"] },
-                { card_set_id: "OP09-020", deseo: 1, tengo: false, tags: ["Evento","Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"] },
-                { card_set_id: "OP09-042", deseo: 1, tengo: false, tags:  ["Buggy", "Capitán", "Yonkou","Cross Guild","Shichibukai", "Impel Down"] },
-                { card_set_id: "OP09-042_p1", deseo: 1, tengo: false, tags:  ["Buggy", "Capitán", "Yonkou","Cross Guild","Shichibukai", "Impel Down"] },
-                { card_set_id: "OP09-046", deseo: 1, tengo: false, tags: ["Crocodile", "Shichibukai", "Baroque Works", "Logia", "Arabasta","Cross Wild"] },
-                { card_set_id: "OP09-051", deseo: 1, tengo: false, tags: ["Buggy", "Capitán", "Yonkou","Cross Guild","Shichibukai", "Impel Down"] },
-                { card_set_id: "OP09-051_p1", deseo: 1, tengo: false, tags:  ["Buggy", "Capitán", "Yonkou","Cross Guild","Shichibukai"] },
-                { card_set_id: "OP09-051_p2", deseo: 1, tengo: false, tags:  ["Buggy", "Capitán", "Yonkou","Cross Guild","Shichibukai","Manga"] },
-                { card_set_id: "OP09-051_p3", deseo: 1, tengo: false, tags:  ["Buggy", "Capitán", "Yonkou","Cross Guild","Shichibukai","Cartel"]},
-                { card_set_id: "OP09-057", deseo: 1, tengo: false, tags:  ["Evento","Buggy", "Capitán", "Yonkou","Cross Guild","Shichibukai"] },
-                { card_set_id: "OP09-061", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Gear 5"] },
-                { card_set_id: "OP09-061_p1", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Gear 5"] },
-                { card_set_id: "OP09-062", deseo: 1, tengo: false, tags: ["Nico Robin", "Baroque Works", "Ms. All Sunday", "Mugiwara", "Arquologa"] },
-                { card_set_id: "OP09-065", deseo: 1, tengo: false, tags: ["Sanji", "Mugiwara", "Cocinero", "Germa 66"] },
-                { card_set_id: "OP09-069_p1", deseo: 1, tengo: false, tags: ["Law","Supernova","Peor generación", "Espadachín","Capitán", "D.", "Piratas Heart"] },
-                { card_set_id: "OP09-071", deseo: 1, tengo: false, tags: ["Nico Robin", "Baroque Works", "Ms. All Sunday", "Mugiwara", "Arquologa"] },
-                { card_set_id: "OP09-072", deseo: 1, tengo: false, tags: ["Franky", "Mugiwara", "Cyborg"] },
-                { card_set_id: "OP09-072_p1", deseo: 1, tengo: false, tags: ["Franky", "Mugiwara", "Cyborg"] },
-                { card_set_id: "OP09-073", deseo: "1", tengo: false, tags: ["Brook", "Mugiwara", "Espadachín", "Músico"] },
-                { card_set_id: "OP09-075", deseo: 1, tengo: false, tags: ["Eustass Kid", "Peor generación", "Kid Pirates"] },
-                { card_set_id: "OP09-076", deseo: 1, tengo: false, tags: ["Zoro","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación","Manga"] },
-                { card_set_id: "OP09-078", deseo: 1, tengo: false, tags: ["Evento","Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Gear 5"] },
-                { card_set_id: "OP09-079", deseo: 1, tengo: false, tags: ["Evento","Luffy","Kaido","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Gear 5"]},
-                { card_set_id: "OP09-081", deseo: 1, tengo: false, tags: ["Teach", "Barbanegra", "Younkou", "D."] },
-                { card_set_id: "OP09-081_p1", deseo: 1, tengo: false, tags: ["Teach", "Barbanegra", "Younkou", "D."] },
-                { card_set_id: "OP09-085", deseo: 1, tengo: false, tags: ["Moria", "Thriller Bark", "Shichibukai", "Capitán"] },
-                { card_set_id: "OP09-093", deseo: 1, tengo: false, tags: ["Teach", "Barbanegra", "Younkou", "D."] },
-                { card_set_id: "OP09-093_p1", deseo: 1, tengo: false, tags: ["Teach", "Barbanegra", "Younkou", "D."] },
-                { card_set_id: "OP09-093_p2", deseo: 1, tengo: false, tags: ["Teach", "Barbanegra", "Younkou", "D.", "Manga"]},
-                { card_set_id: "OP09-093_p3", deseo: 1, tengo: false, tags: ["Teach", "Barbanegra", "Younkou", "D.", "Cartel"]},
-                { card_set_id: "OP09-118", deseo: 1, tengo: false, tags: ["Gol D. Roger", "Rey de los Piratas", "D."] },
-                { card_set_id: "OP09-118_p1", deseo: 1, tengo: false, tags: ["Gol D. Roger", "Rey de los Piratas", "D."] },
-                { card_set_id: "OP09-118_p2", deseo: 1, tengo: false, tags: ["Gol D. Roger", "Rey de los Piratas", "D.", "Manga"] },
-                { card_set_id: "OP09-119", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova"] },
-                { card_set_id: "OP09-119_p1", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova"] },
-                { card_set_id: "OP09-119_p2", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Manga"] },
-                { card_set_id: "OP05-119_p6", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Cartel"] },
-                { card_set_id: "OP07-051_p3", deseo: 1, tengo: false, tags: ["Boa Hancock", "Shichibukai", "Mujer", "Kuja"] },
-                { card_set_id: "OP10-019_p1", deseo: 1, tengo: false, tags: ["Evento", "Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"] },
-                { card_set_id: "OP10-034", deseo: 1, tengo: false, tags: ["Franky", "Mugiwara", "Cyborg"]},
-                { card_set_id: "OP10-035", deseo: 1, tengo: false, tags: ["Brook", "Mugiwara", "Espadachín", "Músico"] },
-                { card_set_id: "OP10-036", deseo: 1, tengo: false, tags: ["Perona", "Thriller Bark", "Mujer"]  },
-                { card_set_id: "OP10-042", deseo: 1, tengo: false, tags: ["Usopp","Tirador", "Mugiwara"] },
-                { card_set_id: "OP10-042_p1", deseo: 1, tengo: false, tags: ["Usopp","Tirador", "Mugiwara"]},
-                { card_set_id: "OP10-052", deseo: 1, tengo: false, tags: ["Bartolomeo", "Flota Mugiwara", "Barrera"] },
-                { card_set_id: "OP10-055", deseo: 1, tengo: false, tags: ["Marco", "Barbablanca", "Fénix", "vicecapitán"] },
-                { card_set_id: "OP10-081", deseo: 1, tengo: false, tags: ["Usopp","Tirador", "Mugiwara"] },
-                { card_set_id: "OP10-082_p1", deseo: 1, tengo: false, tags: ["Kuzan", "Almirante", "Marina","Aokiji", "Barbanegra"] },
-                { card_set_id: "OP10-090", deseo: 1, tengo: false, tags: ["Franky", "Mugiwara", "Cyborg"] },
-                { card_set_id: "OP10-092", deseo: 1, tengo: false, tags:  ["Perona", "Thriller Bark", "Mujer"] },
-                { card_set_id: "OP10-094", deseo: 1, tengo: false, tags: ["Ryuma", "Espadachín"] },
-                { card_set_id: "OP10-099", deseo: 1, tengo: false, tags: ["Eustass Kid", "Peor Generación", "Kid Pirates"] },
-                { card_set_id: "OP10-099_p1", deseo: 1, tengo: false, tags: ["Eustass Kid", "Peor Generación", "Kid Pirates"] },
-                { card_set_id: "OP10-118_p1", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Gear 4"] },
-                { card_set_id: "OP10-119_p1", deseo: 1, tengo: false, tags:["Law","Supernova","Peor generación", "Espadachín","Capitán", "D.", "Piratas Heart"]},
-                { card_set_id: "OP10-119_p2", deseo: 1, tengo: false, tags: ["Law","Supernova","Peor generación", "Espadachín","Capitán", "D.", "Piratas Heart","Manga"]},
-                { card_set_id: "ST15-002_p1", deseo: 1, tengo: false, tags: ["Barbablanca","Younkou", "Capitán", "Edward Newgate", "Grupo"] },
-                { card_set_id: "OP09-015", deseo: 1, tengo: false, tags: ["Lucky Roux", "Piratas del Pelirrojo", "Tirador"] },
-                { card_set_id: "OP11-040", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Gear 4"]},
-                { card_set_id: "OP11-080", deseo: 1, tengo: false, tags: ["Evento","Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Gear 2"] },
-                { card_set_id: "OP11-080_p1", deseo: 1, tengo: false, tags: ["Evento","Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Gear 2"] },
-                { card_set_id: "OP11-084_p1", deseo: 1, tengo: false, tags: ["Kuzan", "Almirante", "Marina","Aokiji", "Piratas Barbanegra"] },
-                { card_set_id: "OP11-095", deseo: 1, tengo: false, tags: ["Garp", "Marina", "D.", "ViceAlmirante"] },
-                { card_set_id: "OP11-114_p1", deseo: 1, tengo: false, tags: ["Evento","Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Gear 2"]},
-                { card_set_id: "OP11-118", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Gear 4"] },
-                { card_set_id: "OP11-118_p1", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Gear 4"] },
-                { card_set_id: "OP11-118_p2", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Gear 4"] },
-                { card_set_id: "OP05-119_p7", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Gear 5", "Gold"] },
-                { card_set_id: "OP05-119_p8", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Gear 5", "Gold"] },
-                { card_set_id: "OP12-014_p1", deseo: 1, tengo: false, tags: ["Boa Hancock", "Kuja Pirates", "Shichibukai", "Mujer"] },
-                { card_set_id: "OP12-020_p1", deseo: 1, tengo: false, tags:["Zoro","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación", "Mihawk"] },
-                { card_set_id: "OP12-037_p1", deseo: 1, tengo: false, tags: ["Evento", "Zoro","Kaido","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación"]},
-                { card_set_id: "OP12-041", deseo: 1, tengo: false, tags: ["Sanji", "Mugiwara", "Cocinero"] },
-                { card_set_id: "OP12-043_p1", deseo: 1, tengo: false, tags: ["Kuzan", "Almirante", "Marina","Aokiji", "Piratas Barbanegra"] },
-                { card_set_id: "OP12-054", deseo: 1, tengo: false, tags: ["Teach", "Barbanegra", "Younkou", "D."] },
-                { card_set_id: "OP12-060_p1", deseo: 1, tengo: false, tags: ["Sanji", "Mugiwara", "Cocinero", "Evento"] },
-                { card_set_id: "OP12-063", deseo: 1, tengo: false, tags:  ["Reiju", "Germa 66", "Vinsmoke", "Mujer"] },
-                { card_set_id: "OP12-094_p1", deseo: 1, tengo: false, tags: ["Dragon", "Revolucionario", "Líder", "D."] },
-                { card_set_id: "OP12-118", deseo: 1, tengo: false, tags: ["Jewelry Bonney", "Peor Generación", "Supernova", "Mujer"] },
-                { card_set_id: "OP12-118_p1", deseo: 1, tengo: false, tags: ["Jewelry Bonney", "Peor Generación", "Supernova", "Mujer"] },
-                { card_set_id: "OP12-118_p2", deseo: 1, tengo: false, tags: ["Jewelry Bonney", "Peor Generación", "Supernova", "Mujer", "Manga"] },
-                { card_set_id: "OP12-119", deseo: 1, tengo: false, tags: ["Pacifista", "Marina", "Kuma","Shichibukai"] },
-                { card_set_id: "OP06-050_p2", deseo: 1, tengo: false, tags: ["Tashigi", "Espadachín", "Marina", "Mujer"] },
-                { card_set_id: "OP09-013_p2", deseo: 1, tengo: false, tags: ["Yasopp", "Piratas del Pelirrojo", "Francotirador"]},
-                { card_set_id: "OP09-093_p4", deseo: 1, tengo: false, tags: ["Teach", "Barbanegra", "Younkou", "D."] },
-                { card_set_id: "OP09-093_p5", deseo: 1, tengo: false, tags: ["Teach", "Barbanegra", "Younkou", "D."] },
-                { card_set_id: "ST13-011_p2", deseo: 1, tengo: false, tags:["Ace", "vicecapitán", "D.", "Barbablanca", "Hermanos"] },
-                { card_set_id: "ST18-004_p2", deseo: 1, tengo: false, tags: ["Zoro","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación"] },
-                { card_set_id: "OP13-003", deseo: 1, tengo: false, tags: ["Gol D. Roger", "Rey de los Piratas", "D."] },
-                { card_set_id: "OP13-003_p1", deseo: 1, tengo: false, tags: ["Gol D. Roger", "Rey de los Piratas", "D."] },
-                { card_set_id: "OP13-004", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "D.", "Llamas"] },
-                { card_set_id: "OP13-007", deseo: 1, tengo: false, tags: ["Sabo","Ace","Luffy","Hermanos", "Niños"] },
-                { card_set_id: "OP13-007_p1", deseo: 1, tengo: false, tags: ["Sabo","Ace","Luffy","Hermanos", "Niños"] },
-                { card_set_id: "OP13-054", deseo: 1, tengo: false, tags: ["Yamato", "Wano", "Hija de Kaido"]},
-                { card_set_id: "OP13-054_p1", deseo: 1, tengo: false, tags: ["Yamato", "Wano", "Hija de Kaido"]},
-                { card_set_id: "OP13-063", deseo: 1, tengo: true, tags: ["Kozuki Oden", "Wano", "Grupo"] },
-                { card_set_id: "OP13-064_p1", deseo: 1, tengo: false, tags:["Gol D. Roger", "Rey de los Piratas", "D."] },
-                { card_set_id: "OP13-065_p1", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín","Niño"]},
-                { card_set_id: "OP13-075", deseo: 1, tengo: false, tags: ["Evento", "Gol D. Roger", "Rey de los Piratas", "D.", "Grupo"]},
-                { card_set_id: "OP13-076_p1", deseo: 1, tengo: false, tags: ["Evento", "Gol D. Roger", "Rey de los Piratas", "D.", "Oden"] },
-                { card_set_id: "OP13-078", deseo: 1, tengo: false, tags: ["Evento", "Gol D. Roger", "Rey de los Piratas", "D.", "Oro Jackson", "Barco"] },
-                { card_set_id: "OP13-079", deseo: 1, tengo: false, tags: ["Imu", "Trono Vacío", "Gobierno Mundial", "Siglo Vacío"] },
-                { card_set_id: "OP13-079_p1", deseo: 1, tengo: false, tags: ["Imu", "Trono Vacío", "Gobierno Mundial", "Siglo Vacío"]},
-                { card_set_id: "OP13-080", deseo: 1, tengo: false, tags: ["Nusjuro", "Gorosei", "Gobierno Mundial", "Demonio"] },
-                { card_set_id: "OP13-082", deseo: 1, tengo: false, tags: ["Gorosei", "Gobierno Mundial", "Demonio"] },
-                { card_set_id: "OP13-082_p1", deseo: 1, tengo: false, tags:  ["Gorosei", "Gobierno Mundial", "Demonio"]},
-                { card_set_id: "OP13-083", deseo: 1, tengo: false, tags:  ["Saturn", "Gorosei", "Gobierno Mundial", "Demonio"]},
-                { card_set_id: "OP13-084", deseo: 1, tengo: false, tags: ["Ju Peter", "Gorosei", "Gobierno Mundial", "Demonio"] },
-                { card_set_id: "OP13-089", deseo: 1, tengo: false, tags: ["Marcury", "Gorosei", "Gobierno Mundial", "Demonio"] },
-                { card_set_id: "OP13-091", deseo: 1, tengo: true, tags: ["Mars", "Gorosei", "Gobierno Mundial", "Demonio"] },
-                { card_set_id: "OP13-100", deseo: 1, tengo: false, tags: ["Jewelry Bonney", "Peor Generación", "Supernova", "Mujer"] },
-                { card_set_id: "OP13-114_p1", deseo: 1, tengo: false, tags: ["S-Snake", "Serafín", "Shichibukai", "Mujer"] },
-                { card_set_id: "OP13-118_p1", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova"] },
-                { card_set_id: "OP13-118_p2", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Manga"] },
-                { card_set_id: "OP13-118_p3", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Manga", "Rojo"] },
-                { card_set_id: "OP13-118_p4", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Cartel"] },
-                { card_set_id: "OP13-119_p1", deseo: 1, tengo: false, tags: ["Ace", "vicecapitán", "D.", "Barbablanca"] },
-                { card_set_id: "OP13-119_p2", deseo: 1, tengo: false, tags: ["Ace", "vicecapitán", "D.", "Barbablanca", "Manga"]},
-                { card_set_id: "OP13-119_p3", deseo: 1, tengo: false, tags: ["Ace", "vicecapitán", "D.", "Barbablanca", "Manga","Rojo"] },
-                { card_set_id: "OP13-119_p4", deseo: 1, tengo: false, tags: ["Ace", "vicecapitán", "D.", "Barbablanca", "Cartel"] },
-                { card_set_id: "OP13-120", deseo: 1, tengo: false, tags:["Sabo", "Revolucionario", "D."]},
-                { card_set_id: "OP13-120_p1", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "D."] },
-                { card_set_id: "OP13-120_p2", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "D.","Manga"] },
-                { card_set_id: "OP13-120_p3", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "D.","Manga","Rojo"] },
-                { card_set_id: "OP13-120_p4", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "D.","Cartel"] },
-                { card_set_id: "EB02-028_p1", deseo: 1, tengo: false, tags:  ["Ace", "vicecapitán", "D.", "Barbablanca"]},
-                { card_set_id: "OP07-118_p2", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "D."]},
-                { card_set_id: "OP09-004_p5", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"] },
-                { card_set_id: "OP09-004_p6", deseo: 1, tengo: false, tags:  ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"] },
-                { card_set_id: "OP09-009_p3", deseo: 1, tengo: false, tags:  ["Benn Beckman", "Piratas del Pelirrojo", "vicecapitán"] },
-                { card_set_id: "OP09-118_p3", deseo: 1, tengo: false, tags: ["Gol D. Roger", "Rey de los Piratas", "D.", "Cartel"]},
-                { card_set_id: "OP09-119_p3", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova"] },
-                { card_set_id: "OP14-001", deseo: 1, tengo: false, tags: ["Joy Boy", "Nika", "Líder", "Siglo Vacío", "D."] },
-                { card_set_id: "OP14-007", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"] },
-                { card_set_id: "OP14-009", deseo: 1, tengo: false, tags: ["Benn Beckman", "Piratas del Pelirrojo", "vicecapitán"] },
-                { card_set_id: "OP14-010", deseo: 1, tengo: false, tags: ["Lucky Roux", "Piratas del Pelirrojo", "Velocidad"] },
-                { card_set_id: "OP14-016", deseo: 1, tengo: false, tags: ["Dragon", "Revolucionario", "D.", "Peor Enemigo"] },
-                { card_set_id: "OP14-020", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "Llamas", "D."] },
-                { card_set_id: "OP14-020_p1", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "Llamas", "D.", "Arte Especial"] },
-                { card_set_id: "OP14-027", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"] },
-                { card_set_id: "OP14-027_p1", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"] },
-                { card_set_id: "OP14-031_p1", deseo: 1, tengo: false, tags: ["Zoro","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación"]  },
-                { card_set_id: "OP14-033_p1", deseo: 1, tengo: false, tags: ["Sanji", "Mugiwara", "Cocinero"] },
-                { card_set_id: "OP14-041", deseo: 1, tengo: false, tags: ["Imu", "Trono Vacío", "Gobierno Mundial", "Siglo Vacío"] },
-                { card_set_id: "OP14-041_p1", deseo: 1, tengo: false, tags: ["Imu", "Trono Vacío", "Gobierno Mundial", "Siglo Vacío"] },
-                { card_set_id: "OP14-042_p1", deseo: 1, tengo: false, tags: ["Garling Figarland", "Caballero Sagrado", "Dragón Celestial"] },
-                { card_set_id: "OP14-049_p1", deseo: 1, tengo: false, tags: ["Gorosei", "Saturn", "Forma Demoniaca", "Zoan"] },
-                { card_set_id: "OP14-060", deseo: 1, tengo: false, tags: ["Kuzan", "Almirante", "Marina","Aokiji", "Barbanegra"] },
-                { card_set_id: "OP14-060_p1", deseo: 1, tengo: false, tags: ["Kuzan", "Almirante", "Marina","Aokiji", "Barbanegra"]},
-                { card_set_id: "OP14-069", deseo: 1, tengo: false, tags: ["Blackbeard", "Teach", "Younkou", "D.", "Oscuridad"] },
-                { card_set_id: "OP14-069_p1", deseo: 1, tengo: false, tags: ["Blackbeard", "Teach", "Younkou", "D.", "Oscuridad"] },
-                { card_set_id: "OP14-084_p1", deseo: 1, tengo: false, tags: ["Koby", "Marina", "SWORD", "Héroe de la Marina"] },
-                { card_set_id: "OP14-104", deseo: 1, tengo: false, tags: ["Buggy", "Capitán", "Yonkou","Cross Guild","Shichibukai", "Impel Down"]},
-                { card_set_id: "OP14-104_p1", deseo: 1, tengo: false, tags: ["Buggy", "Capitán", "Yonkou","Cross Guild","Shichibukai", "Impel Down"]},
-                { card_set_id: "OP14-108", deseo: 1, tengo: false, tags: ["Mihawk", "Cross Guild", "Espadachín", "Ojo de Halcón"] },
-                { card_set_id: "OP14-111_p1", deseo: 1, tengo: false, tags: ["Nami", "Mujer", "Navegante", "Mugiwara"]},
-                { card_set_id: "OP14-112", deseo: 1, tengo: false, tags: ["Nico Robin", "Baroque Works", "Ms. All Sunday", "Mugiwara", "Arquologa"] },
-                { card_set_id: "OP14-112_p1", deseo: 1, tengo: false, tags: ["Nico Robin", "Baroque Works", "Ms. All Sunday", "Mugiwara", "Arquologa"] },
-                { card_set_id: "OP14-112_p2", deseo: 1, tengo: false, tags: ["Nico Robin", "Baroque Works", "Ms. All Sunday", "Mugiwara", "Arquologa"] },
-                { card_set_id: "OP14-119", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"] },
-                { card_set_id: "OP14-119_p1", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"] },
-                { card_set_id: "OP14-119_p2", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"] },
-                { card_set_id: "OP14-120", deseo: 1, tengo: false, tags: ["One Piece", "El Tesoro", "Secret Rare", "Laugh Tale"] },
-                { card_set_id: "OP14-120_p1", deseo: 1, tengo: false, tags: ["One Piece", "El Tesoro", "Secret Rare", "Manga Art"] },
-                { card_set_id: "EB04-022", deseo: 1, tengo: false, tags: ["Yamato", "Wano", "Hija de Kaido", "Zoan"] },
-                { card_set_id: "EB04-022_p1", deseo: 1, tengo: false, tags: ["Yamato", "Wano", "Hija de Kaido"] },
-                { card_set_id: "EB04-025_p1", deseo: 1, tengo: false, tags: ["Kozuki Momonosuke", "Wano", "Shogun", "Dragón"] },
-                { card_set_id: "EB04-027", deseo: 1, tengo: false, tags: ["Shinobu", "Wano", "Ninja", "Mujer"] },
-                { card_set_id: "EB04-031", deseo: 1, tengo: false, tags: ["O-Tama", "Wano", "Kibi Dango"] },
-                { card_set_id: "EB04-031_p1", deseo: 1, tengo: false, tags: ["O-Tama", "Wano", "Kibi Dango", "Arte Especial"] },
-                { card_set_id: "EB04-038_p1", deseo: 1, tengo: false, tags: ["Kozuki Hiyori", "Wano", "Princesa", "Mujer"] },
-                { card_set_id: "EB04-039", deseo: 1, tengo: false, tags: ["Denjiro", "Kyoshiro", "Akazaya Nine", "Wano"] },
-                { card_set_id: "EB01-003_p5", deseo: 1, tengo: false, tags: ["Eustass Kid", "Peor Generación", "Kid Pirates", "Memorial"] },
-                { card_set_id: "OP06-093_p5", deseo: 1, tengo: false, tags: ["Perona", "Thriller Bark", "Princesa Fantasma", "Treasure Rare"] },
-                { card_set_id: "OP09-051_p4", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"] },
-                { card_set_id: "OP09-051_p5", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"] },
-                { card_set_id: "OP12-030_p2", deseo: 1, tengo: false, tags: ["Nami", "Mujer", "Navegante", "Mugiwara"] },
-                { card_set_id: "PRB02-006_p2", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"]},
-                { card_set_id: "OP15-022", deseo: 1, tengo: false, tags: ["Nefertari D. Lili", "Siglo Vacío", "D.", "Alabasta", "Líder"] },
-                { card_set_id: "OP15-022_p1", deseo: 1, tengo: false, tags: ["Nefertari D. Lili", "Siglo Vacío", "D.", "Alabasta", "Arte Especial"] },
-                { card_set_id: "OP15-025", deseo: 1, tengo: false, tags: ["Joy Boy", "Original", "Siglo Vacío", "Nika"] },
-                { card_set_id: "OP15-025_p1", deseo: 1, tengo: false, tags: ["Joy Boy", "Original", "Siglo Vacío", "Nika", "Arte Especial"] },
-                { card_set_id: "OP15-029", deseo: 1, tengo: false, tags: ["Zunesha", "Siglo Vacío", "Wano", "Elefante"] },
-                { card_set_id: "OP15-032", deseo: 1, tengo: false, tags: ["Zoro","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación"]  },
-                { card_set_id: "OP15-032_p1", deseo: 1, tengo: false, tags: ["Zoro","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación"] },
-                { card_set_id: "OP15-036", deseo: 1, tengo: false, tags: ["Sanji", "Mugiwara", "Cocinero"]},
-                { card_set_id: "OP15-047_p1", deseo: 1, tengo: false, tags: ["Law","Supernova","Peor generación", "Espadachín","Capitán", "D.", "Piratas Heart"] },
-                { card_set_id: "OP15-058_p1", deseo: 1, tengo: false, tags: ["Eustass Kid", "Kid Pirates", "Peor Generación", "Damned Punk"] },
-                { card_set_id: "OP15-077_p1", deseo: 1, tengo: false, tags: ["Garling Figarland", "Gorosei", "Gobierno Mundial", "Caballero Sagrado"] },
-                { card_set_id: "OP15-086_p1", deseo: 1, tengo: false, tags: ["Koby", "Almirante", "Marina", "SWORD", "Héroe"] },
-                { card_set_id: "OP15-088", deseo: 1, tengo: false, tags: ["Helmeppo", "Marina", "SWORD", "Capitán"] },
-                { card_set_id: "OP15-098", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"]},
-                { card_set_id: "OP15-098_p1", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"]},
-                { card_set_id: "OP15-118", deseo: 1, tengo: false, tags: ["Inherited Will", "Roger & Luffy", "Secret Rare", "Laugh Tale"] },
-                { card_set_id: "OP15-118_p1", deseo: 1, tengo: false, tags: ["Inherited Will", "Roger & Luffy", "Manga Art", "Secret Rare"] },
-                { card_set_id: "OP15-118_p2", deseo: 1, tengo: false, tags: ["Inherited Will", "Roger & Luffy", "Manga Art", "Secret Rare"] },
-                { card_set_id: "OP15-119_p1", deseo: 1, tengo: false, tags: ["The Ancient Kingdom", "Siglo Vacío", "Secret Rare", "Escenario"] },
-                { card_set_id: "EB04-001", deseo: 1, tengo: false, tags: ["Kozuki Hiyori", "Wano", "Familia Kozuki", "Líder"] },
-                { card_set_id: "EB04-001_p1", deseo: 1, tengo: false, tags: ["Kozuki Hiyori", "Wano", "Familia Kozuki", "Líder", "Arte Especial"] },
-                { card_set_id: "EB04-044_p1", deseo: 1, tengo: false, tags: ["Denjiro", "Akazaya Nine", "Wano", "Samurái"] },
-                { card_set_id: "EB04-058", deseo: 1, tengo: false, tags: ["Kozuki Sukiyaki", "Tenguyama", "Wano", "Kozuki Clan"] },
-                { card_set_id: "EB04-058_p1", deseo: 1, tengo: false, tags: ["Kozuki Sukiyaki", "Tenguyama", "Wano", "Kozuki Clan"] },
-                { card_set_id: "EB04-061", deseo: 1, tengo: false, tags: ["Kozuki Oden", "Wano", "Samurái", "Leyenda"] },
-                { card_set_id: "EB04-061_p1", deseo: 1, tengo: false, tags: ["Kozuki Oden", "Wano", "Samurái", "Leyenda", "Arte Especial"] },
-                { card_set_id: "OP11-106_p2", deseo: 1, tengo: false, tags: ["Jewelry Bonney", "Peor Generación", "Supernova", "Mujer"] },
-                { card_set_id: "OP12-014_p2", deseo: 1, tengo: false, tags: ["Vegapunk", "Egghead", "Científico", "Stella"] },
-                { card_set_id: "OP13-031_p1", deseo: 1, tengo: false, tags: ["Zoro","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación"]  },
-                { card_set_id: "OP13-042_p2", deseo: 1, tengo: false, tags: ["Law","Supernova","Peor generación", "Espadachín","Capitán", "D.", "Piratas Heart"]},
-                { card_set_id: "PRB02-014_p2", deseo: 1, tengo: false, tags: ["Portgas D. Ace", "Barbablanca", "D.", "Premium Reprint"] },
-                { card_set_id: "ST26-005_p1", deseo: 1, tengo: false, tags: ["Koby", "Marina", "SWORD", "Héroe", "Líder"] },
-                { card_set_id: "EB01-001", deseo: 1, tengo: false, tags:  ["Chopper", "Mugiwara", "Doctor"] },
-                { card_set_id: "EB01-001_p1", deseo: 1, tengo: false, tags:  ["Chopper", "Mugiwara", "Doctor"] },
-                { card_set_id: "EB01-007", deseo: 1, tengo: false, tags: ["Brook", "Mugiwara", "Espadachín", "Músico"] },
-                { card_set_id: "EB01-029", deseo: 1, tengo: false, tags: ["Shirahoshi", "Isla Gyojin", "Princesa", "Mujer"] },
-                { card_set_id: "EB01-046", deseo: 1, tengo: false, tags: ["Cavendish", "Dressrosa", "Hermoso", "Espadachín"] },
-                { card_set_id: "EB01-046_p1", deseo: 1, tengo: false, tags: ["Cavendish", "Dressrosa", "Hermoso", "Espadachín", "Arte Especial"] },
-                { card_set_id: "EB03-026", deseo: 1, tengo: false, tags: ["Bartolomeo", "Flota Mugiwara", "Barrera"] },
-                { card_set_id: "EB03-026_p1", deseo: 1, tengo: false, tags: ["Bartolomeo", "Flota Mugiwara", "Barrera", "Arte Especial"] },
-                { card_set_id: "EB03-055", deseo: 1, tengo: false, tags: ["Law","Supernova","Peor generación", "Espadachín","Capitán", "D.", "Piratas Heart"]},
-                { card_set_id: "EB03-055_p1", deseo: 1, tengo: false, tags: ["Law","Supernova","Peor generación", "Espadachín","Capitán", "D.", "Piratas Heart"] },
-                { card_set_id: "EB03-057", deseo: 1, tengo: false, tags: ["Bepo", "Heart Pirates", "Mink", "Navegante"] },
-                { card_set_id: "EB03-057_p1", deseo: 1, tengo: false, tags: ["Bepo", "Heart Pirates", "Mink", "Navegante", "Arte Especial"] },
-                { card_set_id: "EB03-059", deseo: 1, tengo: false, tags: ["Jean Ango", "Cazarrecompensas", "Dressrosa"] },
-                { card_set_id: "EB03-045_p2", deseo: 1, tengo: false, tags: ["Katakuri", "Big Mom", "Vicecapitán"] },
-                { card_set_id: "EB02-003", deseo: 1, tengo: false, tags: ["Nami", "Mujer", "Navegante", "Mugiwara"] },
-                { card_set_id: "EB02-006_p1", deseo: 1, tengo: false, tags: ["Zoro","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación"] },
-                { card_set_id: "EB02-008", deseo: 1, tengo: false, tags: ["Usopp","Tirador", "Mugiwara"] },
-                { card_set_id: "EB02-009", deseo: 1, tengo: false, tags: ["Sanji", "Mugiwara", "Cocinero"] },
-                { card_set_id: "EB02-011", deseo: 1, tengo: false, tags: ["Lilith", "Vegapunk", "Egghead", "Mujer"] },
-                { card_set_id: "EB02-015", deseo: 1, tengo: false, tags: ["Nico Robin", "Baroque Works", "Ms. All Sunday", "Mugiwara", "Arquologa"]},
-                { card_set_id: "EB02-015_p1", deseo: 1, tengo: false, tags: ["Nico Robin", "Baroque Works", "Ms. All Sunday", "Mugiwara", "Arquologa"] },
-                { card_set_id: "EB02-020", deseo: 1, tengo: false, tags: ["Atlas", "Vegapunk", "Egghead", "Fuerza"] },
-                { card_set_id: "EB02-022_p1", deseo: 1, tengo: false, tags: ["Franky", "Mugiwara", "Cyborg"] },
-                { card_set_id: "EB02-023", deseo: 1, tengo: false, tags: ["Shaka", "Vegapunk", "Egghead", "Lógica"] },
-                { card_set_id: "EB02-024", deseo: 1, tengo: false, tags: ["Pythagoras", "Vegapunk", "Egghead", "Sabiduría"] },
-                { card_set_id: "EB02-026", deseo: 1, tengo: false, tags: ["Edison", "Vegapunk", "Egghead", "Idea"] },
-                { card_set_id: "EB02-028", deseo: 1, tengo: false, tags:  ["Chopper", "Mugiwara", "Doctor"]},
-                { card_set_id: "EB02-033", deseo: 1, tengo: false, tags: ["Bonney", "Peor Generación", "Egghead", "Mujer"] },
-                { card_set_id: "EB02-035", deseo: 1, tengo: false, tags: ["Sentomaru", "Marina", "Egghead", "Defensa"] },
-                { card_set_id: "EB02-036", deseo: 1, tengo: false, tags: ["Stussy", "CP0", "Agente", "Mujer"] },
-                { card_set_id: "EB02-041", deseo: 1, tengo: false, tags: ["Borsalino", "Almirante", "Marina", "Kizaru"] },
-                { card_set_id: "EB02-044_p1", deseo: 1, tengo: false, tags: ["Rob Lucci", "CP0", "Zoan", "Despertar"] },
-                { card_set_id: "EB02-048_p1", deseo: 1, tengo: false, tags: ["Saturn", "Gorosei", "Gobierno Mundial", "Demonio"] },
-                { card_set_id: "EB02-049", deseo: 1, tengo: false, tags: ["Kuma", "Revolucionario", "Ejército de la Liberación", "D."] },
-                { card_set_id: "EB02-058", deseo: 1, tengo: false, tags: ["York", "Vegapunk", "Egghead", "Codicia"] },
-                { card_set_id: "EB02-060", deseo: 1, tengo: false, tags: ["S-Snake", "Serafín", "Shichibukai", "Mujer"] },
-                { card_set_id: "EB02-061", deseo: 1, tengo: false, tags: ["Ivankov", "Revolucionario", "Okama", "Impel Down"] },
-                { card_set_id: "EB02-061_p2", deseo: 1, tengo: false, tags: ["Ivankov", "Revolucionario", "Okama", "Arte Especial"] },
-                { card_set_id: "ST03-009", deseo: 1, tengo: false, tags: ["Doflamingo", "Shichibukai", "Piratas Donquixote", "Capitán"]},
-                { card_set_id: "ST03-013", deseo: 1, tengo: false, tags: ["Boa Hancock", "Shichibukai", "Kuja Pirates"] },
-                { card_set_id: "ST03-014", deseo: 1, tengo: false, tags: ["Marshall D. Teach", "Shichibukai", "Barbanegra"] },
-                { card_set_id: "ST04-001", deseo: 1, tengo: false, tags: ["Kaido", "Piratas Bestia", "Yonkou"]},
-                { card_set_id: "ST05-001", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"] },
-                { card_set_id: "ST06-001", deseo: 1, tengo: false, tags: ["Sakazuki", "Marina", "Almirante", "Líder"] },
-                { card_set_id: "ST08-005", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"] },
-                { card_set_id: "ST09-004", deseo: 1, tengo: false, tags: ["Kouzuki Oden", "Wano", "Samurái"] },
-                { card_set_id: "ST09-005", deseo: 1, tengo: false, tags: ["Kouzuki Toki", "Wano", "Familia Kouzuki"] },
-                { card_set_id: "ST10-002", deseo: 1, tengo: false, tags: ["Law","Supernova","Peor generación", "Espadachín","Capitán", "D.", "Piratas Heart"] },
-                { card_set_id: "ST10-003", deseo: 1, tengo: false, tags: ["Eustass Kid", "Peor Generación", "Kid Pirates", "Líder"] },
-                { card_set_id: "ST10-013", deseo: 1, tengo: false, tags: ["Eustass Kid", "Kid Pirates", "Peor Generación"] },
-                { card_set_id: "ST12-001", deseo: 1, tengo: false, tags: ["Zoro","Sanji","Supernova", "Mugiwara", "Espadachín","vicecapitán", "Peor generación", "Cocinero"] },
-                { card_set_id: "ST12-003", deseo: 1, tengo: false, tags: ["Kuina", "Espadachín", "Shimotsuki"] },
-                { card_set_id: "ST13-001", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "D.", "Líder"] },
-                { card_set_id: "ST13-001_p1", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "D.", "Líder", "Paralela"] },
-                { card_set_id: "ST13-002", deseo: 1, tengo: false, tags: ["Portgas D. Ace", "Barbablanca", "D.", "Líder"] },
-                { card_set_id: "ST13-002_p1", deseo: 1, tengo: false, tags: ["Portgas D. Ace", "Barbablanca", "D.", "Líder", "Paralela"] },
-                { card_set_id: "ST13-003_p1", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"] },
-                { card_set_id: "ST13-011", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "Tres Hermanos"] },
-                { card_set_id: "ST13-013", deseo: 1, tengo: false, tags: ["Portgas D. Ace", "D.", "Tres Hermanos"] },
-                { card_set_id: "ST13-013_p1", deseo: 1, tengo: false, tags: ["Portgas D. Ace", "D.", "Tres Hermanos", "Paralela"] },
-                { card_set_id: "ST13-016", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"]},
-                { card_set_id: "ST13-016_p1", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"] },
-                { card_set_id: "ST14-001", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"]},
-                { card_set_id: "ST14-013", deseo: 1, tengo: false, tags: ["Shanks","Younkou", "Capitán", "Piratas Pelirrojo", "Espadachín"] },
-                { card_set_id: "ST15-002", deseo: 1, tengo: false, tags: ["Barbablanca","Younkou", "Capitán", "Edward Newgate"] },
-                { card_set_id: "P-061", deseo: 1, tengo: false, tags: ["Luffy","Peor generación","Capitán", "Younkou", "D.","Mugiwara", "Supernova", "Hermanos"] },
-                { card_set_id: "ST21-001", deseo: 1, tengo: false, tags: ["Garp", "Marina", "D.", "ViceAlmirante"] },
-                { card_set_id: "ST21-001_p1", deseo: 1, tengo: false, tags:["Garp", "Marina", "D.", "ViceAlmirante"]},
-                { card_set_id: "ST21-012", deseo: 1, tengo: false, tags: ["Koby", "SWORD", "Marina", "Héroe del Futuro"] },
-                { card_set_id: "ST21-012_p1", deseo: 1, tengo: false, tags: ["Koby", "SWORD", "Marina", "Héroe del Futuro", "Paralela"] },
-                { card_set_id: "ST21-015_p1", deseo: 1, tengo: false, tags: ["Helmeppo", "SWORD", "Marina"] },
-                { card_set_id: "ST22-001", deseo: 1, tengo: false, tags: ["Monkey D. Dragon", "Revolucionario", "Líder", "D."] },
-                { card_set_id: "ST22-001_p1", deseo: 1, tengo: false, tags: ["Monkey D. Dragon", "Revolucionario", "Líder", "D.", "Especial"] },
-                { card_set_id: "ST22-003", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "D."] },
-                { card_set_id: "ST22-003_p1", deseo: 1, tengo: false, tags: ["Sabo", "Revolucionario", "D.", "Paralela"] },
-                { card_set_id: "ST22-005_p1", deseo: 1, tengo: false, tags: ["Ivankov", "Revolucionario", "Okama"] },
-                { card_set_id: "ST22-006", deseo: 1, tengo: false, tags: ["Kuma", "Revolucionario", "Ejército de Liberación"] },
-                { card_set_id: "ST22-006_p1", deseo: 1, tengo: false, tags: ["Kuma", "Revolucionario", "Ejército de Liberación", "Paralela"] },
-                { card_set_id: "ST22-010_p1", deseo: 1, tengo: false, tags: ["Belo Betty", "Revolucionario", "Mujer"] },
-                { card_set_id: "ST22-012", deseo: 1, tengo: false, tags: ["Lindbergh", "Revolucionario", "Mink"] },
-                { card_set_id: "ST22-012_p1", deseo: 1, tengo: false, tags: ["Lindbergh", "Revolucionario", "Mink", "Paralela"] },
-                { card_set_id: "OP09-061_p2", deseo: 1, tengo: false, tags: ["Marshall D. Teach", "Barbanegra", "Younkou", "Treasure Rare"] },
-                { card_set_id: "ST26-003", deseo: 1, tengo: false, tags: ["Smoker", "Marina", "VideAlmirante"] },
-                { card_set_id: "OP09-081_p2", deseo: 1, tengo: false, tags: ["Catarina Devon", "Barbanegra", "Mujer", "Treasure Parallel"] },
-                { card_set_id: "ST27-005", deseo: 1, tengo: false, tags: ["Mihawk", "Cross Guild", "Espadachín", "Líder"] },
-                { card_set_id: "OP06-022_p3", deseo: 1, tengo: false, tags: ["Yamato", "Wano", "Hija de Kaido"] }
-
-            // Añade aquí solo los IDs de las cartas que quieras gestionar
-            ]);
-
-            // Configuración de Filtros (Modificación 3 y 4 integrados)
             const filters = ref({
                 search: '',
-                set: '',
                 rarity: '',
-                minDeseo: 0,
                 priceMin: 0,
-                priceMax: 150, 
+                priceMax: 1000,
                 possession: 'todas',
-                interest: 'todas' // Nueva propiedad para gestionar el catálogo completo vs interesados
+                interest: 'todas'
             });
 
-            // 3. CARGAR JSON MAESTRO
             onMounted(async () => {
-                try {
-                    // Carga tu archivo JSON local
-                    const response = await fetch('bbdd_maestra_cartas.json');
-                    masterData.value = await response.json();
-                    
-                    // Inicializar el rango máximo dinámico según el precio real más alto de la BBDD
-                    filters.value.priceMax = absoluteMaxPrice.value;
-                } catch (error) {
-                    console.error("Error cargando la base de datos maestra:", error);
-                }
+                const res = await fetch('bbdd_maestra_cartas.json');
+                masterCards.value = await res.json();
+                filters.value.priceMax = absoluteMaxPrice.value;
             });
-
-            // MODIFICACIÓN 4: Cambiado el orden de procesamiento. Mapeamos TODO el JSON maestro 
-            // y le acoplamos tus datos de colección donde coincidan.
-            const allCards = computed(() => {
-                if (!masterData.value.length) return [];
-
-                return masterData.value.map(masterCard => {
-                    // Intentar acoplar datos por ID de set
-                    const userCard = userCollection.value.find(u => u.card_set_id === masterCard.card_set_id || u.card_set_id === masterCard.card_image_id);
-                    
-                    return {
-                        ...masterCard,
-                        market_price_en: masterCard.market_price || 0,
-                        // Si existe en tu JSON personalizado, hereda sus propiedades; si no, adquiere estados por defecto
-                        tengo: userCard ? userCard.tengo : false,
-                        deseo: userCard ? userCard.deseo : 0,
-                        tags: userCard ? userCard.tags : [],
-                        isInterested: !!userCard // Flag útil para saber si está en tu lista de seguimiento
-                    };
-                });
-            });
-
-            const availableSets = computed(() => [...new Set(allCards.value.map(c => c.set_id).filter(Boolean))].sort());
-            const availableRarities = computed(() => [...new Set(allCards.value.map(c => c.rarity).filter(Boolean))].sort());
 
             const absoluteMaxPrice = computed(() => {
-                if (masterData.value.length === 0) return 200;
-                const prices = masterData.value.map(c => parseFloat(c.market_price) || 0);
-                return Math.ceil(Math.max(...prices, 10));
+                if (!masterCards.value.length) return 1000;
+                return Math.max(...masterCards.value.map(c => c.market_price || 0));
             });
 
-            // FILTRADO INTEGRAL DE DATOS
+            const availableRarities = computed(() => [...new Set(masterCards.value.map(c => c.rarity))].sort());
+
             const filteredCards = computed(() => {
-                const searchTxt = filters.value.search.toLowerCase();
-                
-                return allCards.value.filter(c => {
-                    const matchesSearch = (c.card_name || "").toLowerCase().includes(searchTxt) || 
-                                          (c.tags || []).some(t => t.toLowerCase().includes(searchTxt)) ||
-                                          (c.card_set_id || "").toLowerCase().includes(searchTxt);
-                    
-                    const matchesSet = !filters.value.set || c.set_id === filters.value.set;
+                const s = filters.value.search.toLowerCase();
+                return masterCards.value.filter(c => {
+                    const matchesSearch = c.card_name.toLowerCase().includes(s) || c.card_set_id.toLowerCase().includes(s);
                     const matchesRarity = !filters.value.rarity || c.rarity === filters.value.rarity;
-                    const matchesDeseo = c.deseo >= filters.value.minDeseo;
+                    const matchesPrice = (c.market_price || 0) >= filters.value.priceMin && (c.market_price || 0) <= filters.value.priceMax;
                     
-                    // Modificación 3: Filtro estricto por rango mínimo y máximo
-                    const price = parseFloat(c.market_price_en) || 0;
-                    const matchesPrice = price >= filters.value.priceMin && price <= filters.value.priceMax;
-
                     let matchesPossession = true;
-                    if (filters.value.possession === 'poseidas') {
-                        matchesPossession = c.tengo === true;
-                    } else if (filters.value.possession === 'faltantes') {
-                        matchesPossession = c.tengo === false;
-                    }
+                    if (filters.value.possession === 'poseidas') matchesPossession = c.tengo === true;
+                    if (filters.value.possession === 'faltantes') matchesPossession = c.tengo === false;
 
-                    // Modificación 4: Lógica de interés aplicada al catálogo completo
                     let matchesInterest = true;
-                    if (filters.value.interest === 'interesadas') {
-                        matchesInterest = c.isInterested || c.deseo > 0;
-                    } else if (filters.value.interest === 'no_interesadas') {
-                        matchesInterest = !c.isInterested && c.deseo === 0;
-                    }
+                    if (filters.value.interest === 'interesadas') matchesInterest = (c.deseo > 0);
 
-                    return matchesSearch && matchesSet && matchesRarity && matchesDeseo && matchesPrice && matchesPossession && matchesInterest;
+                    return matchesSearch && matchesRarity && matchesPrice && matchesPossession && matchesInterest;
                 });
             });
 
-            // MODIFICACIÓN 5: Segmentación para la visualización fluida (paginación reactiva)
-            const paginatedCards = computed(() => {
-                return filteredCards.value.slice(0, visibleLimit.value);
-            });
+            const paginatedCards = computed(() => filteredCards.value.slice(0, visibleLimit.value));
 
-            // MODIFICACIÓN 5: Resetear el visor al cambiar cualquier criterio de filtrado
-            watch(filters, () => {
-                visibleLimit.value = 30;
-            }, { deep: true });
+            // Navegación Modal
+            const currentCardIndex = computed(() => filteredCards.value.findIndex(c => c.card_set_id === selectedCard.value?.card_set_id));
+            const nextCard = () => { if(currentCardIndex.value < filteredCards.value.length -1) selectedCard.value = filteredCards.value[currentCardIndex.value + 1] };
+            const prevCard = () => { if(currentCardIndex.value > 0) selectedCard.value = filteredCards.value[currentCardIndex.value - 1] };
 
-            // MODIFICACIÓN 5: Escuchador del contenedor para Infinite Scroll automático
+            // Scroll Infinito y Botón Arriba
             const handleScroll = (e) => {
-                const target = e.target;
-                // Mostrar/ocultar botón 'Ir Arriba'
-                showScrollTop.value = target.scrollTop > 400;
-
-                // Si queda menos de 300px para tocar fondo, inyecta más elementos
-                if (target.scrollHeight - target.scrollTop <= target.clientHeight + 300) {
-                    loadMore();
-                }
+                showScrollTop.value = e.target.scrollTop > 500;
+                if (e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 100) loadMore();
             };
-
-            const loadMore = () => {
-                if (visibleLimit.value < filteredCards.value.length) {
-                    visibleLimit.value += 30;
-                }
-            };
-
-            // MODIFICACIÓN 1: Función para enviar arriba del todo
-            const scrollToTop = () => {
-                if (mainContainer.value) {
-                    mainContainer.value.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            };
-
-            // MODIFICACIÓN 2: Lógica de navegación interna del visor de detalles
-            const currentCardIndex = computed(() => {
-                if (!selectedCard.value) return -1;
-                return filteredCards.value.findIndex(c => c.card_set_id === selectedCard.value.card_set_id);
-            });
-
-            const nextCard = () => {
-                if (currentCardIndex.value < filteredCards.value.length - 1) {
-                    selectedCard.value = filteredCards.value[currentCardIndex.value + 1];
-                }
-            };
-
-            const prevCard = () => {
-                if (currentCardIndex.value > 0) {
-                    selectedCard.value = filteredCards.value[currentCardIndex.value - 1];
-                }
-            };
-
-            const translateRarity = (r) => {
-                const map = { 
-                    'L': 'Líder', 'C': 'Común', 'UC': 'Poco Común',
-                    'R': 'Rara', 'SR': 'Súper Rara', 'SEC': 'Secreta', 'P': 'Promocional' 
-                };
-                return map[r] || 'Especial';
-            };
+            const loadMore = () => { if (visibleLimit.value < filteredCards.value.length) visibleLimit.value += 30; };
+            const scrollToTop = () => mainContainer.value.scrollTo({ top: 0, behavior: 'smooth' });
 
             const resetFilters = () => {
-                filters.value = {
-                    search: '',
-                    set: '',
-                    rarity: '',
-                    minDeseo: 0,
-                    priceMin: 0,
-                    priceMax: absoluteMaxPrice.value,
-                    possession: 'todas',
-                    interest: 'todas'
-                };
-                visibleLimit.value = 30;
+                filters.value = { search: '', rarity: '', priceMin: 0, priceMax: absoluteMaxPrice.value, possession: 'todas', interest: 'todas' };
             };
 
-            return { 
-                sidebarOpen, selectedCard, filters, userCollection, allCards, 
-                filteredCards, paginatedCards, availableSets, availableRarities, 
-                absoluteMaxPrice, translateRarity, resetFilters,
-                mainContainer, handleScroll, showScrollTop, scrollToTop, loadMore, visibleLimit,
-                currentCardIndex, nextCard, prevCard
-            };
+            watch(filters, () => visibleLimit.value = 30, { deep: true });
+
+            return { sidebarOpen, selectedCard, masterCards, filteredCards, paginatedCards, availableRarities, absoluteMaxPrice, filters, resetFilters, mainContainer, handleScroll, showScrollTop, scrollToTop, loadMore, visibleLimit, currentCardIndex, nextCard, prevCard };
         }
     }).mount('#app');
 </script>
