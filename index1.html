@@ -209,10 +209,11 @@
                     </div>
                 </div>
 
-                <div class="mb-8" v-if="selectedCard.tags && selectedCard.tags.length">
-                    <p class="text-[10px] text-slate-400 uppercase mb-3">Tags</p>
+                <div class="mb-6">
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-3">Tags personalizados</p>
                     <div class="flex flex-wrap gap-2">
-                        <span v-for="tag in selectedCard.tags" :key="tag" class="bg-slate-800 px-3 py-1 rounded-lg text-xs border border-slate-700 text-slate-300">#{{tag}}</span>
+                        <span v-if="selectedCard.tags && selectedCard.tags.length === 0" class="text-xs text-slate-600 italic">Sin tags guardados</span>
+                        <span v-for="tag in selectedCard.tags" :key="tag" class="bg-slate-800 border border-slate-700 px-3 py-1 rounded-lg text-xs">#{{tag}}</span>
                     </div>
                 </div>
 
@@ -365,6 +366,13 @@
 
             const scrollToTop = () => mainContainer.value.scrollTo({ top: 0, behavior: 'smooth' });
 
+            const translateRarity = (r) => {
+                const map = { 
+                    'L': 'Líder', 'C': 'Común', 'UC': 'Poco Común',
+                    'R': 'Rara', 'SR': 'Súper Rara', 'SEC': 'Secreta', 'P': 'Promocional' 
+                };
+                return map[r] || 'Especial';
+            };
             // ENCONTRAR ÍNDICE DE FORMA SEGURA BASADO EN EL ID ESTANDARIZADO
             const currentCardIndex = computed(() => filteredCards.value.findIndex(c => c.card_set_id === selectedCard.value?.card_set_id));
             const nextCard = () => { if (currentCardIndex.value < filteredCards.value.length - 1) selectedCard.value = filteredCards.value[currentCardIndex.value + 1]; };
@@ -387,7 +395,7 @@
             return { 
                 sidebarOpen, selectedCard, filters, filteredCards, paginatedCards, 
                 availableRarities, availableSets, absoluteMaxPrice, resetFilters,
-                mainContainer, handleScroll, showScrollTop, scrollToTop, loadMore,
+                mainContainer, handleScroll, showScrollTop, scrollToTop, translateRarity, loadMore,
                 currentCardIndex, nextCard, prevCard
             };
         }
