@@ -7895,7 +7895,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP05-061",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP05-061.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 15.74,
@@ -8676,7 +8676,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP05-054",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP05-054.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.06,
@@ -10098,7 +10098,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP05-089",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP05-089.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 144.99,
@@ -13893,7 +13893,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP08-052",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP08-052.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -14003,7 +14003,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP08-053",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP08-053.jpg",
-        "tengo": false,
+        "tengo": true,
         "deseo": 1,
         "tags": [
             "Evento",
@@ -14076,7 +14076,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP08-016",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP08-016.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -14186,7 +14186,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP08-028",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP08-028.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -14326,7 +14326,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP08-076",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP08-076.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.05,
@@ -14414,7 +14414,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP08-087",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP08-087.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -14656,7 +14656,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP08-078",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP08-078.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 5.75,
@@ -16072,7 +16072,7 @@
         "date_scraped": "2026-04-25",
         "card_image_id": "OP08-102",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP08-102.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -16336,7 +16336,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP08-081",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP08-081.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -16358,7 +16358,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP08-004",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP08-004.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -16402,7 +16402,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP08-108",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP08-108.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 126.97,
@@ -16496,7 +16496,7 @@
         "date_scraped": "2026-04-26",
         "card_image_id": "OP08-090",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP08-090.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 74,
@@ -16562,7 +16562,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP08-009",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP08-009.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 205,
@@ -19772,7 +19772,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP05-021",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP05-021.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.05,
@@ -19882,7 +19882,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP08-020",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP08-020.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -24290,7 +24290,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP09-004",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP09-004.jpg",
-        "tengo": false,
+        "tengo": true,
         "deseo": 1,
         "tags": [
             "Shanks",
@@ -24953,7 +24953,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP09-005",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP09-005.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.02,
@@ -25025,7 +25025,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP09-014",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP09-014.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.03,
@@ -25166,7 +25166,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP09-072",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP09-072.jpg",
-        "tengo": false,
+        "tengo": true,
         "deseo": 1,
         "tags": [
             "Franky",
@@ -25431,7 +25431,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP09-084",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP09-084.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -25475,7 +25475,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP09-033",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP09-033.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -26459,7 +26459,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP09-020",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP09-020.jpg",
-        "tengo": false,
+        "tengo": true,
         "deseo": 1,
         "tags": [
             "Evento",
@@ -35215,7 +35215,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-106",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-106.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 1.2,
@@ -35619,7 +35619,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-047",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-047.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.05,
@@ -35641,7 +35641,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-038",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-038.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.19,
@@ -35685,7 +35685,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-073",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-073.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.05,
@@ -35729,7 +35729,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-082",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-082.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.05,
@@ -35751,7 +35751,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-013",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-013.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.03,
@@ -35795,7 +35795,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-008",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-008.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.06,
@@ -35839,7 +35839,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-030",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-030.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.05,
@@ -35861,7 +35861,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-104",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-104.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.02,
@@ -35883,7 +35883,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-023",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-023.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.15,
@@ -35927,7 +35927,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-017",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-017.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.05,
@@ -35971,7 +35971,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-043",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-043.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -36037,7 +36037,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-045",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-045.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.04,
@@ -36125,7 +36125,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-060",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-060.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -36147,7 +36147,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-091",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-091.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -36169,7 +36169,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-046",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-046.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.02,
@@ -36499,7 +36499,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-056",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-056.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -36521,7 +36521,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-039",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-039.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -36609,7 +36609,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-079",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-079.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.05,
@@ -36631,7 +36631,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-107",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-107.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.13,
@@ -36675,7 +36675,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-026",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-026.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.02,
@@ -36939,7 +36939,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-044",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-044.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.04,
@@ -37071,7 +37071,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-093",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-093.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -37093,7 +37093,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-035",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-035.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 3.58,
@@ -37167,7 +37167,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-007",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-007.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 15.99,
@@ -37321,7 +37321,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-059",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-059.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 13.99,
@@ -37387,7 +37387,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-078",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-078.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -37520,7 +37520,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-029",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-029.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -37542,7 +37542,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-005",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-005.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 23.99,
@@ -37564,7 +37564,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-040_p1",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-040_p1.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.48,
@@ -37697,7 +37697,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-024",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-024.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -37719,7 +37719,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-088",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-088.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.09,
@@ -37763,7 +37763,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-117",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-117.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.08,
@@ -37829,7 +37829,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-075",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-075.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -37851,7 +37851,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-110",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-110.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.06,
@@ -37873,7 +37873,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-003",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-003.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.04,
@@ -37917,7 +37917,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-116",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-116.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -37939,7 +37939,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-081",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-081.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -38005,7 +38005,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-063",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-063.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -38027,7 +38027,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-034",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-034.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.05,
@@ -38049,7 +38049,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-021",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-021.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -38093,7 +38093,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-002",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-002.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -38115,7 +38115,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-076",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-076.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -38137,7 +38137,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-055",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-055.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -38203,7 +38203,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-089",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-089.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -38247,7 +38247,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-113",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-113.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 115,
@@ -38401,7 +38401,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-057",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-057.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 103.5,
@@ -38445,7 +38445,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-090",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-090.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -38489,7 +38489,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-086",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-086.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.02,
@@ -38511,7 +38511,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-015",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-015.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -38533,7 +38533,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-085",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-085.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -38555,7 +38555,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-050",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-050.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -38577,7 +38577,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-011",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-011.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
@@ -38599,7 +38599,7 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP11-042",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-042.jpg",
-        "tengo": false
+        "tengo": true
     },
     {
         "inventory_price": 0.01,
