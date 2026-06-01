@@ -50,7 +50,6 @@
 
 <div id="app" v-cloak class="flex h-screen relative">
 
-    <!-- BOTÓN MENÚ FIJO -->
     <button v-if="!sidebarOpen" @click="sidebarOpen = true" 
             class="fixed top-4 left-4 z-[70] bg-yellow-500 text-black p-3 rounded-lg shadow-2xl hover:scale-110 transition-all border-2 border-yellow-600">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -58,7 +57,6 @@
         </svg>
     </button>
 
-    <!-- SIDEBAR -->
     <aside :class="[sidebarOpen ? 'translate-x-0 w-[85%] md:w-80' : '-translate-x-full w-0']" 
            class="fixed top-0 left-0 z-[80] h-full transition-all duration-300 flex flex-col shadow-2xl overflow-hidden border-r border-slate-800">
         
@@ -70,37 +68,19 @@
         </div>
 
         <div class="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
-            <!-- Buscador -->
             <div>
                 <label class="text-[10px] uppercase font-black text-slate-500">Búsqueda</label>
                 <input v-model="filters.search" type="text" placeholder="Nombre, ID o Tag..." class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm">
             </div>
 
-            <!-- NUEVO: Filtro por Colección / Set -->
             <div>
-                <label class="text-[10px] uppercase font-black text-slate-500">Colección / Set</label>
-                <select v-model="filters.set" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
-                    <option value="">Todas las Colecciones</option>
-                    <option v-for="s in availableSets" :key="s" :value="s">{{s}}</option>
+                <label class="text-[10px] uppercase font-black text-slate-500">Filtrar por Interés</label>
+                <select v-model="filters.interest" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
+                    <option value="todas">Ver Catálogo Completo</option>
+                    <option value="interesadas">Solo Deseadas (Deseo > 0)</option>
                 </select>
             </div>
 
-            <!-- NUEVO: Filtro por Nivel de Deseo Detallado -->
-            <div>
-                <label class="text-[10px] uppercase font-black text-slate-500">Nivel de Deseo</label>
-                <select v-model="filters.deseo" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
-                    <option value="todos">Todos los niveles</option>
-                    <option value="con_deseo">Cualquier prioridad (> 0)</option>
-                    <option value="0">Sin interés (0★)</option>
-                    <option value="1">Prioridad 1★</option>
-                    <option value="2">Prioridad 2★★</option>
-                    <option value="3">Prioridad 3★★★</option>
-                    <option value="4">Prioridad 4★★★★</option>
-                    <option value="5">Prioridad 5★★★★★</option>
-                </select>
-            </div>
-
-            <!-- Rango Precio -->
             <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-800 space-y-3">
                 <label class="text-[10px] uppercase font-black text-slate-500">Rango Precio (€)</label>
                 <div class="flex gap-2">
@@ -110,9 +90,8 @@
                 <input v-model.number="filters.priceMax" type="range" min="0" :max="absoluteMaxPrice" class="w-full accent-yellow-500">
             </div>
 
-            <!-- Estado de Posesión -->
             <div>
-                <label class="text-[10px] uppercase font-black text-slate-500">Estado de Posesión</label>
+                <label class="text-[10px] uppercase font-black text-slate-500">Estado</label>
                 <select v-model="filters.possession" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
                     <option value="todas">Todas</option>
                     <option value="poseidas">En posesión (✓)</option>
@@ -120,7 +99,6 @@
                 </select>
             </div>
 
-            <!-- Rareza -->
             <div>
                 <label class="text-[10px] uppercase font-black text-slate-500">Rareza</label>
                 <select v-model="filters.rarity" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
@@ -135,7 +113,6 @@
         </div>
     </aside>
 
-    <!-- MAIN AREA -->
     <main ref="mainContainer" @scroll="handleScroll" 
           :class="[sidebarOpen ? 'md:ml-80' : 'ml-0']" 
           class="flex-1 h-full overflow-y-auto p-4 md:p-8 transition-all duration-300">
@@ -167,16 +144,13 @@
         </div>
     </main>
 
-    <!-- BOTÓN IR ARRIBA -->
     <button v-if="showScrollTop" @click="scrollToTop" 
             class="fixed bottom-6 right-6 z-[90] bg-yellow-500 text-black p-3 rounded-full shadow-2xl border-2 border-yellow-600">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
     </button>
 
-    <!-- MODAL DETALLE -->
     <div v-if="selectedCard" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/95 backdrop-blur-sm" @click.self="selectedCard = null">
         
-        <!-- Flechas Navegación -->
         <button v-if="currentCardIndex > 0" @click="prevCard" class="absolute left-4 md:left-10 z-[110] text-white hover:text-yellow-500 bg-black/50 p-4 rounded-full">
             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
@@ -215,7 +189,7 @@
                     </div>
                 </div>
 
-                <div :class="selectedCard.tengo ? 'bg-green-600/20 text-green-400 border-green-600' : 'bg-slate-800 text-slate-400 border-slate-700'" 
+                <div class="selectedCard.tengo ? 'bg-green-600/20 text-green-400 border-green-600' : 'bg-slate-800 text-slate-400 border-slate-700'" 
                      class="p-5 rounded-2xl text-center font-bold border-2 text-xl">
                     {{selectedCard.tengo ? 'EN COLECCIÓN ✓' : 'FALTANTE ✕'}}
                 </div>
@@ -238,38 +212,28 @@
 
             const filters = ref({
                 search: '',
-                set: '', // Filtro de colección añadido
                 rarity: '',
                 priceMin: 0,
                 priceMax: 500,
                 possession: 'todas',
-                deseo: 'todos' // Filtro deseo numérico añadido
+                interest: 'todas'
             });
 
+            // 1. CARGA DE DATOS (Solo un JSON)
             onMounted(async () => {
                 try {
                     const response = await fetch('bbdd_maestra_cartas.json');
                     const data = await response.json();
+                    // Normalizamos datos para asegurar que tengan las propiedades
                     masterData.value = data.map(c => ({
                         ...c,
                         tengo: c.tengo || false,
-                        deseo: c.deseo !== undefined ? parseInt(c.deseo) : 0,
+                        deseo: c.deseo || 0,
                         tags: c.tags || [],
                         market_price: c.market_price || 0
                     }));
                     filters.value.priceMax = absoluteMaxPrice.value;
                 } catch (e) { console.error("Error cargando el JSON", e); }
-            });
-
-            // Generar dinámicamente las colecciones basándose en el prefijo de card_set_id (ej: "OP01")
-            const availableSets = computed(() => {
-                const sets = masterData.value.map(c => {
-                    if (c.card_set_id && c.card_set_id.includes('-')) {
-                        return c.card_set_id.split('-')[0].trim();
-                    }
-                    return 'Otros';
-                });
-                return [...new Set(sets)].filter(s => s !== 'Otros').sort();
             });
 
             const absoluteMaxPrice = computed(() => {
@@ -279,41 +243,30 @@
 
             const availableRarities = computed(() => [...new Set(masterData.value.map(c => c.rarity))].sort());
 
-            // LOGICA COMPLETA DE FILTRADO
+            // 2. FILTRADO
             const filteredCards = computed(() => {
                 const s = filters.value.search.toLowerCase();
                 return masterData.value.filter(c => {
-                    // Búsqueda por texto
                     const matchesSearch = c.card_name.toLowerCase().includes(s) || 
                                           c.card_set_id.toLowerCase().includes(s) ||
                                           c.tags.some(t => t.toLowerCase().includes(s));
                     
-                    // Filtro de Colección (Set)
-                    const matchesSet = !filters.value.set || (c.card_set_id && c.card_set_id.startsWith(filters.value.set));
-                    
-                    // Filtro de Rareza
                     const matchesRarity = !filters.value.rarity || c.rarity === filters.value.rarity;
-                    
-                    // Filtro de Precio
                     const matchesPrice = c.market_price >= filters.value.priceMin && c.market_price <= filters.value.priceMax;
                     
-                    // Filtro de Posesión
                     let matchesPoss = true;
                     if (filters.value.possession === 'poseidas') matchesPoss = c.tengo;
                     if (filters.value.possession === 'faltantes') matchesPoss = !c.tengo;
 
-                    // Filtro de Nivel de Deseo
-                    let matchesDeseo = true;
-                    if (filters.value.deseo === 'con_deseo') {
-                        matchesDeseo = c.deseo > 0;
-                    } else if (filters.value.deseo !== 'todos') {
-                        matchesDeseo = c.deseo === parseInt(filters.value.deseo);
-                    }
+                    let matchesInt = true;
+                    if (filters.value.interest === 'interesadas') matchesInt = c.deseo > 0;
+                    if (filters.value.interest === 'no_interesadas') matchesInt = c.deseo === 0;
 
-                    return matchesSearch && matchesSet && matchesRarity && matchesPrice && matchesPoss && matchesDeseo;
+                    return matchesSearch && matchesRarity && matchesPrice && matchesPoss && matchesInt;
                 });
             });
 
+            // 3. PAGINACIÓN
             const paginatedCards = computed(() => filteredCards.value.slice(0, visibleLimit.value));
             
             const loadMore = () => { if (visibleLimit.value < filteredCards.value.length) visibleLimit.value += 30; };
@@ -325,27 +278,25 @@
 
             const scrollToTop = () => mainContainer.value.scrollTo({ top: 0, behavior: 'smooth' });
 
+            // 4. NAVEGACIÓN MODAL
             const currentCardIndex = computed(() => filteredCards.value.findIndex(c => c.card_set_id === selectedCard.value?.card_set_id));
             const nextCard = () => { if (currentCardIndex.value < filteredCards.value.length - 1) selectedCard.value = filteredCards.value[currentCardIndex.value + 1]; };
             const prevCard = () => { if (currentCardIndex.value > 0) selectedCard.value = filteredCards.value[currentCardIndex.value - 1]; };
 
             const resetFilters = () => {
-                filters.value = { 
-                    search: '', 
-                    set: '', 
-                    rarity: '', 
-                    priceMin: 0, 
-                    priceMax: absoluteMaxPrice.value, 
-                    possession: 'todas', 
-                    deseo: 'todos' 
-                };
+                filters.value = { search: '', rarity: '', priceMin: 0, priceMax: absoluteMaxPrice.value, possession: 'todas', interest: 'todas' };
+            };
+
+            const translateRarity = (r) => {
+                const map = { 'L': 'Líder', 'C': 'Común', 'UC': 'Poco Común', 'R': 'Rara', 'SR': 'Súper Rara', 'SEC': 'Secreta', 'P': 'Promocional' };
+                return map[r] || 'Especial';
             };
 
             watch(filters, () => { visibleLimit.value = 30; }, { deep: true });
 
             return { 
                 sidebarOpen, selectedCard, filters, filteredCards, paginatedCards, 
-                availableRarities, availableSets, absoluteMaxPrice, resetFilters,
+                availableRarities, absoluteMaxPrice, resetFilters, translateRarity,
                 mainContainer, handleScroll, showScrollTop, scrollToTop, loadMore,
                 currentCardIndex, nextCard, prevCard
             };
