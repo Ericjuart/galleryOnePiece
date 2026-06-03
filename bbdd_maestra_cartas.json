@@ -18700,7 +18700,7 @@
         "card_image_id": "OP03-018_p1",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP03-018_p1.jpg",
         "tengo": false,
-        "deseo": 1,
+        "deseo": 5,
         "tags": [
             "Evento",
             "Ace",
@@ -24429,7 +24429,7 @@
         "card_image_id": "OP09-119",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP09-119.jpg",
         "tengo": false,
-        "deseo": 1,
+        "deseo": 5,
         "tags": [
             "Luffy",
             "Peor generación",
@@ -34374,7 +34374,7 @@
         "card_image_id": "OP06-118_p1",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP06-118_p1.jpg",
         "tengo": false,
-        "deseo": 1,
+        "deseo": 5,
         "tags": [
             "Zoro",
             "Supernova",
@@ -37642,7 +37642,7 @@
         "card_image_id": "OP11-080_p1",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP11-080_p1.jpg",
         "tengo": false,
-        "deseo": 1,
+        "deseo": 5,
         "tags": [
             "Evento",
             "Luffy",
@@ -39286,7 +39286,7 @@
         "card_image_id": "EB02-020",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/EB02-020.jpg",
         "tengo": false,
-        "deseo": 1,
+        "deseo": 5,
         "tags": [
             "Atlas",
             "Vegapunk",
@@ -47082,7 +47082,8 @@
         "date_scraped": "2026-04-27",
         "card_image_id": "OP05-119_r1",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/OP05-119_r1.jpg",
-        "tengo": false
+        "tengo": false,
+        "deseo": 5
     },
     {
         "inventory_price": 1,
@@ -79755,7 +79756,7 @@
         "card_image_id": "ST10-002",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/ST10-002.jpg",
         "tengo": false,
-        "deseo": 1,
+        "deseo": 5,
         "tags": [
             "Law",
             "Supernova",
@@ -84094,7 +84095,7 @@
         "card_image_id": "ST21-001",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/ST21-001.jpg",
         "tengo": false,
-        "deseo": 1,
+        "deseo": 5,
         "tags": [
             "Garp",
             "Marina",
@@ -84239,7 +84240,7 @@
         "card_image_id": "ST21-001_p1",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/ST21-001_p1.jpg",
         "tengo": false,
-        "deseo": 1,
+        "deseo": 5,
         "tags": [
             "Garp",
             "Marina",
@@ -85118,7 +85119,8 @@
         "date_scraped": "2026-05-02",
         "card_image_id": "P-041_r1",
         "card_image": "https://www.optcgapi.com/media/static/Card_Images/P-041_r1.jpg",
-        "tengo": false
+        "tengo": false,
+        "deseo": 5
     },
     {
         "inventory_price": 0.25,
@@ -87731,7 +87733,7 @@
         "card_image_id": "P-061",
         "card_image": "https://tcgplayer-cdn.tcgplayer.com/product/580996_in_1000x1000.jpg",
         "tengo": false,
-        "deseo": 1,
+        "deseo": 5,
         "tags": [
             "Luffy",
             "Peor generación",
