@@ -337,7 +337,7 @@
                                           c.set_id.toLowerCase().includes(s) ||
                                           c.tags.some(t => t.toLowerCase().includes(s));
                     
-                    const matchesSet = !filters.value.set || (c.et_id && c.set_id.startsWith(filters.value.set));
+                    const matchesSet = !filters.value.set || (c.set_id && c.set_id.startsWith(filters.value.set));
                     const matchesRarity = !filters.value.rarity || c.rarity === filters.value.rarity;
                     const matchesPrice = c.market_price >= filters.value.priceMin && c.market_price <= filters.value.priceMax;
                     
