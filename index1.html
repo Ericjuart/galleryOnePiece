@@ -157,7 +157,7 @@
                             <p>Precio: <span class="text-yellow-500 font-bold">{{card.market_price}}€</span></p>
                             <p>Rareza: <span class="text-yellow-500 font-bold">{{card.rarity}}</span></p>
                             <!-- AJUSTADO: Mostramos el set_id limpio o el set_name si existe -->
-                            <p>Colección: <span class="text-yellow-500 font-bold">{{card.set_name || card.set_id}}</span></p>
+                            <p>Colección: <span class="text-yellow-500 font-bold">{{card.set_id}}</span></p>
                         </div>
                     </div>
                 </div>
@@ -198,8 +198,8 @@
                 <!-- INTEGRADO: Nombre del set en el modal -->
                 <p class="text-slate-400 text-sm mb-4 font-medium" v-if="selectedCard.set_name">{{selectedCard.set_name}}</p>
                 <p class="text-xl mb-6">{{selectedCard.rarity}} - {{translateRarity(selectedCard.rarity)}}</p>
+                <p class="font-mono text-xl mb-6">{{selectedCard.set_id}}</p>
                 <p class="font-mono text-xl mb-6">{{selectedCard.card_set_id}}</p>
-                
                 <div class="grid grid-cols-2 gap-4 mb-8">
                     <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
                         <p class="text-[10px] text-slate-400 uppercase mb-1">Precio Mercado</p>
