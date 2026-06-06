@@ -145,14 +145,14 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
-            <div v-for="card in paginatedCards" :key="card.card_set_id" class="flip-card aspect-[11/16] cursor-pointer" @click="selectedCard = card">
+            <div v-for="card in paginatedCards" :key="card.set_id" class="flip-card aspect-[11/16] cursor-pointer" @click="selectedCard = card">
                 <div class="flip-card-inner">
                     <div class="flip-card-front shadow-lg" :class="{'card-poseida border-4': card.tengo, 'border border-white/10': !card.tengo}">
                         <img :src="card.card_image" class="w-full h-full object-cover" loading="lazy">
                     </div>
                     <div class="flip-card-back">
                         <p class="text-yellow-500 font-bold leading-tight mb-1">{{card.card_name}}</p>
-                        <p class="text-[11px] text-slate-400 font-mono mb-4">{{card.card_set_id}}</p>
+                        <p class="text-[11px] text-slate-400 font-mono mb-4">{{card.set_id}}</p>
                         <div class="bg-slate-950/80 p-2 rounded text-xs text-left space-y-1 border border-slate-700">
                             <p>Precio: <span class="text-yellow-500 font-bold">{{card.market_price}}€</span></p>
                             <p>Rareza: <span class="text-yellow-500 font-bold">{{card.rarity}}</span></p>
@@ -195,7 +195,7 @@
             <div class="w-full md:w-1/2 p-8 md:p-12 overflow-y-auto">
                 <h2 class="text-yellow-500 text-3xl font-bold mb-2">{{selectedCard.card_name}}</h2>
                 <p class="text-xl mb-6">{{selectedCard.rarity}} - {{translateRarity(selectedCard.rarity)}}</p>
-                <p class="font-mono text-xl mb-6">{{selectedCard.card_set_id}}</p>
+                <p class="font-mono text-xl mb-6">{{selectedCard.set_id}}</p>
                 
                 <div class="grid grid-cols-2 gap-4 mb-8">
                     <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700">
@@ -260,7 +260,7 @@
                         const card_name = c.card_name || c.name || c.title || 'Sin Nombre';
                         
                         // 2. Mapeo inteligente de Código / Set ID
-                        const card_set_id = c.card_set_id || c.card_id || c.id || c.code || 'S/N';
+                        const set_id = c.set_id || c.card_id || c.id || c.code || 'S/N';
                         
                         // 3. Mapeo inteligente de Imagenes
                         const card_image = c.card_image || c.image || c.image_url || c.imageUrl || c.img || '';
@@ -297,7 +297,7 @@
                         return {
                             ...c,
                             card_name,
-                            card_set_id,
+                            set_id,
                             card_image,
                             market_price: parseFloat(market_price) || 0,
                             rarity,
@@ -311,11 +311,11 @@
                 } catch (e) { console.error("Error crítico cargando o procesando el JSON:", e); }
             });
 
-            // Extraer las colecciones dinámicamente usando el card_set_id limpio
+            // Extraer las colecciones dinámicamente usando el set_id limpio
             const availableSets = computed(() => {
                 const sets = masterData.value.map(c => {
-                    if (c.card_set_id && c.card_set_id.includes('-')) {
-                        return c.card_set_id.split('-')[0].trim();
+                    if (c.set_id && c.set_id.includes('-')) {
+                        return c.set_id.split('-')[0].trim();
                     }
                     return null;
                 }).filter(Boolean);
@@ -334,10 +334,10 @@
                 const s = filters.value.search.toLowerCase();
                 return masterData.value.filter(c => {
                     const matchesSearch = c.card_name.toLowerCase().includes(s) || 
-                                          c.card_set_id.toLowerCase().includes(s) ||
+                                          c.set_id.toLowerCase().includes(s) ||
                                           c.tags.some(t => t.toLowerCase().includes(s));
                     
-                    const matchesSet = !filters.value.set || (c.card_set_id && c.card_set_id.startsWith(filters.value.set));
+                    const matchesSet = !filters.value.set || (c.et_id && c.set_id.startsWith(filters.value.set));
                     const matchesRarity = !filters.value.rarity || c.rarity === filters.value.rarity;
                     const matchesPrice = c.market_price >= filters.value.priceMin && c.market_price <= filters.value.priceMax;
                     
@@ -375,7 +375,7 @@
                 return map[r] || 'Especial';
             };
             // ENCONTRAR ÍNDICE DE FORMA SEGURA BASADO EN EL ID ESTANDARIZADO
-            const currentCardIndex = computed(() => filteredCards.value.findIndex(c => c.card_set_id === selectedCard.value?.card_set_id));
+            const currentCardIndex = computed(() => filteredCards.value.findIndex(c => c.set_id === selectedCard.value?.set_id));
             const nextCard = () => { if (currentCardIndex.value < filteredCards.value.length - 1) selectedCard.value = filteredCards.value[currentCardIndex.value + 1]; };
             const prevCard = () => { if (currentCardIndex.value > 0) selectedCard.value = filteredCards.value[currentCardIndex.value - 1]; };
 
