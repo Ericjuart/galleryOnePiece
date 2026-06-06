@@ -76,7 +76,7 @@
                 <input v-model="filters.search" type="text" placeholder="Nombre, ID o Tag..." class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 focus:border-yellow-500 outline-none text-sm">
             </div>
 
-            <!-- Filtro por Colección / Set -->
+            <!-- CORREGIDO: Filtro por Colección / Set -->
             <div>
                 <label class="text-[10px] uppercase font-black text-slate-500">Colección / Set</label>
                 <select v-model="filters.set" class="w-full bg-slate-950 p-3 rounded-lg border border-slate-800 text-sm">
@@ -156,7 +156,8 @@
                         <div class="bg-slate-950/80 p-2 rounded text-xs text-left space-y-1 border border-slate-700">
                             <p>Precio: <span class="text-yellow-500 font-bold">{{card.market_price}}€</span></p>
                             <p>Rareza: <span class="text-yellow-500 font-bold">{{card.rarity}}</span></p>
-                            <p>Colección: <span class="text-yellow-500 font-bold">{{card.set_id}}</span></p>
+                            <!-- AJUSTADO: Mostramos el set_id limpio o el set_name si existe -->
+                            <p>Colección: <span class="text-yellow-500 font-bold">{{card.set_name || card.set_id}}</span></p>
                         </div>
                     </div>
                 </div>
@@ -193,7 +194,9 @@
                 <img :src="selectedCard.card_image" class="max-h-[75vh] object-contain shadow-2xl">
             </div>
             <div class="w-full md:w-1/2 p-8 md:p-12 overflow-y-auto">
-                <h2 class="text-yellow-500 text-3xl font-bold mb-2">{{selectedCard.card_name}}</h2>
+                <h2 class="text-yellow-500 text-3xl font-bold mb-1">{{selectedCard.card_name}}</h2>
+                <!-- INTEGRADO: Nombre del set en el modal -->
+                <p class="text-slate-400 text-sm mb-4 font-medium" v-if="selectedCard.set_name">{{selectedCard.set_name}}</p>
                 <p class="text-xl mb-6">{{selectedCard.rarity}} - {{translateRarity(selectedCard.rarity)}}</p>
                 <p class="font-mono text-xl mb-6">{{selectedCard.card_set_id}}</p>
                 
@@ -249,29 +252,23 @@
                 deseo: 'todos' 
             });
 
-            // CARGA Y NORMALIZACIÓN TOTAL DEL JSON (A PRUEBA DE ERRORES)
+            // CARGA Y NORMALIZACIÓN TOTAL DEL JSON
             onMounted(async () => {
                 try {
                     const response = await fetch('bbdd_maestra_cartas.json');
                     const data = await response.json();
                     
                     masterData.value = data.map(c => {
-                        // 1. Mapeo inteligente de Nombre
                         const card_name = c.card_name || c.name || c.title || 'Sin Nombre';
-                        
-                        // 2. Mapeo inteligente de Código / Set ID
                         const card_set_id = c.card_set_id || c.card_id || c.id || c.code || 'S/N';
-                        
-                        // 3. Mapeo inteligente de Imagenes
                         const card_image = c.card_image || c.image || c.image_url || c.imageUrl || c.img || '';
-                        
-                        // 4. Mapeo inteligente de Precios
                         const market_price = c.market_price || c.price || c.marketPrice || 0;
-                        
-                        // 5. Mapeo inteligente de Rarezas
                         const rarity = c.rarity || c.rare || 'C';
                         
-                        // 6. Conversión estricta a booleano del campo 'tengo'
+                        // CORREGIDO: Mapeamos de forma independiente los dos identificadores y el nombre del set
+                        const set_id = c.set_id || 'S/S';
+                        const set_name = c.set_name || '';
+                        
                         let tengo = false;
                         if (c.tengo !== undefined) {
                             tengo = (c.tengo === true || c.tengo === 1 || c.tengo === 'true' || c.tengo === '✓' || String(c.tengo).toLowerCase() === 'si');
@@ -279,12 +276,10 @@
                             tengo = !!c.owned;
                         }
 
-                        // 7. Conversión limpia a entero de 'deseo'
                         let deseo = 0;
                         if (c.deseo !== undefined) deseo = parseInt(c.deseo) || 0;
                         else if (c.want !== undefined) deseo = parseInt(c.want) || 0;
 
-                        // 8. Conversión limpia de los 'tags' (soporta arrays o strings separados por comas)
                         let tags = [];
                         const rawTags = c.tags || c.tag || [];
                         if (Array.isArray(rawTags)) {
@@ -293,11 +288,12 @@
                             tags = rawTags.split(',').map(t => t.trim());
                         }
 
-                        // Retornamos el objeto unificado
                         return {
                             ...c,
                             card_name,
-                            card_set_id,
+                            card_set_id, // Código de carta (Ej: OP01-077)
+                            set_id,       // Código de colección real (Ej: OP-01)
+                            set_name,     // Nombre del set (Ej: Romance Dawn)
                             card_image,
                             market_price: parseFloat(market_price) || 0,
                             rarity,
@@ -311,14 +307,9 @@
                 } catch (e) { console.error("Error crítico cargando o procesando el JSON:", e); }
             });
 
-            // Extraer las colecciones dinámicamente usando el card_set_id limpio
+            // CORREGIDO: Extraer las colecciones dinámicamente usando el set_id directo y limpio
             const availableSets = computed(() => {
-                const sets = masterData.value.map(c => {
-                    if (c.card_set_id && c.card_set_id.includes('-')) {
-                        return c.card_set_id.split('-')[0].trim();
-                    }
-                    return null;
-                }).filter(Boolean);
+                const sets = masterData.value.map(c => c.set_id).filter(s => s && s !== 'S/S');
                 return [...new Set(sets)].sort();
             });
 
@@ -337,7 +328,9 @@
                                           c.card_set_id.toLowerCase().includes(s) ||
                                           c.tags.some(t => t.toLowerCase().includes(s));
                     
-                    const matchesSet = !filters.value.set || (c.card_set_id && c.card_set_id.startsWith(filters.value.set));
+                    // CORREGIDO: Comparación directa e inequívoca por igualdad estricta
+                    const matchesSet = !filters.value.set || c.set_id === filters.value.set;
+                    
                     const matchesRarity = !filters.value.rarity || c.rarity === filters.value.rarity;
                     const matchesPrice = c.market_price >= filters.value.priceMin && c.market_price <= filters.value.priceMax;
                     
@@ -374,7 +367,7 @@
                 };
                 return map[r] || 'Especial';
             };
-            // ENCONTRAR ÍNDICE DE FORMA SEGURA BASADO EN EL ID ESTANDARIZADO
+
             const currentCardIndex = computed(() => filteredCards.value.findIndex(c => c.card_set_id === selectedCard.value?.card_set_id));
             const nextCard = () => { if (currentCardIndex.value < filteredCards.value.length - 1) selectedCard.value = filteredCards.value[currentCardIndex.value + 1]; };
             const prevCard = () => { if (currentCardIndex.value > 0) selectedCard.value = filteredCards.value[currentCardIndex.value - 1]; };
