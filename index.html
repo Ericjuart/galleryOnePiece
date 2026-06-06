@@ -152,7 +152,7 @@
                     </div>
                     <div class="flip-card-back">
                         <p class="text-yellow-500 font-bold leading-tight mb-1">{{card.card_name}}</p>
-                        <p class="text-[11px] text-slate-400 font-mono mb-4">{{card.set_id}}</p>
+                        <p class="text-[11px] text-slate-400 font-mono mb-4">{{card.card_set_id}}</p>
                         <div class="bg-slate-950/80 p-2 rounded text-xs text-left space-y-1 border border-slate-700">
                             <p>Precio: <span class="text-yellow-500 font-bold">{{card.market_price}}€</span></p>
                             <p>Rareza: <span class="text-yellow-500 font-bold">{{card.rarity}}</span></p>
@@ -314,8 +314,8 @@
             // Extraer las colecciones dinámicamente usando el set_id limpio
             const availableSets = computed(() => {
                 const sets = masterData.value.map(c => {
-                    if (c.set_id && c.set_id.includes('-')) {
-                        return c.set_id.split('-')[0].trim();
+                    if (c.card_set_id && c.card_set_id.includes('-')) {
+                        return c.card_set_id.split('-')[0].trim();
                     }
                     return null;
                 }).filter(Boolean);
